@@ -53,6 +53,7 @@ class CmConfigParser(ConfigParser):
         for name in viewNames:
             fullClassName = ConfigParser.get(self, 'views', name)
             view = getNewInstance(fullClassName)
+            print view
             view.__init__(name, model)
             # Setup default values
             for option in ConfigParser.options(self, name):
@@ -71,26 +72,29 @@ class CmConfigParser(ConfigParser):
 
 def getNewInstance(fullClassName, searchPath=['./']):
     """Returns an instance of the fullClassName class WITHOUT the __init__ method having been called."""
+
+    # Was original, then modified with parts of
+    # http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/223972
+
     parts = fullClassName.split('.')
-    module = None
+    functionName = parts.pop()
+    moduleName = parts.pop()
+    path = '.'.join(parts)
 
     try:
-        for part in parts[0:-1]:
-            alreadyImported = 0
-            for key, value in sys.modules.items():
-                if key == part:
-                    # Found the module name already loaded in cache
-                    module = value
-                    alreadyImported = 1
-            if not alreadyImported:
-                # The module has not been loaded, manually import it
-                (file, pathname, description) = imp.find_module(part, searchPath)
-                module = imp.load_module(part, file, pathname, description)
-            # The last part will be a real module, not a package, and not have a path attribute
-            if module.__dict__.has_key('__path__'): searchPath = module.__path__
-        return new.instance(module.__dict__[parts[-1]])
-    except Exception, e:
-        raise CmException, """The class '%s' was not found: '%s'""" % (fullClassName, e)
+        module = sys.modules[moduleName]
+    except KeyError:
+        if len(parts) > 0:
+            module = __import__(path + "." + moduleName, globals(), locals(), [''])
+        else:
+            module = __import__(moduleName, globals(), locals())
+
+    function = getattr(module, functionName)
+
+    if not callable(function):
+        raise ImportError(fullFuncError)
+
+    return new.instance(function)
 
 def execute(command):
     """Executes a command line and returns the contents of stdout as a list of liens."""
