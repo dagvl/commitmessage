@@ -12,7 +12,7 @@ import time
 
 from StringIO import StringIO
 from smtplib import SMTP
-from commitmessage.framework import View
+from commitmessage.model import View
 
 class BaseEmailView(View):
     """

@@ -9,7 +9,7 @@
 import os
 import sys
 
-from commitmessage.framework import Controller, File, Directory
+from commitmessage.model import Controller, File, Directory
 from commitmessage.util import execute
 
 class SvnController(Controller):

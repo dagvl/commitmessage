@@ -9,7 +9,7 @@
 import os
 import sys
 
-from commitmessage.framework import View
+from commitmessage.model import View
 
 class DumpView(View):
     """Provides unit testing capabilities by doing a simple dump of the Model to

@@ -9,7 +9,7 @@
 import os
 import sys
 
-from commitmessage.framework import View
+from commitmessage.model import View
 
 class PostView(View):
     pass

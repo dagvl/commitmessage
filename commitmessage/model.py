@@ -59,7 +59,7 @@ class Controller:
         Gives CVS a chance to kill the current process and wait for the next
         one as it has to build up data between discrete per-directory executions.
         """
-        return 0
+        return False
 
     def _executeViews(self):
         """Executes the views for each module that matches the commit's base directory."""
@@ -178,7 +178,7 @@ class Directory:
 
 class Model:
     """
-    Wraps the model that gets sent between the Controller and Views.
+    Wraps the L{File}s and L{Directory}s that get sent between the Controller and Views.
     """
 
     def __init__(self):

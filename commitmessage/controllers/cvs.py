@@ -11,7 +11,7 @@ import cPickle
 import re
 import sys
 
-from commitmessage.framework import Controller, Directory, File, Model
+from commitmessage.model import Controller, Directory, File, Model
 from commitmessage.util import execute
 
 def cvs_status(file):
