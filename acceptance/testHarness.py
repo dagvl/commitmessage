@@ -272,13 +272,13 @@ class CvsFacade(ControllerFacade):
         self._execCvs('init')
         self._execCvs('checkout CVSROOT')
 
-        loginfo = file('CVSROOT/loginfo', 'w')
-        loginfo.write('DEFAULT %s -c %s/CVSROOT/commitmessage.conf %%{s} > commitmessage.out 2>&1' % (self.mainPath, self.repoDir))
-        loginfo.close()
-
         commitinfo = file('CVSROOT/commitinfo', 'w')
         commitinfo.write('DEFAULT %s -c %s/CVSROOT/commitmessage.conf' % (self.mainPath, self.repoDir))
         commitinfo.close()
+
+        loginfo = file('CVSROOT/loginfo', 'w')
+        loginfo.write('DEFAULT %s -c %s/CVSROOT/commitmessage.conf %%{s} > commitmessage.out 2>&1' % (self.mainPath, self.repoDir))
+        loginfo.close()
 
         checkoutlist = file('CVSROOT/checkoutlist', 'w')
         checkoutlist.write('commitmessage.conf')
