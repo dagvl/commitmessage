@@ -59,20 +59,7 @@ class Harness:
 
                         delim = '=================================================='
 
-                        print 'Error:'
-
-                        print 'Expected:'
-                        print delim
-                        print view.expected
-                        print delim
-
-                        print 'Actual:'
-                        print delim
-                        print facade.actual(view.name)
-                        print delim
-
-                        print 'Diff:'
-                        print delim
+                        print 'Error, expected did not match actual:'
                         print '\n'.join(difflib.unified_diff(view.expected.split('\n'), facade.actual(view.name).split('\n')))
                         print delim
 
