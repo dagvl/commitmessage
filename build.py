@@ -83,7 +83,7 @@ if sys.argv[1] == 'dist':
                     dirAdded = True
                 f = root + os.sep + file
                 t.add(f, 'commitmessage-%s/%s' % (version, f))
-    t.add('commitmessage.conf', 'commitmessage-%s/commitmessage.conf' % version)
-    t.add('INSTALL.txt', 'commitmessage-%s/INSTALL.txt' % version)
+    for file in ['commitmessage.conf', 'INSTALL.txt', 'main.py']:
+        t.add(file, 'commitmessage-%s/%s' % (version, file))
     t.close()
 

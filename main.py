@@ -15,10 +15,11 @@ import getopt
 import os
 import sys
 
-# Assume this main.py is in the commitmessage package and setup sys.path to
-# import the rest of the commitmessage package
+# Assume this main.py is in the parent directory of the commitmessage package
+# and setup sys.path to import the rest of the commitmessage package
+
 currentDir = os.path.dirname(sys.argv[0])
-rootCmPath = os.path.abspath(currentDir + '/../')
+rootCmPath = currentDir
 
 if __name__ == '__main__':
     sys.path.append(rootCmPath)
