@@ -188,7 +188,7 @@ class CvsController(Controller):
         """Reads in the loginfo text from self.stdin and retreives the
         corresponding diff/delta information for each file."""
         self.logLines = []
-        self.currentDirectory = Directory(directoryName)
+        self.currentDirectory = Directory(directoryName + '/')
 
         STATE_NONE = 0
         STATE_MODIFIED = 1

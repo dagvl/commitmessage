@@ -1,14 +1,13 @@
 
 readme
-commitmessage Version 1.0
+commitmessage Version 2.0-alpha1
 Copyright 2002 Stephen Haberman
 
-Note: Please keep this readme file with the other commitmessage Perl
-scripts in your CVSROOT directory to provide a convenient source
+Note: Please keep this INSTALL.txt file with the other commitmessage Perl
+scripts in your CVSROOT/commitmessage directory to provide a convenient source
 for future reference, both for you and future admins.
 
 Please refer to http://commitmessage.tigris.org for more information.
-
 
 #####################################################################
 #
@@ -16,7 +15,15 @@ Please refer to http://commitmessage.tigris.org for more information.
 #
 #####################################################################
 
-1. Check in the following files to your CVSROOT:
+You can install commitmessage in several ways:
+
+1. You can install the commitmessage files in a variety of places:
+ - For CVS, in the CVSROOT module of your repository
+ - For SVN, in the hooks directory of your repository
+ - For either CVS or SVN, in a traditional directory like /usr/local
+
+Whichever one you choose, you'll want to copy the entire unzipped directory,
+including the root commitmessage directory, e.g.:
 
  - commitmessage/commitinfo.pl
  - commitmessage/config

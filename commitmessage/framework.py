@@ -75,12 +75,15 @@ class File:
 
     def name(self, name=None):
         """The file name, e.g. blah.txt."""
-        if name is not None: self.__name = name
+        if name is not None:
+            if name.find('/') != -1:
+                raise CmException, "File names may not have foward slashes in them."
+            self.__name = name
         return self.__name
 
     def path(self, path=None):
         """The path relative to the repository root, e.g. CVSROOT/commitmessage.py."""
-        return self.directory().path() + '/' + self.name()
+        return self.directory().path() + self.name()
 
     def action(self, action=None):
         """The action that was performed: added, removed, modified, moved, branch."""
@@ -125,14 +128,17 @@ class Directory:
     def path(self, path=None):
         """The path relative to the repository root, e.g. CVSROOT/testdir."""
         if path is not None:
-            if path != '' and not path.startswith('/'):
-                raise CmException, 'Directory paths must start with a forward slash.'
+            if path == '' or not path.startswith('/') or not path.endswith('/'):
+                raise CmException, 'Directory paths must start with a forward slash and end with a forward slash.'
             self.__path = path
         return self.__path
 
     def name(self):
         """Returns just the name of the directory, e.g. testdir."""
-        return os.path.split(self.path())[-1]
+        if self.path() == '/':
+            return '/'
+        else:
+            return self.path().split('/')[-2]
 
     def action(self, action=None):
         """The action that was performed: added, removed, modified, moved, branch"""
@@ -192,33 +198,30 @@ class Model:
     def directory(self, path):
         """Returns the Model's corresponding directory for the given path.
         Creates the new directories and its sub hierarchy if need be."""
-        if path[0] != '/':
-            raise CmException, 'Directory paths must start with a forward slash.'
+        if path[0] != '/' or path[-1] != '/':
+            raise CmException, 'Directory paths must start with a forward slash and end with a forward slash.'
         if path == '/':
             return self.rootDirectory()
 
-        # Skip the first blank dir, parts = ['', 'a', 'a-a']
-        parts = path.split('/')[1:]
+        parts = path.split('/')
         currentDirectory = self.rootDirectory()
         for dir in parts:
-            if currentDirectory.hasSubdirectory(dir):
-                currentDirectory = currentDirectory.subdirectory(dir)
-            else:
-                path = currentDirectory.path()
-                if path == '/':
-                    path = path + dir
+            # Ignore blank parts, e.g. ['', 'a', 'a-a', '']
+            if dir != '':
+                if currentDirectory.hasSubdirectory(dir):
+                    currentDirectory = currentDirectory.subdirectory(dir)
                 else:
-                    path = path + '/' + dir
-                newdir = Directory(path)
-                currentDirectory.addSubdirectory(newdir)
-                currentDirectory = newdir
+                    newdir = Directory(currentDirectory.path() + dir + '/')
+                    currentDirectory.addSubdirectory(newdir)
+                    currentDirectory = newdir
         return currentDirectory
 
     def addDirectory(self, directory):
         """Adds a directory into the Model's directory tree along. Uses
         self.directory(path), except takes a default value for the new directory
         to add at the bottom of the hierarchy."""
-        parentPath = '/' + '/'.join(directory.path().split('/')[1:-1])
+        # Leave off last name and last slash to get the parent directory
+        parentPath = '/'.join(directory.path().split('/')[0:-2]) + '/'
         parentDirectory = self.directory(parentPath)
         if not parentDirectory.hasSubdirectory(directory.name()):
             parentDirectory.addSubdirectory(directory)
@@ -248,9 +251,14 @@ class Model:
 
     def file(self, path):
         """Returns the file for the given path."""
+        if path == '':
+            raise CmException, "File paths may not be empty."
+        if path[0] != '/' or path[-1] == '/':
+            raise CmException, "File paths must begin with a forward slash and not end with a back slash."
         parts = path.split('/')
-        parentPath = '/' + '/'.join(parts[1:-1])
-        return self.directory(parentPath).file(parts[-1])
+        # Leave off the file name to get the parent directory
+        parentDirectoryPath = '/'.join(parts[0:-1]) + '/'
+        return self.directory(parentDirectoryPath).file(parts[-1])
 
     def files(self, action=None):
         """Returns a flat list of files with the optional filter applied to

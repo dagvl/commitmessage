@@ -28,7 +28,7 @@ class SvnController(Controller):
 
         lines = self.svnlook('info')
         self.model.user(lines[0][:-1])
-        self.model.log(lines[3])
+        self.model.log(lines[3:])
 
         changes = self.svnlook('changed')
         for change in changes:
@@ -72,36 +72,41 @@ class SvnController(Controller):
 
     def saveDiffs(self, lines):
         """Calls svnlook diff and parses out the diff information."""
-        fileDiffs = []
-        currentDiff = None
-        lastLine = lines[0]
-        for line in lines[1:]:
-            if line == '==============================================================================\n':
-                if currentDiff is not None:
-                    fileDiffs.append(currentDiff)
-                currentDiff = [lastLine]
-            else:
-                currentDiff.append(lastLine)
-            lastLine = line
-        currentDiff.append(lastLine)
-        fileDiffs.append(currentDiff)
+        diffs = []
+        if len(lines) > 0:
+            currentDiff = None
+            for line in lines:
+                if line.startswith('Modified: '):
+                    if currentDiff is not None:
+                        diffs.append(currentDiff)
+                    currentDiff = [line]
+                elif line.startswith('Copied: '):
+                    if currentDiff is not None:
+                        diffs.append(currentDiff)
+                    currentDiff = [line]
+                else:
+                    if currentDiff is not None:
+                        currentDiff.append(line)
+            if currentDiff is not None:
+                diffs.append(currentDiff)
 
-        for diff in fileDiffs:
+        for diff in diffs:
             # Use [:-1] to leave of the trailing \n
-            filePath = '/' + diff[0][:-1].split(' ')[-1]
-            text = ''
-            added = 0
-            removed = 0
-            for line in diff[1:]:
-                if len(line) > 0:
-                    if line[0] == '+' and not line[0:3] == '+++':
-                        added = added + 1
-                    elif line[0] == '-' and not line[0:3] == '---':
-                        removed = removed + 1
-                text = text + line
-            f = self.model.file(filePath)
-            f.diff(text)
-            f.delta('+%s -%s' % (added, removed))
+            if not diff[0].startswith('Copied: '):
+                filePath = '/' + diff[0][:-1].split(' ')[-1]
+                text = ''
+                added = 0
+                removed = 0
+                for line in diff[1:]:
+                    if len(line) > 0:
+                        if line[0] == '+' and not line[0:3] == '+++':
+                            added = added + 1
+                        elif line[0] == '-' and not line[0:3] == '---':
+                            removed = removed + 1
+                    text = text + line
+                f = self.model.file(filePath)
+                f.diff(text)
+                f.delta('+%s -%s' % (added, removed))
 
     def svnlook(self, command):
         """Returns the lines ouput by the svnlook command against the current
