@@ -19,20 +19,16 @@ class ControllerFacade:
 class Harness:
     """A class to wrap the test execution context; creates repository, executes the views, and compares the results."""
 
-    def __init__(self, args):
+    def __init__(self, facades, args):
         self.wait = 0
-        self.facades = []
+        self.facades = facades
         self.passes = 0
         self.failures = 0
 
-        options, args = getopt.getopt(args, 'w')
+        options, args = getopt.getopt(args, '', ['trace'])
         for option, value in options:
-            if option == '-w':
-                self.wait = 1
-
-    def addFacade(self, facade):
-        """A wrapper to SCM-specific repository commands."""
-        self.facades.append(facade)
+            if option == '--trace':
+                self.facades = map(lambda x: Tracer(x), self.facades)
 
     def run(self, cases):
         """Runs XML test cases."""
@@ -87,7 +83,7 @@ class Harness:
 
     def matchesIgnoringDates(self, expected, actual):
         expected = expected.strip().split('\n')
-        actual = actual.strip().split('\n')
+        actual = map(lambda x: x.replace('\r', ''), actual.strip().split('\n'))
 
         if len(expected) != len(actual):
             return 0
@@ -96,8 +92,12 @@ class Harness:
             ignoredDateIndex = expected[i].find('#####')
             if ignoredDateIndex > -1:
                 if expected[i][0:ignoredDateIndex] != actual[i][0:ignoredDateIndex]:
+                    print expected[i-1:i+2]
+                    print actual[i-1:i+2]
                     return 0
             elif expected[i] != actual[i]:
+                print expected[i-1:i+2]
+                print actual[i-1:i+2]
                 return 0
 
         return 1
@@ -130,7 +130,7 @@ class Commit:
     def doChanges(self, facade):
         """Loops through all of the changes for this commit."""
         for e in self.commitElement.childNodes:
-            if e.nodeType == e.ELEMENT_NODE and e.tagName != 'view':
+            if e.nodeType == e.ELEMENT_NODE and e.tagName != 'view' and e.tagName != 'message':
                 # The args to pass to the function
                 args = []
 
@@ -141,10 +141,15 @@ class Commit:
                 # The text is an argument too
                 for node in e.childNodes:
                     if node.nodeType == node.TEXT_NODE:
-                        args.append(node.data)
+                        args.append(node.data.strip())
 
                 # Call the function
                 getattr(facade, e.tagName)(*args)
+        # Set the message for the commit
+        for e in self.commitElement.getElementsByTagName("message"):
+            for node in e.childNodes:
+                if node.nodeType == node.TEXT_NODE:
+                    facade.message = node.data.strip()
 
     def views(self):
         """Returns the views that are expected by this commit, viewName: results."""
@@ -169,7 +174,7 @@ class SvnFacade:
     def __init__(self):
         self.repoDir = '%s/temp-svn-repo' % os.getcwd().replace('\\', '/')
         self.workingDir = '%s/temp-svn-wd' % os.getcwd().replace('\\', '/')
-        self.log = ''
+        self.message = ''
 
     def _execsvn(self, cmd):
         """Executes cmd in the working directory."""
@@ -196,14 +201,32 @@ class SvnFacade:
         return file('%s/%s.txt' % (self.workingDir, viewName)).read()
 
     def commit(self):
-        self._execsvn('svn commit -m "%s"' % self.log)
+        self._openFile('temp-message.txt', 'w').write(self.message)
+        self._execsvn('svn commit -F temp-message.txt')
+
+    def _openFile(self, name, flags):
+        return file('%s/%s' % (self.workingDir, name), flags)
 
     def addFile(self, name, content):
-        file('%s/%s' % (self.workingDir, name), 'w').write(content.strip())
+        self._openFile(name, 'w').write(content)
         self._execsvn('svn add %s' % name)
 
-    def message(self, log):
-        self.log = log.strip()
+    def changeFile(self, name, fromLine, toLine, content):
+        fromLine = int(fromLine)
+        toLine = int(toLine)
+
+        oldLines = self._openFile(name, 'r').readlines()
+        newLines = []
+
+        for i in range(0, fromLine):
+            newLines.append(oldLines[i])
+
+        newLines.extend(content.split('\n'))
+
+        for i in range(fromLine, toLine):
+            newLines.append(oldLines[i])
+
+        self._openFile(name, 'w').write('\n'.join(newLines))
 
 def _exec(cmd):
     """Executes cmd and returns the lines of stdout."""
@@ -223,17 +246,32 @@ def _exec(cmd):
 
     return outlines
 
+class Tracer:
+    """Lets the user walk step-by-step through a test to watch the changes on the file system."""
+
+    def __init__(self, wrapped):
+        """wrapped is the instance to interupt calls to any attribute."""
+        # Use __dict__ to bypass our __setattr__ below.
+        self.__dict__['wrapped'] = wrapped
+
+    def __getattr__(self, name):
+        """Prints out name of the attribute being asked, waits for user
+        feedback, and then returns the attribute from the wrapped object."""
+        print '::%s' % name
+        raw_input('')
+        return getattr(self.wrapped, name)
+
+    def __setattr__(self, name, value):
+        setattr(self.wrapped, name, value)
+
 """Okay, run the test harness."""
 
 # Clean out all of the old repositories and working directories
 for old in filter(lambda x: x.startswith('temp-'), os.listdir('.')):
     _exec('rmdir /S /Q %s' % old)
 
-harness = Harness(sys.argv[1:])
-# harness.addFacade(CvsFacade())
-harness.addFacade(SvnFacade())
+harness = Harness([SvnFacade()], sys.argv[1:])
 
 cases = map(lambda x: Case(x), filter(lambda x: x.endswith('.xml'), os.listdir('.')))
 
 harness.run(cases)
-
