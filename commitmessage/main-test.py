@@ -15,11 +15,10 @@ if __name__ == '__main__':
     # Setup sys.path to correctly search for commitmessage.xxx[.yyy] modules
     currentDir = os.path.dirname(sys.argv[0])
     rootCmPath = os.path.abspath(currentDir + '/../')
-    print(rootCmPath)
     sys.path.append(rootCmPath)
 
-from commitmessage.util import CmConfigParser
 from commitmessage.controllers.cvs import CvsController
+from commitmessage.util import CmConfigParser
 
 def convertToStream(text):
     """Helper function to save text to a file and return a stream of it."""
