@@ -28,7 +28,18 @@ class SvnController(Controller):
 
         lines = self.svnlook('info')
         self.model.user(lines[0][:-1])
-        self.model.log(''.join(lines[3:])[:-1])
+        logLines = lines[3:]
+
+        # Trim off \n from the end of logLines
+        r = range(0, len(logLines))
+        r.reverse()
+        for i in r:
+            if logLines[i] == '\n':
+                del logLines[i]
+            else:
+                logLines[i] = logLines[i][:-1]
+                break
+        self.model.log(''.join(logLines))
 
         changes = self.svnlook('changed')
         for change in changes:

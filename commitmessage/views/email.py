@@ -120,7 +120,6 @@ class TigrisStyleEmailView(BaseEmailView):
                 text.write('\n')
             text.write('\n')
 
-
     def generateBody(self, text):
         """Returns a string for the body of the email."""
         text.write('User: %s\n' % self.model.user())
@@ -131,7 +130,11 @@ class TigrisStyleEmailView(BaseEmailView):
         self.printFiles(text, 'removed')
         self.printFiles(text, 'modified')
 
-        text.write('Log\n %s\n\n' % self.model.log())
+        text.write('Log\n')
+        lines = self.model.log().split('\n')
+        for line in lines:
+            text.write(' %s\n' % line)
+        text.write('\n')
 
         text.write('File changes\n\n')
         for dir in self.model.directoriesWithFiles():
