@@ -19,9 +19,13 @@ url = /
 page = cvsSubmit.asp
 
 [email]
+to = stephen@beachead.com
 server = mail.beachead.com
 from = stephen@beachead.com
 subject = cvs commit: $model.greatestCommonDirectory()
+header =
+footer =
+acceptance = 1
 
 [all]
 views = bombsight, email
