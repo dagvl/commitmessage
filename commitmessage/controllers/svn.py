@@ -102,8 +102,16 @@ class SvnController(Controller):
                 diffs.append(currentDiff)
 
         for diff in diffs:
+            if diff[0].startswith('Copied: '):
+                fileName = diff[0][:-1].split(' ')[1]
+                for addedFile in self.model.files('added'):
+                    if addedFile.name() == fileName:
+                        addedFile.diff(diff[0])
+                        addedFile.delta('Unknown')
+                continue
+
             # Use [:-1] to leave of the trailing \n
-            filePath = '/' + diff[3][:-1].split(' ')[1].split('\t')[0]
+            filePath = '/' + diff[0][:-1].split(' ')[1]
             text = ''
             added = 0
             removed = 0
