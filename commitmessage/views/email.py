@@ -32,8 +32,12 @@ class BaseEmailView(View):
         """Used to get the 'from' attribute (as it is a keyword)"""
         return self.__dict__[name]
 
+    def generateSubject(self, text):
+        text.write('Subject: %s\n' % self.subject.split('\n')[0])
+
     def execute(self):
         """Sends the email with commit information"""
+
         text = StringIO('')
         text.write('To: %s\n' % self.to)
 
@@ -41,7 +45,7 @@ class BaseEmailView(View):
             text.write('Cc: %s\n' % self.cc)
 
         text.write('From: %s\n' % self['from'])
-        text.write('Subject: %s\n' % self.subject.split('\n')[0])
+        self.generateSubject(text)
         text.write('Date: %s -0000 (GMT)\n' % time.strftime('%A %d %B %Y %H:%M:%S', time.gmtime()))
 
         if len(self.rfc_header) > 0:
@@ -228,3 +232,114 @@ class InlineAttachmentEmailView(BaseEmailView):
 
         text.write('--%s--\n' % self.boundary)
 
+
+class EtherealStyleEmailView(BaseEmailView):
+    """Sends out an email in the Ethereal commit message style.  The log
+message is followed by a list of file deltas.  This provides useful change
+information without blasting the recipient(s) with multimegabyte diffs.
+
+    This view has several properties:
+
+     - server (required) - the mail server to relay through
+     - subject (required) - the subject line (e.g. "commit: $model.greatestCommonDirectory()").  A list of directories/files will be appended.
+     - from (required) - the from email address (e.g. "$model.user@yourdomain.com")
+     - to (required) - a comma-separated list of email addresses to send to
+     - header (optional) - text to put at the beginning of the email
+     - footer (optional) - text to put at the end of the email
+     - maxfiles (optional) - the maximum number of files to list
+
+    Contributed by Gerald Combs <gerald [AT] ethereal.com>
+    """
+
+    def __init__(self, name, model):
+        """Initializes the the username to None, header, footer, and rfc_header
+
+        The username is default to None, header to 'This is a multi-part message
+        in MIME format.', footer to '' and rfc_header to the MIME boundary.
+        """
+
+        BaseEmailView.__init__(self, name, model)
+
+        self.maxfiles = '-1'
+
+    def generateSubject(self, text):
+        """Wrap the subject at 75 characters, and cap it at three lines.
+        Append "..." if the subject is truncated.
+        """
+        cur_line = 'Subject: %s' % self.subject.split('\n')[0]
+        subj_lines = []
+        more_files = 0
+
+        for dir in self.model.directoriesWithFiles():
+            append = ' ' + dir.path + ':'
+            if len(cur_line) + len(append) > 75:
+                if len(subj_lines) > 1:
+                    more_files = 1
+                    break
+                else:
+                    subj_lines.append(cur_line)
+                    cur_line = ''
+            cur_line = cur_line + append
+            for file in dir.files:
+                append = ' ' + file.name
+                if len(cur_line + append) > 75:
+                    if len(subj_lines) > 1:
+                        more_files = 1
+                        break;
+                    else:
+                        subj_lines.append(cur_line)
+                        cur_line = ''
+                cur_line = cur_line + append
+
+        if (more_files):
+            cur_line = cur_line + ' ...'
+        subj_lines.append(cur_line)
+        text.write('\n'.join(subj_lines))
+        text.write('\n')
+
+    def generateBody(self, text):
+        """@return: a string for the body of the email"""
+        files_remaining = 0
+        files_max = int(self.maxfiles)
+
+        for dir in self.model.directoriesWithFiles():
+            files_remaining = files_remaining + len(dir.files)
+        file_limit = files_remaining - files_max
+
+        text.write('User: %s\n' % self.model.user)
+        text.write('Date: %s\n' % time.strftime('%Y/%m/%d %I:%M %p'))
+        text.write('\n')
+
+        text.write('Log:\n')
+        for line in self.model.log.split('\n'):
+            text.write(' %s\n' % line)
+        text.write('\n')
+
+        for dir in self.model.directoriesWithFiles():
+            if (files_max > 0 and files_remaining <= file_limit):
+                break
+            text.write('Directory: %s\n' % (dir.path))
+
+            max_name_len = 10
+            for file in dir.files:
+                if len(file.name) > max_name_len: max_name_len = len(file.name)
+            fmtstr = '  %%-10s %%-%ds    %%s\n' % (max_name_len)
+            text.write(fmtstr % ('Changes', 'Path', 'Action'))
+
+            for file in dir.files:
+                action = file.action[0].upper() + file.action[1:]
+                text.write(fmtstr % (file.delta, file.name, action))
+                if (files_max > 0):
+                    files_remaining = files_remaining - 1
+                if (files_remaining < file_limit):
+                    break
+
+            text.write('\n')
+
+        if files_max > 0 and files_remaining:
+            if files_remaining > 1:
+                plurality = 's'
+            else:
+                plurality = ''
+            text.write('\n')
+            text.write('(%d file%s not shown)' % (files_remaining, plurality))
