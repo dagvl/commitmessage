@@ -10,6 +10,7 @@ import time
 
 from StringIO import StringIO
 from toc import TocTalk, BotManager
+import msnp
 
 from commitmessage.model import View
 
@@ -44,18 +45,52 @@ class IMView(View):
         text.seek(0)
         return text.read()
 
-class AIMView(IMView):
-    """Send out stuff on AIM
+class MSNView(IMView):
+    """Send out commit messages on MSN
 
-    This view supports three properties:
+    This view has three properties:
 
-     - screenname - the AIM screenname for the notifications
-     - password - the AIM password for the above screenname
-     - to - a list of other AIM screennames to send the note to
+     - passport - the MSN passport to login with
+     - password - the password for the MSN passport
+     - to - a comma-separated list of other MSN passports to send the message to
     """
 
     def execute(self):
-        """Sends the IM with the commit information"""
+        """Sends the IM with the commit message"""
+
+        class MsnListener(msnp.SessionCallbacks):
+            def __init__(self, message):
+                self._message = message
+                self._done = False
+            def chat_started(self, chat):
+                chat.send_message(self._message)
+                self._done = True
+
+        listener = MsnListener(self._generateMessage())
+        msn = msnp.Session(listener)
+
+        msn.login(self.passport, self.password)
+
+        for name in [name.strip() for name in self.to.split(',')]:
+            msn.start_chat(name)
+            listener._done = False
+
+            while not listener._done:
+                msn.process(chats=True)
+                time.sleep(1)
+
+class AIMView(IMView):
+    """Send out stuff on AIM
+
+    This view has three properties:
+
+     - screenname - the AIM screenname to login with
+     - password - the password for AIM screenname
+     - to - a comma-seperated list of other AIM screennames to send the message to
+    """
+
+    def execute(self):
+        """Sends the IM with the commit message"""
 
         bm = BotManager()
         bot = TocTalk(self.screenname, self.password)
