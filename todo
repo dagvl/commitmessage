@@ -14,11 +14,11 @@
 - Add tests for:
 
   - Removing directories
-  - Changing properties on directories
-  - Changing properties on files
+  - Changing properties on directories [done]
+  - Changing properties on files [done]
 
 - Features for 2.0-release
 
- - Map of users -> email addresses
- - Multiple repos/config (e.g. flag to prepend repo to matching)
+ - Map of users -> email addresses [done, userMap]
+ - Multiple repos/config [done, matchAgainstRepoPrefix]
 
