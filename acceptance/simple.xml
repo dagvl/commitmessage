@@ -305,8 +305,9 @@ Delta lines: +0 -1
 
 
 File [added]: foo1a.txt
-Delta lines: None
-None
+Delta lines: +0 -0
+
+
 File [removed]: foo2.txt
 Delta lines: +0 -1
 ===================================================================
@@ -318,9 +319,14 @@ Delta lines: +0 -1
 
 
 File [added]: foo2a.txt
-Delta lines: None
-None
-
+Delta lines: +2 -0
+===================================================================
+--- sub1/foo2.txt	#####
++++ sub1/foo2a.txt	#####
+@@ -0,0 +1,2 @@
++this is in a sub directory
++this is also a sub directory
+\ No newline at end of file
     </view>
   </commit>
 </test>
