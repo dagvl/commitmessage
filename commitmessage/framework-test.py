@@ -34,7 +34,7 @@ class TestDirectoryHierarchy(unittest.TestCase):
         """Simple test of adding a dir to the model."""
         self.model.addDirectory(Directory('/test1'))
         self.assertEquals(1, len(self.model.rootDirectory().subdirectories()))
-
+        # Test gcd
         self.assertEquals('/test1', self.model.greatestCommonDirectory())
 
     def testTwo(self):
@@ -48,7 +48,7 @@ class TestDirectoryHierarchy(unittest.TestCase):
         self.assertEquals('added', root.subdirectories()[0].action())
         self.assertEquals('/a/b', root.subdirectories()[0].subdirectories()[0].path())
         self.assertEquals('added', root.subdirectories()[0].subdirectories()[0].action())
-
+        # Test gcd
         self.assertEquals('/a', self.model.greatestCommonDirectory())
 
     def testTwoDifferentDownThree(self):
@@ -72,11 +72,13 @@ class TestDirectoryHierarchy(unittest.TestCase):
 
         self.assertEquals('removed', a3.action())
         self.assertEquals('removed', b3.action())
-
+        # Test gcd
         self.assertEquals('/a/a', self.model.greatestCommonDirectory())
-
+        # Test files()
         self.assertEquals(2, len(self.model.files('added')))
         self.assertEquals('x.txt', self.model.files('added')[0].name())
+        # Test file
+        self.assertEquals('x.txt', self.model.file('/a/a/a/x.txt').name())
 
     def testFilesFilter(self):
         dir = Directory('/module1')

@@ -142,6 +142,14 @@ class Directory:
         else:
             return filter(lambda file: file.action() == action, self.__files)
 
+    def file(self, name):
+        """Return a file in the current directory with the given name, or else
+        None if it doesn't exist."""
+        for f in self.files():
+            if f.name() == name:
+                return f
+        return None
+
     def subdirectory(self, name):
         """Return a subdirectory with a specific name."""
         for dir in self.subdirectories():
@@ -231,6 +239,12 @@ class Model:
         """The log message the user provided when making the commit."""
         if log is not None: self.__log = log
         return self.__log
+
+    def file(self, path):
+        """Returns the file for the given path."""
+        parts = path.split('/')
+        parentPath = '/' + '/'.join(parts[1:-1])
+        return self.directory(parentPath).file(parts[-1])
 
     def files(self, action=None):
         """Returns a flat list of files with the optional filter applied to
