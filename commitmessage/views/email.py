@@ -16,6 +16,20 @@ from commitmessage.model import View
 
 class BaseEmailView(View):
     """A basic email implementation for other style-specific email views to extend
+
+    Core properties:
+
+     - server (required) - the mail server to relay through
+     - subject (required) - the subject line (e.g. "commit: $model.greatestCommonDirectory()")
+     - from (required) - the from email address (e.g. "$model.user@yourdomain.com")
+     - to (required) - a comma-separated list of email addresses to send to
+     - cc (optional) - a comma-separated list of email addresses to cc to
+     - header (optional) - text to put at the beginning of the email
+     - footer (optional) - text to put at the end of the email
+
+     - username - a SMTP auth username
+     - password - a SMTP auth password
+     - contenttype - the Content-Type header to use (defaults to: text/plain; charset="iso-8859-1")
     """
 
     def __init__(self, name, model):
@@ -26,7 +40,8 @@ class BaseEmailView(View):
         self.header = ''
         self.footer = ''
         self.cc = ''
-        self.rfc_header = ''
+        self.contenttype = 'text/plain; charset="iso-8859-1"'
+        self.otherHeaders = {}
 
     def __getitem__(self, name):
         """Used to get the 'from' attribute (as it is a keyword)"""
@@ -47,17 +62,22 @@ class BaseEmailView(View):
         text.write('From: %s\n' % self['from'])
         self.generateSubject(text)
         text.write('Date: %s -0000 (GMT)\n' % time.strftime('%A %d %B %Y %H:%M:%S', time.gmtime()))
+        text.write('Content-Type: %s\n' % self.contenttype)
 
-        if len(self.rfc_header) > 0:
-            text.write('%s\n' % self.rfc_header)
+        for name, value in self.otherHeaders.items():
+            text.write('%s: %s\n' % (name, value))
 
+        # Done with header, final extra \n
         text.write('\n')
 
+        # User-defined body text header
         if len(self.header) > 0:
             text.write('%s\n\n' % self.header)
 
+        # Sub classes must implement this
         self.generateBody(text)
 
+        # User-defined body text footer
         if len(self.footer) > 0:
             text.write('\n\n%s' % self.footer)
 
@@ -182,11 +202,12 @@ class InlineAttachmentEmailView(BaseEmailView):
         BaseEmailView.__init__(self, name, model)
 
         self.boundary = 'Boundary-00=_Ij9UAWIepv2oFVA'
+        self.contenttype = 'Multipart/Mixed;\n boundary="%s"' % (self.boundary)
+        self.otherHeaders['MIME-Version'] = '1.0'
+
+        # Use the user-defined header to output this generic MIME message that
+        # most email clients won't show
         self.header = 'This is a multi-part message in MIME format.'
-        self.rfc_header = \
-            'MIME-Version: 1.0\n' \
-            'Content-Type: Multipart/Mixed;\n' \
-            ' boundary="%s"' % (self.boundary)
 
     def generateBody(self, text):
         """Generates the email with the patch inlined
@@ -197,8 +218,7 @@ class InlineAttachmentEmailView(BaseEmailView):
         # First write out the body of the email with the log and list of changed files
         text.write(
             '--%s\n'
-            'Content-Type: text/plain;\n'
-            ' charset="US-ASCII"\n'
+            'Content-Type: text/plain;\n charset="US-ASCII"\n'
             'Content-Transfer-Encoding: 7bit\n'
             'Content-Disposition: inline\n\n' % self.boundary)
 
@@ -211,16 +231,13 @@ class InlineAttachmentEmailView(BaseEmailView):
             for file in dir.files:
                 text.write(' * %s %s\n' % (file.action.upper(), file.path))
 
-
         # Second write out the patch file
         filename = 'rev-%s.diff' % (self.model.rev)
 
         text.write(
             '\n'
             '--%s\n'
-            'Content-Type: text/x-diff;\n'
-            ' charset="US-ASCII"\n'
-            ' name="%s"'
+            'Content-Type: text/x-diff;\n charset="US-ASCII"\n name="%s"'
             'Content-Transfer-Encoding: 8bit\n'
             'Content-Disposition: inline;\n'
             ' filename="%s"\n\n' % (self.boundary, filename, filename))
@@ -234,9 +251,11 @@ class InlineAttachmentEmailView(BaseEmailView):
 
 
 class EtherealStyleEmailView(BaseEmailView):
-    """Sends out an email in the Ethereal commit message style.  The log
-message is followed by a list of file deltas.  This provides useful change
-information without blasting the recipient(s) with multimegabyte diffs.
+    """Sends out an email in the Ethereal commit message style.
+
+    The log message is followed by a list of file deltas.  This provides useful
+    change information without blasting the recipient(s) with multimegabyte
+    diffs.
 
     This view has several properties:
 
@@ -343,3 +362,4 @@ information without blasting the recipient(s) with multimegabyte diffs.
                 plurality = ''
             text.write('\n')
             text.write('(%d file%s not shown)' % (files_remaining, plurality))
+

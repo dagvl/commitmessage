@@ -17,29 +17,48 @@ server = mail.beachead.com
 from = stephen@beachead.com
 subject = commit: $model.greatestCommonDirectory()
 acceptance = ACCEPTANCE_DIRECTORY
+contenttype = a-custom-content-type
 
 [all]
 views = email
   </config>
   <commit>
-    <message>a subdirectory</message>
-    <addDirectory name="sub1" />
+    <message>foo</message>
+    <addFile name="foo.txt">
+      This text for foo...
+    </addFile>
     <view name="TigrisStyleEmailView">
 To: stephen@beachead.com
 From: stephen@beachead.com
-Subject: commit: /sub1/
+Subject: commit: /
 Date: #####
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: a-custom-content-type
 
 User: stephen
 Date: #####
 
 Added:
- /sub1/
+ /
+  foo.txt
 
 Log:
-!svn  a subdirectory
-!cvs  Directory /home/stephen/cvs/commitmessage/acceptance/temp-cvs-repo/temp-cvs-wd/sub1 added to the repository
+ foo
+
+File Changes:
+
+Directory: /
+============
+
+File [added]: foo.txt
+Delta lines: +1 -0
+!cvs Index: foo.txt
+===================================================================
+!svn --- foo.txt	#####
+!svn +++ foo.txt	#####
+!svn @@ -0,0 +1 @@
+!svn +This text for foo...
+!svn \ No newline at end of file
+!cvs This text for foo...
     </view>
   </commit>
 </test>
