@@ -69,6 +69,12 @@ class Harness:
         """Runs L{Case}."""
 
         for facade in self.facades:
+
+            # We have some svn and cvs-only cases
+            if facade.shouldSkipCase(case):
+                print 'Skipping facade', facade
+                continue
+
             print 'Running facade', facade
 
             # Each execution of the test case gets its own repository.
@@ -148,6 +154,7 @@ class Case:
     def __init__(self, fileName):
         """Init the test around an XML workflow file."""
         self.xmldoc = minidom.parse(file(fileName)).documentElement
+        self.fileName = fileName
 
     def config(self):
         """Returns the configuration text for this case."""
@@ -270,6 +277,9 @@ class ControllerFacade:
         f.writelines(lines)
         f.close()
 
+    def shouldSkipCase(self, case):
+        return False
+
 class CvsFacade(ControllerFacade):
     """
     A facade for executing the test cases against a CVS installation (Unix only).
@@ -383,6 +393,9 @@ class CvsFacade(ControllerFacade):
         # CVS does not support file properties
         pass
 
+    def shouldSkipCase(self, case):
+        return case.fileName.startswith('svn')
+
 class SvnFacade(ControllerFacade):
     """
     A facade for executing the test cases against SVN installation (both Unix and Windows).
@@ -476,6 +489,9 @@ class SvnFacade(ControllerFacade):
 
     def setProperty(self, name='', property='', value=''):
         self._execInWorkingDir('svn propset "%s" "%s" "%s"' % (property, value, name))
+
+    def shouldSkipCase(self, case):
+        return case.fileName.startswith('cvs')
 
 def _exec(cmd):
     """Executes C{cmd} and returns the lines of C{stdout}."""
