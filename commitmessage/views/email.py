@@ -68,7 +68,7 @@ class TigrisStyleEmailView(BaseEmailView):
     def printFiles(self, text, action):
         directories = self.model.directoriesWithFiles(action)
         if len(directories) > 0:
-            text.write('%s%s\n' % (action[0].upper(), action[1:]))
+            text.write('%s%s:\n' % (action[0].upper(), action[1:]))
             for dir in directories:
                 text.write(' %s\n' % dir.path())
                 files = dir.files(action)
@@ -88,13 +88,13 @@ class TigrisStyleEmailView(BaseEmailView):
         self.printFiles(text, 'removed')
         self.printFiles(text, 'modified')
 
-        text.write('Log\n')
+        text.write('Log:\n')
         lines = self.model.log().split('\n')
         for line in lines:
             text.write(' %s\n' % line)
         text.write('\n')
 
-        text.write('File changes\n\n')
+        text.write('File Changes:\n\n')
         for dir in self.model.directoriesWithFiles():
             s = 'Directory: %s' % dir.path()
             line = ''
