@@ -54,20 +54,16 @@ def main():
 
     config = CmConfigParser(configFile)
 
-    scm = config.get('scm', 'controller')
-    controller = getNewInstance(scm)
+    controller = getNewInstance(config.get('scm', 'controller'))
 
     # Remove the -c configFile argument that getopt looks for above and pass on
     # the rest of the arguments getopt did not grok to the controller
     cleanArgs = [sys.argv[0]]
     cleanArgs.extend(args)
 
-    controller.__init__(config, cleanArgs, sys.stdin)
+    # getNewInstance does not call the __init__ constructor, so we do
 
-    # Get the other others in the 'scm' section
-    for name in config.options('scm'):
-        if name != 'controller':
-            setattr(controller, name, config.get('scm', name))
+    controller.__init__(config, cleanArgs, sys.stdin)
 
     controller.process()
 

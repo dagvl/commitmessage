@@ -34,8 +34,14 @@ class Controller:
         self.stdin = stdin
         self.model = Model()
 
+        # Defaults
         self.addrepoprefix = 'no'
         self.matchwithrepoprefix = 'yes'
+
+        # Get the other others in the 'scm' section
+        for name in self.config.options('scm'):
+            if name != 'controller':
+                setattr(self, name, self.config.get('scm', name))
 
     def addRepoPrefix(self):
         """@return: whether the name of the CVS module/SVN repo should prefix all of the directory paths"""
