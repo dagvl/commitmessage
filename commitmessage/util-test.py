@@ -40,11 +40,11 @@ class BaseConfigTest(unittest.TestCase):
     def testModules(self):
         """Makes sure the modules are being read in correctly."""
         expected = {
-            'cvsroot': '^CVSROOT',
-            'ibm2': '^ibm2',
-            'stephen': '^stephen',
-            'stephen-misc': '^stephen/misc',
-            'module1': '^module1'}
+            'cvsroot': '^/CVSROOT',
+            'ibm2': '^/ibm2',
+            'stephen': '^/stephen',
+            'stephen-misc': '^/stephen/misc',
+            'module1': '^/module1'}
         for name, value in expected.items():
             self.assertEquals(value, self.config.get('modules', name))
         self.assertEquals(len(expected), len(self.config.options('modules')))
@@ -61,16 +61,17 @@ class BaseConfigTest(unittest.TestCase):
 
     def testGetModulesForPath(self):
         """Test getting the modules for a given path."""
-        self.assertEquals(['cvsroot'], self.config.getModulesForPath('CVSROOT/blah/bar.txt'))
-        self.assertEquals(['stephen'], self.config.getModulesForPath('stephen/etc/etc/bar.txt'))
-        self.assertEquals(['stephen', 'stephen-misc'], self.config.getModulesForPath('stephen/misc/bar.txt'))
+        self.assertEquals(['cvsroot'], self.config.getModulesForPath('/CVSROOT/blah/bar.txt'))
+        self.assertEquals(['stephen'], self.config.getModulesForPath('/stephen/etc/etc/bar.txt'))
+        self.assertEquals(['stephen', 'stephen-misc'], self.config.getModulesForPath('/stephen/misc/bar.txt'))
 
     def testGetViewsForModule(self):
         """Test getting the views for a given module."""
         expected = {
             'cvsroot': ['email', 'bombsight'],
             'stephen': ['email', 'bombsight'],
-            'ibm2': ['bombsight']}
+            'ibm2': ['bombsight'],
+            'module1': ['dump']}
         model = Model()
         for key, value in expected.items():
             views = self.config.getViewsForModule(key, model)
