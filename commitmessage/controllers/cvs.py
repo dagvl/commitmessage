@@ -56,13 +56,18 @@ def cvs_diff(file, rev):
         return '<<Binary file>>'
 
     diff, lines = '', []
+
     if rev == '1.1':
-        lines = execute('cvs -Qn update -p -r1.1')
-        diff = 'Index %s\n===================================================================\n' % file
+        lines = execute('cvs -Qn update -p -r1.1 %s' % file)
+        diff = 'Index: %s\n===================================================================\n' % file
     else:
         lines = execute('cvs -Qn diff -u -r%s -r %s %s' % (cvs_previous_rev(rev), rev, file))
-    for line in lines:
-        diff = diff + line
+
+    diff = diff + ''.join(lines)
+
+    if rev == '1.1':
+        diff = diff + '\n'
+
     return diff
 
 class CvsController(Controller):
@@ -241,12 +246,14 @@ class CvsController(Controller):
         """Goes through each file and fills in the missing rev/delta/diff information."""
         for file in self.currentDirectory.files:
             (file.rev, file.delta) = cvs_status(file.name)
+
             if file.action == 'added' or file.action == 'modified':
                 file.diff = cvs_diff(file.name, file.rev)
 
-                # the cvs diff does not include a delta
+            if file.action == 'added':
+                # the cvs_diff does not include a delta on additions
                 if file.action == 'added':
-                    file.delta = '+%s -0' % (file.diff.count('\n') - 1)
+                    file.delta = '+%s -0' % (file.diff.count('\n') - 2)
 
     def _parseLoginfoStdinIntoFiles(self):
         """
