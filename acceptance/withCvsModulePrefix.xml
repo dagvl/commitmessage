@@ -32,7 +32,8 @@ views = email
     <view name="TigrisStyleEmailView">
 To: stephen@beachead.com
 From: stephen@beachead.com
-Subject: commit: /temp-cvs-wd/
+!cvs Subject: commit: /temp-cvs-wd/
+!svn Subject: commit: /
 Date: #####
 
 User: stephen
