@@ -47,11 +47,14 @@ class SvnController(Controller):
 
                 file = File(name, self.model.directory(self.prefix + directoryPath), action)
 
+        markers = ['Modified', 'Added', 'Copied', 'Deleted', 'Property changes on']
+
         # And finally parse through the diffs and save them into our tree of changes
         diffs = []
         partialDiff = None
         for line in self._svnlook('diff'):
-            if line.startswith('Modified: ') or line.startswith('Added: ') or line.startswith('Copied: ') or line.startswith('Deleted: ') or line.startswith('Property changes on: '):
+            # Look for Modified:, Added:, etc.
+            if line[0:line.find(':')] in markers:
                 # Handle starting a new diff
                 partialDiff = [line]
                 diffs.append(partialDiff)
@@ -60,11 +63,17 @@ class SvnController(Controller):
 
         for diff in diffs:
             # Use [:-1] to leave of the trailing \n
-            if not diff[0].startswith('Property changes on:'):
-                filePath = '/' + diff[0][:-1].split(' ')[1]
-            else:
-                # Property changes line puts the file name somewhere else
-                filePath = '/' + diff[0][:-1].split(' ')[-1]
+            start = diff[0].find(': ') + 2
+            stop = diff[0].find('(') - 1 # -1 ignores the space before the paren
+            if stop == -2: stop = len(diff[0])
+
+            filePath = '/' + diff[0][:-1][start:stop]
+
+            #f not diff[0].startswith('Property changes on:'):
+            #   filePath = '/' + diff[0][:-1].split(' ')[1]
+            #lse:
+            #   # Property changes line puts the file name somewhere else
+            #   filePath = '/' + diff[0][:-1].split(' ')[-1]
 
             file = self.model.file(self.prefix + filePath)
 

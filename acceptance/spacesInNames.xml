@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+
+<test>
+  <config>
+[scm]
+controller = CONTROLLER
+
+[modules]
+all = ^/
+
+[views]
+email = commitmessage.views.email.TigrisStyleEmailView
+
+[email]
+to = stephen@beachead.com
+server = mail.beachead.com
+from = stephen@beachead.com
+subject = commit: $model.greatestCommonDirectory()
+acceptance = ACCEPTANCE_DIRECTORY
+
+[all]
+views = email
+  </config>
+  <commit>
+    <message>a subdirectory</message>
+    <addDirectory name="sub1 withspace" />
+    <view name="TigrisStyleEmailView">
+To: stephen@beachead.com
+From: stephen@beachead.com
+Subject: commit: /sub1 withspace/
+Date: #####
+
+User: stephen
+Date: #####
+
+Added:
+ /sub1 withspace/
+
+Log:
+ a subdirectory
+    </view>
+  </commit>
+  <commit>
+    <message>a file</message>
+    <addFile name="sub1 withspace/foo1 withspace.txt">
+      This text for foo...
+    </addFile>
+    <view name="TigrisStyleEmailView">
+To: stephen@beachead.com
+From: stephen@beachead.com
+Subject: commit: /sub1 withspace/
+Date: #####
+
+User: stephen
+Date: #####
+
+Added:
+ /sub1 withspace/
+  foo1 withspace.txt
+
+Log:
+ a file
+
+File Changes:
+
+Directory: /sub1 withspace/
+===========================
+
+File [added]: foo1 withspace.txt
+Delta lines: +1 -0
+!cvs Index: foo1 withspace.txt
+===================================================================
+!svn --- sub1 withspace/foo1 withspace.txt	#####
+!svn +++ sub1 withspace/foo1 withspace.txt	#####
+!svn @@ -0,0 +1 @@
+!svn +This text for foo...
+!svn \ No newline at end of file
+!cvs This text for foo...
+    </view>
+  </commit>
+</test>

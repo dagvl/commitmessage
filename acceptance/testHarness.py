@@ -343,24 +343,24 @@ class CvsFacade(ControllerFacade):
 
     def addDirectory(self, name=''):
         os.mkdir('%s/%s' % (self.workingDir, name))
-        self._execInWorkingDir('cvs add %s' % name)
+        self._execInWorkingDir('cvs add "%s"' % name)
 
     def addFile(self, name='', content=''):
         self._writeFile(name, content)
-        self._execInWorkingDir('cvs add %s' % name)
+        self._execInWorkingDir('cvs add "%s"' % name)
 
     def addBinaryFile(self, name='', location=''):
         self._writeFile(name, self._readFile(location))
-        self._execInWorkingDir('cvs add -kb %s' % name)
+        self._execInWorkingDir('cvs add -kb "%s"' % name)
 
     def moveFile(self, fromPath='', toPath=''):
-        self._execInWorkingDir('mv %s %s' % (fromPath, toPath))
-        self._execInWorkingDir('cvs remove %s' % fromPath)
-        self._execInWorkingDir('cvs add %s' % toPath)
+        self._execInWorkingDir('mv "%s" "%s"' % (fromPath, toPath))
+        self._execInWorkingDir('cvs remove "%s"' % fromPath)
+        self._execInWorkingDir('cvs add "%s"' % toPath)
 
     def removeFile(self, name=''):
-        self._execInWorkingDir('rm %s' % name)
-        self._execInWorkingDir('cvs remove %s' % name)
+        self._execInWorkingDir('rm "%s"' % name)
+        self._execInWorkingDir('cvs remove "%s"' % name)
 
     def changeFile(self, name='', fromLine='', toLine='', content=''):
         fromLine = int(fromLine)
@@ -441,21 +441,21 @@ class SvnFacade(ControllerFacade):
 
     def addDirectory(self, name=''):
         os.mkdir('%s/%s' % (self.workingDir, name))
-        self._execInWorkingDir('svn add %s' % name)
+        self._execInWorkingDir('svn add "%s"' % name)
 
     def addFile(self, name='', content=''):
         self._writeFile(name, content)
-        self._execInWorkingDir('svn add %s' % name)
+        self._execInWorkingDir('svn add "%s"' % name)
 
     def addBinaryFile(self, name='', location=''):
         self._writeFile(name, self._readFile(location))
-        self._execInWorkingDir('svn add %s' % name)
+        self._execInWorkingDir('svn add "%s"' % name)
 
     def moveFile(self, fromPath='', toPath=''):
-        self._execInWorkingDir('svn move %s %s' % (fromPath, toPath))
+        self._execInWorkingDir('svn move "%s" "%s"' % (fromPath, toPath))
 
     def removeFile(self, name=''):
-        self._execInWorkingDir('svn remove %s' % name)
+        self._execInWorkingDir('svn remove "%s"' % name)
 
     def changeFile(self, name='', fromLine='', toLine='', content=''):
         fromLine = int(fromLine)
@@ -475,7 +475,7 @@ class SvnFacade(ControllerFacade):
         self._writeFile(name, '\n'.join(newLines))
 
     def setProperty(self, name='', property='', value=''):
-        self._execInWorkingDir('svn propset %s %s %s' % (property, value, name))
+        self._execInWorkingDir('svn propset "%s" "%s" "%s"' % (property, value, name))
 
 def _exec(cmd):
     """Executes C{cmd} and returns the lines of C{stdout}."""
