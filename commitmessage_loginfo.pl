@@ -434,7 +434,7 @@ sub load_views {
 
     my $EQUALS = " *= *";
     my $VIEW_NAME = "[a-zA-Z0-9_]+";
-    my $PACKAGE_NAME = "[^\n]+";
+    my $PACKAGE_NAME = "[^\n]*";
     my $PROPERTY_NAME = "[a-zA-Z0-9_]+";
     my $PROPERTY_VALUE = "[^\n]*";
     
@@ -489,6 +489,12 @@ sub load_views {
     my @viewObjects = ();
     foreach my $name (keys %views) {
         my $viewObject = "";
+
+        # Allow the global package definition to be ignored by a module one
+        if ($views{$name}{commitmessagePackage} eq "") {
+##            print "Skipping $name...\n";
+            next;
+        }
 
         # Import the library and call new on it, passing in the props
         my $foo = "use lib '$CVSROOT/CVSROOT';";
