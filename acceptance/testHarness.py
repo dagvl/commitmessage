@@ -55,7 +55,10 @@ class Harness:
 
                 """Check the results."""
                 for view in commit.views():
-                    if self.matchesIgnoringDates(view.expected, facade.actual(view.name)):
+                    expected = view.expected.strip().split('\n')
+                    actual = [x.replace('\r', '') for x in facade.actual(view.name).strip().split('\n')]
+
+                    if self.matchesIgnoringDates(expected, actual):
                         self.passes = self.passes + 1
                     else:
                         self.failures = self.failures + 1
@@ -63,7 +66,7 @@ class Harness:
                         delim = '=================================================='
 
                         print 'Error, expected did not match actual:'
-                        print '\n'.join(difflib.unified_diff(view.expected.split('\n'), facade.actual(view.name).split('\n')))
+                        print '\n'.join(difflib.unified_diff(expected, actual))
                         print delim
 
                         if self.wait == 1:
@@ -78,9 +81,7 @@ class Harness:
         print 'Failures: %s' % self.failures
 
     def matchesIgnoringDates(self, expected, actual):
-        expected = expected.strip().split('\n')
-        actual = [x.replace('\r', '') for x in actual.strip().split('\n')]
-
+        """Takes two lists of lines."""
         if len(expected) != len(actual):
             return 0
 
