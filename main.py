@@ -27,7 +27,7 @@ if __name__ == '__main__':
 from commitmessage.exceptions import CmException
 from commitmessage.util import CmConfigParser, getNewInstance
 
-if __name__ == '__main__':
+def main():
     configFile = 'commitmessage.conf'
 
     options, args = getopt.getopt(sys.argv[1:], "c:")
@@ -57,4 +57,7 @@ if __name__ == '__main__':
             setattr(controller, name, value)
 
     controller.process()
+
+if __name__ == '__main__':
+    main()
 
