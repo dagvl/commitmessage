@@ -20,7 +20,7 @@ class Controller:
     """
 
     # A temp directory to dump the diff files to.
-    TMPDIR = os.environ.get('TMP', None) or os.environ.get('TEMP', None) or '/tmp'
+    TMPDIR = os.getenv('TMP') or os.getenv('TEMP') or '/tmp'
 
     def __init__(self, config, argv, stdin):
         """Initializes the controller's model and saves the references to argv and stdin
