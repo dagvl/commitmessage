@@ -71,7 +71,7 @@ class Harness:
 
 
             """We're done with this test case, so remove the repository."""
-            facade.destoryRepository()
+            facade.destroyRepository()
 
         print ''
         print 'Passes: %s' % self.passes
@@ -128,19 +128,20 @@ class Commit:
         for e in self.commitElement.childNodes:
             if e.nodeType == e.ELEMENT_NODE and e.tagName != 'view' and e.tagName != 'message':
                 # The args to pass to the function
-                args = []
+                args = {}
 
                 # Each attribute is an argument, in order
                 for key in e.attributes.keys():
-                    args.append(e.attributes[key].value)
+                    # Use str to that key is not unicode
+                    args[str(key)] = e.attributes[key].value
 
                 # The text is an argument too
                 for node in e.childNodes:
                     if node.nodeType == node.TEXT_NODE:
-                        args.append(node.data.strip())
+                        args['content'] = node.data.strip()
 
                 # Call the function
-                getattr(facade, e.tagName)(*args)
+                getattr(facade, e.tagName)(**args)
         # Set the message for the commit
         for e in self.commitElement.getElementsByTagName("message"):
             for node in e.childNodes:
@@ -194,7 +195,7 @@ class SvnFacade:
 
         _exec('svn checkout file:///%s %s' % (self.repoDir, self.workingDir))
 
-    def destoryRepository(self):
+    def destroyRepository(self):
         _exec('rm -fr %s %s' % (self.repoDir, self.workingDir))
 
     def actual(self, viewName):
@@ -208,25 +209,26 @@ class SvnFacade:
     def _openFile(self, name, flags):
         return file('%s/%s' % (self.workingDir, name), flags)
 
-    def addDirectory(self, name):
+    def addDirectory(self, name=''):
         os.mkdir('%s/%s' % (self.workingDir, name))
         self._execsvn('svn add %s' % name)
 
-    def addFile(self, name, content):
+    def addFile(self, name='', content=''):
         self._openFile(name, 'w').write(content)
         self._execsvn('svn add %s' % name)
 
-    def addReferencedFile(self, name, location):
+    def addReferencedFile(self, name='', location=''):
         self._openFile(name, 'w').writelines(self._openFile(location, 'r').readlines())
         self._execsvn('svn add %s' % name)
 
-    def moveFile(self, fromPath, toPath):
+    def moveFile(self, fromPath='', toPath=''):
+        print fromPath
         self._execsvn('svn move %s %s' % (fromPath, toPath))
 
-    def removeFile(self, name):
+    def removeFile(self, name=''):
         self._execsvn('svn remove %s' % name)
 
-    def changeFile(self, name, fromLine, toLine, content):
+    def changeFile(self, name='', fromLine='', toLine='', content=''):
         fromLine = int(fromLine)
         toLine = int(toLine)
 
