@@ -8,6 +8,7 @@
 commitmessage-specific logic to the view/module lookups."""
 
 from ConfigParser import ConfigParser
+from types import ModuleType
 import imp
 import new
 import os
@@ -75,13 +76,21 @@ def getNewInstance(fullClassName, searchPath=['./']):
 
     try:
         for part in parts[0:-1]:
-            (file, pathname, description) = imp.find_module(part, searchPath)
-            module = imp.load_module(part, file, pathname, description)
+            alreadyImported = 0
+            for key, value in sys.modules.items():
+                if key == part:
+                    # Found the module name already loaded in cache
+                    module = value
+                    alreadyImported = 1
+            if not alreadyImported:
+                # The module has not been loaded, manually import it
+                (file, pathname, description) = imp.find_module(part, searchPath)
+                module = imp.load_module(part, file, pathname, description)
             # The last part will be a real module, not a package, and not have a path attribute
             if module.__dict__.has_key('__path__'): searchPath = module.__path__
         return new.instance(module.__dict__[parts[-1]])
-    except Exception:
-        raise CmException, """The scm interface '%s' was not found.""" % fullClassName
+    except Exception, e:
+        raise CmException, """The class '%s' was not found: '%s'""" % (fullClassName, e)
 
 def _test():
     """Executes doctest on this module."""
