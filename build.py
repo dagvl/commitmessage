@@ -6,6 +6,7 @@ import os
 import sys
 import tarfile
 import unittest
+import zipfile
 
 sys.path.extend(['./src', './test'])
 
@@ -71,19 +72,25 @@ if sys.argv[1] == 'tags':
     os.popen('exctags -R commitmessage')
 
 if sys.argv[1] == 'dist':
-    version = '2.0'
+    subdir = 'commitmessage-2.0/'
+
     t = tarfile.TarFile('commitmessage.tar', 'w')
+    z = zipfile.ZipFile('commitmessage.zip', 'w')
+
     for root, dirs, files in os.walk('commitmessage'):
         dirAdded = False
         for file in files:
             if file.endswith('.py'):
                 # See if we need to add the directory
                 if not dirAdded:
-                    t.add('%s' % root, 'commitmessage-%s/%s' % (version, root), recursive=False)
+                    t.add('%s' % root, subdir + root, recursive=False)
                     dirAdded = True
-                f = root + os.sep + file
-                t.add(f, 'commitmessage-%s/%s' % (version, f))
+                file = root + os.sep + file
+                t.add(file, subdir + file)
+                z.write(file, subdir + file)
     for file in ['commitmessage.conf', 'INSTALL.txt', 'main.py']:
-        t.add(file, 'commitmessage-%s/%s' % (version, file))
+        t.add(file, subdir + file)
+        z.write(file, subdir + file)
     t.close()
+    z.close()
 
