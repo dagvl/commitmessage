@@ -187,6 +187,7 @@ class Model:
 
     rootDirectory = attribute('_rootDirectory', permit='r', doc="""The root directory within the SCM""")
     user = attribute('_user', doc="""The user performing the commit""")
+    log = attribute('_log', doc="""The comment the user entered for this commit""")
 
     def directory(self, path):
         """
