@@ -6,6 +6,7 @@
 
 """A harness to test each of the XML file workflows for each controller and each view."""
 
+import difflib
 import getopt
 import os
 import sys
@@ -68,6 +69,11 @@ class Harness:
                         print 'Actual:'
                         print delim
                         print facade.actual(view.name)
+                        print delim
+
+                        print 'Diff:'
+                        print delim
+                        print '\n'.join(difflib.unified_diff(view.expected.split('\n'), facade.actual(view.name).split('\n')))
                         print delim
 
                         if self.wait == 1:
@@ -206,6 +212,10 @@ class SvnFacade:
 
     def _openFile(self, name, flags):
         return file('%s/%s' % (self.workingDir, name), flags)
+
+    def addDirectory(self, name):
+        os.mkdir('%s/%s' % (self.workingDir, name))
+        self._execsvn('svn add %s' % name)
 
     def addFile(self, name, content):
         self._openFile(name, 'w').write(content)
