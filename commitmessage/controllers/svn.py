@@ -87,11 +87,9 @@ class SvnController(Controller):
         if len(lines) > 0:
             currentDiff = None
             for line in lines:
-                if line.startswith('Modified: '):
-                    if currentDiff is not None:
-                        diffs.append(currentDiff)
-                    currentDiff = [line]
-                elif line.startswith('Copied: '):
+                if line.startswith('Modified: ') \
+                    or line.startswith('Copied: ') \
+                    or line.startswith('Deleted: '):
                     if currentDiff is not None:
                         diffs.append(currentDiff)
                     currentDiff = [line]
@@ -103,21 +101,21 @@ class SvnController(Controller):
 
         for diff in diffs:
             # Use [:-1] to leave of the trailing \n
-            if not diff[0].startswith('Copied: '):
-                filePath = '/' + diff[0][:-1].split(' ')[-1]
-                text = ''
-                added = 0
-                removed = 0
-                for line in diff[1:]:
-                    if len(line) > 0:
-                        if line[0] == '+' and not line[0:3] == '+++':
-                            added = added + 1
-                        elif line[0] == '-' and not line[0:3] == '---':
-                            removed = removed + 1
-                    text = text + line
-                f = self.model.file(filePath)
-                f.diff(text)
-                f.delta('+%s -%s' % (added, removed))
+            filePath = '/' + diff[3][:-1].split(' ')[1].split('\t')[0]
+            print filePath
+            text = ''
+            added = 0
+            removed = 0
+            for line in diff[1:]:
+                if len(line) > 0:
+                    if line[0] == '+' and not line[0:4] == '+++ ':
+                        added = added + 1
+                    elif line[0] == '-' and not line[0:4] == '--- ':
+                        removed = removed + 1
+                text = text + line
+            f = self.model.file(filePath)
+            f.diff(text)
+            f.delta('+%s -%s' % (added, removed))
 
     def svnlook(self, command):
         """Returns the lines ouput by the svnlook command against the current

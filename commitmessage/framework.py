@@ -67,6 +67,9 @@ class File:
         self.__name = name
         self.__directory = directory
         self.__action = action
+        self.__rev = None
+        self.__delta = None
+        self.__diff = None
         directory.addFile(self)
 
     def __str__(self):
