@@ -1,4 +1,17 @@
 
+2004-09-21 2.0-beta-5 Stephen Haberman <stephenh@chase3000.com>
+
+ * commitmessage/model.py
+    (Directory.diff): Added
+ * commitmessage/controllers/svn.py
+    (SvnController._populateModel): Handle directories having 'Property changes on:' diffs
+ * commitmessage/views/email.py
+    (TigrisStyleEmailView.execute): Handle printing out directory property changes as well
+ * msnp/*
+    : Removed due to GPL vs. ASL incompatibilities
+ * toc.py
+    : Removed - distributing it was okay, but oh well, people can go download it
+
 2004-09-08 2.0-beta-4 Stephen Haberman <stephenh@chase3000.com>
 
  * commitmessage.conf
