@@ -167,6 +167,7 @@ class Model:
     Properties are available via accessors to allow easy documentation."""
 
     def __init__(self):
+        self.user('')
         self.__rootDirectory = Directory('')
 
     def addDirectory(self, directory):

@@ -53,7 +53,7 @@ class BaseConfigTest(unittest.TestCase):
         """Makes sure the views are being read in correctly."""
         expected = {
             'bombsight': 'commitmessage.views.bugtracking.FogBugzView',
-            'email': 'commitmessage.views.email.HtmlEmailView',
+            'email': 'commitmessage.views.email.TigrisStyleEmailView',
             'dump': 'commitmessage.views.misc.DumpView'}
         for name, value in expected.items():
             self.assertEquals(value, self.config.get('views', name))
@@ -71,14 +71,14 @@ class BaseConfigTest(unittest.TestCase):
             'cvsroot': ['email', 'bombsight'],
             'stephen': ['email', 'bombsight'],
             'ibm2': ['bombsight'],
-            'module1': ['dump']}
+            'module1': ['dump', 'email']}
         model = Model()
         for key, value in expected.items():
             views = self.config.getViewsForModule(key, model)
             for view in views:
                 self.assertEquals(1, expected[key].index(view.name) > -1)
                 if view.name == 'email':
-                    self.assertEquals('stephen@beachead.com', view.keyword_from())
+                    self.assertEquals('@beachead.com', view.keyword_from())
             self.assertEquals(len(expected[key]), len(views))
 
 if __name__ == '__main__':
