@@ -34,34 +34,38 @@ class TestCvsController(unittest.TestCase):
     def setUp(self):
         """Set the CVSROOT environment variable."""
         os.environ['CVSROOT'] = os.path.expanduser('~/test/cvs')
-        os.chdir(os.path.expanduser('~/test'))
+        self.olddir = os.getcwd()
+        os.chdir(os.path.expanduser('~/test/module1'))
 
     def testFile(self):
         tests = self.parseTestFile()
         for test in tests:
-            conf = CmConfigParser('commitmessage/commitmessage.conf')
-            controller = CvsController(
-                conf,
-                test['commitInfoArgv'],
-                None)
-            controller.process()
+            print('==== Running %s ====' % test['name'])
+            conf = CmConfigParser('%s/commitmessage/commitmessage.conf' % self.olddir)
 
-            f = file('test/logInfoText.txt', 'w')
+            if len(test['commitInfoArgv']) > 0:
+                controller = CvsController(
+                    conf,
+                    test['commitInfoArgv'],
+                    None)
+                controller.process()
+
+            f = file('%s/test/logInfoText.txt' % self.olddir, 'w')
             f.write(test['logInfoText'])
             f.close()
-            f = file('test/logInfoText.txt', 'r')
+            f = file('%s/test/logInfoText.txt' % self.olddir, 'r')
 
             controller = CvsController(
                 conf,
                 test['logInfoArgv'],
-                file)
+                f)
             controller.process()
 
             f.close()
 
     def parseTestFile(self):
         """Parses and runs the test/cvs.txt file."""
-        f = file('test/cvs.txt', 'r')
+        f = file('%s/test/cvs.txt' % self.olddir, 'r')
         lines = f.readlines()
         f.close()
 

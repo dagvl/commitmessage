@@ -7,6 +7,7 @@
 """The controller and utils for the CVS SCM (http://www.cvshome.org)."""
 
 import os
+import pickle
 import re
 import sys
 
@@ -144,17 +145,20 @@ class CvsController(Controller):
             and directoryFiles[0] == '-' \
             and directoryFiles[1] == 'New' \
             and directoryFiles[2] == 'directory':
-            currentDirectory.action('added')
+            self.currentDirectory.action('added')
 
         self.fillInValues()
-        self.saveCurrentDirectory()
+        self.saveDirectory()
 
     def saveDirectory(self):
         """Pickles the given directory off to TMPDIR/FILE_PREFIXdir-path."""
-        path = '%s/%s%s' % (Controller.TMPDIR, FILE_PREFIX, self.currentDirectory.path().replace('/', '-'))
-        file = file(path, 'r')
-        pickle.dump(directory, file, 1)
-        file.close()
+        path = '%s/%s%s' % (
+            Controller.TMPDIR,
+            CvsController.FILE_PREFIX,
+            self.currentDirectory.path().replace('/', '-'))
+        f = file(path, 'w')
+        pickle.dump(self.currentDirectory, f, 1)
+        f.close()
 
     def fillInValues(self):
         """Goes through each file and fills in the missing rev/delta/diff information."""
@@ -183,7 +187,7 @@ class CvsController(Controller):
         r = re.compile(r"^Removed Files")
         l = re.compile(r"^Log Message")
         b = re.compile(r"Revision\/Branch:")
-        for line in self.stdin.readlines():
+        for line in self.stdin.xreadlines():
             line = line.strip()
             if b.search(line):
                 line = re.sub(b, '', line)

@@ -27,9 +27,9 @@ class Controller:
     def __init__(self, config, argv, stdin):
         """Initializes the controller's Model and saves the references to argv and stdin."""
         self.config = config
-        self.model = Model()
         self.argv = argv
         self.stdin = stdin
+        self.model = Model()
 
     def process(self):
         """Starts the generalized commitmessage process of building the model and executing the views."""
@@ -61,10 +61,11 @@ class Controller:
 class File:
     """Represents a file that has been affected by the commit."""
 
-    def __init__(self, directory, action):
+    def __init__(self, name, directory, action):
         """Files must be owned by a parent directory."""
-        self.__directory = directory;
-        self.__action = action;
+        self.__name = name
+        self.__directory = directory
+        self.__action = action
         directory.addFile(self)
 
     def name(self, name=None):
@@ -130,13 +131,13 @@ class Directory:
         """Returns all of hte subdirectories in this directory with files affected by the commit."""
         return self.__subdirectories
 
-    def addFile(file):
+    def addFile(self, file):
         """Saves a file object into this directory."""
         self.__files.append(file)
 
-    def addSubdirectory(subdir):
+    def addSubdirectory(self, subdir):
         """Saves a subdirectory object into this directory."""
-        this.__subdirectories.append(subdir)
+        self.__subdirectories.append(subdir)
 
 class Model:
     """Wraps the model that gets sent between the Controller and Views.
