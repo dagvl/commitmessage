@@ -58,7 +58,7 @@ class BaseEmailView(View):
                 smtp.login(self.username, self.password)
             smtp.sendmail(
                 self['from'],
-                [addr.strip() for add in self.to.split(',')],
+                [addr.strip() for addr in self.to.split(',')],
                 body)
             smtp.quit()
 
