@@ -26,10 +26,13 @@ class Harness:
         self.passes = 0
         self.failures = 0
 
-        options, args = getopt.getopt(args, '', ['trace'])
+        options, args = getopt.getopt(args, '', ['trace', 'trace-svn'])
         for option, value in options:
             if option == '--trace':
-                self.facades = map(lambda x: Tracer(x), self.facades)
+                self.facades = [Tracer(x) for x in self.facades]
+            if option == '--trace-svn':
+                for facade in self.facades:
+                    facade.tracesvn = 1
 
     def run(self, cases):
         """Runs XML test cases."""
@@ -76,7 +79,7 @@ class Harness:
 
     def matchesIgnoringDates(self, expected, actual):
         expected = expected.strip().split('\n')
-        actual = map(lambda x: x.replace('\r', ''), actual.strip().split('\n'))
+        actual = [x.replace('\r', '') for x in actual.strip().split('\n')]
 
         if len(expected) != len(actual):
             return 0
@@ -105,13 +108,13 @@ class Case:
     def config(self):
         """Returns the configuration text for this case."""
         for config in self.xmldoc.getElementsByTagName("config"):
-            for node in filter(lambda x: x.nodeType == x.TEXT_NODE, config.childNodes):
+            for node in [x for x in config.childNodes if x.nodeType == x.TEXT_NODE]:
                 return node.data
         return ''
 
     def commits(self):
         """Returns the commits that this case wants to do."""
-        return map(lambda x: Commit(x), self.xmldoc.getElementsByTagName("commit"))
+        return [Commit(x) for x in self.xmldoc.getElementsByTagName("commit")]
 
 class Commit:
     """A class to wrap a series of changes to a working directory."""
@@ -146,7 +149,7 @@ class Commit:
 
     def views(self):
         """Returns the views that are expected by this commit, viewName: results."""
-        return map(lambda x: View(x), self.commitElement.getElementsByTagName('view'))
+        return [View(x) for x in self.commitElement.getElementsByTagName('view')]
 
 class View:
     """A class that wraps the results of a view."""
@@ -171,6 +174,11 @@ class SvnFacade:
 
     def _execsvn(self, cmd):
         """Executes cmd in the working directory."""
+        # See if we should briefly pause.
+        if hasattr(self, 'tracesvn'):
+            print cmd
+            raw_input('')
+
         os.chdir(self.workingDir)
         _exec(cmd)
         os.chdir('../')
@@ -211,6 +219,9 @@ class SvnFacade:
     def addReferencedFile(self, name, location):
         self._openFile(name, 'w').writelines(self._openFile(location, 'r').readlines())
         self._execsvn('svn add %s' % name)
+
+    def moveFile(self, fromPath, toPath):
+        self._execsvn('svn move %s %s' % (fromPath, toPath))
 
     def removeFile(self, name):
         self._execsvn('svn remove %s' % name)
@@ -254,7 +265,7 @@ class Tracer:
     """Lets the user walk step-by-step through a test to watch the changes on the file system."""
 
     def __init__(self, wrapped):
-        """wrapped is the instance to interupt calls to any attribute."""
+        """wrapped is the instance to interrupt calls to any attribute."""
         # Use __dict__ to bypass our __setattr__ below.
         self.__dict__['wrapped'] = wrapped
 
@@ -276,6 +287,6 @@ for old in filter(lambda x: x.startswith('temp-'), os.listdir('.')):
 
 harness = Harness([SvnFacade()], sys.argv[1:])
 
-cases = map(lambda x: Case(x), filter(lambda x: x.endswith('.xml'), os.listdir('.')))
+cases = [Case(x) for x in os.listdir('.') if x.endswith('.xml')]
 
 harness.run(cases)
