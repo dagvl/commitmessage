@@ -1,10 +1,10 @@
 #!/usr/bin/python
 #
-# commitmessage.py Version 2.0-alpha1
-# Copyright 2002, 2003 Stephen Haberman
+# commitmessage
+# Copyright 2002-2003 Stephen Haberman
 #
 
-"""The controller and utils for the Subversion SCM (http://subversion.tigris.org)."""
+"""The controller and utils for the Subversion SCM (U{http://subversion.tigris.org})"""
 
 import os
 import sys
@@ -13,13 +13,13 @@ from commitmessage.model import Controller, File, Directory
 from commitmessage.util import execute
 
 class SvnController(Controller):
-    """Uses 'svnlook' to pull data from svn repositories."""
+    """Uses C{svnlook} to pull data from svn repositories"""
 
+    # A mapping from abbreviation to a better description.
     actions = { 'A': 'added', 'D': 'removed', 'U': 'modified' }
-    """A mapping from abbreviation to a better description."""
 
     def _populateModel(self):
-        """Fills out the model by invoking svnlook."""
+        """Fills out the model by invoking C{svnlook}"""
 
         self.repoPath = self.argv[1]
         self.rev = self.argv[2]
@@ -83,9 +83,6 @@ class SvnController(Controller):
         return ('+%s -%s' % (added, removed), text)
 
     def _svnlook(self, command):
-        """
-        Returns the lines ouput by the svnlook command against the current repo
-        and rev.
-        """
+        """@return: the lines ouput by the C{svnlook} command against the current repo and rev"""
         return execute('svnlook %s %s -r %s' % (command, self.repoPath, self.rev))
 

@@ -1,7 +1,8 @@
 #!/usr/bin/python
 #
-# commitmessage.py Version 2.0-alpha1
-# Copyright 2002 Stephen Haberman
+# commitmessage
+# Copyright 2002-2003 Stephen Haberman
 # 
 
-"""A MVC framework for capturing information from scm systems."""
+"""A MVC framework for capturing commit information from SCM systems"""
+

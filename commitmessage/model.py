@@ -4,9 +4,7 @@
 # Copyright 2002-2003 Stephen Haberman
 #
 
-"""
-Provides the model classes for the commitmessage framework.
-"""
+"""Provides the model classes for the commitmessage framework"""
 
 import os
 import re
@@ -17,17 +15,15 @@ from commitmessage.exceptions import CmException
 from commitmessage.attribute import attribute
 
 class Controller:
-    """
-    A base implementation for SCM-specific controllers to extend; mostly
-    does the generic Views handling.
+    """A base implementation for SCM-specific controllers to extend; mostly does
+    the generic Views handling.
     """
 
     # A temp directory to dump the diff files to.
     TMPDIR = os.environ.get('TMP', None) or os.environ.get('TEMP', None) or '/tmp'
 
     def __init__(self, config, argv, stdin):
-        """
-        Initializes the controller's model and saves the references to argv and stdin.
+        """Initializes the controller's model and saves the references to argv and stdin
 
         @param config: a L{commitmessage.util.CmConfigParser} created by L{commitmessage.main}
         @param argv: the command line arguments, as gathered by L{commitmessage.main}
@@ -39,7 +35,7 @@ class Controller:
         self.model = Model()
 
     def process(self):
-        """Starts the SCM-agnostic process of building the model and executing the views."""
+        """Starts the SCM-agnostic process of building the model and executing the views"""
         self._populateModel()
 
         # Allow cvs to halt the process as it's data is cached between per-directory executions
@@ -49,21 +45,23 @@ class Controller:
         self._executeViews()
 
     def _populateModel(self):
-        """
+        """Builds the model for the commit
+
         This should be overridden by concrete controllers with their
         implementation-specific logic for populating the model.
         """
         raise CmException('The controller did not override the _populateModel method.')
 
     def _stopProcessForNow(self):
-        """
-        Gives CVS a chance to kill the current process and wait for the next
-        one as it has to build up data between discrete per-directory executions.
+        """@return: whether to continue with executing the views or stop the process
+
+        Gives CVS a chance to kill the current process and wait for the next one
+        as it has to build up data between discrete per-directory executions.
         """
         return False
 
     def _executeViews(self):
-        """Executes the views for each module that matches the commit's base directory."""
+        """Executes the views for each module that matches the commit's base directory"""
         modules = self.config.getModulesForPath(self.model.greatestCommonDirectory())
         for module in modules:
             views = self.config.getViewsForModule(module, self.model)
@@ -71,7 +69,7 @@ class Controller:
                 view.execute()
 
 class File:
-    """Represents a file that has been affected by the commit."""
+    """Represents a file that has been affected by the commit"""
 
     def __init__(self, name, directory, action):
         """
@@ -112,7 +110,7 @@ class File:
 _re_path = re.compile('^/([^/]+/)*$')
 
 class Directory:
-    """Represents a directory that has been affected by the commit."""
+    """A directory that has been affected by the commit"""
 
     def __init__(self, path, action='none'):
         if path == '' or not path.startswith('/') or not path.endswith('/'):
@@ -174,18 +172,16 @@ class Directory:
         return False
 
     def addFile(self, file):
-        """Saves a file object into this directory."""
+        """Saves a file object into this directory"""
         self.files.append(file)
         self.files.sort(lambda x,y: cmp(x.name, y.name))
 
     def addSubdirectory(self, subdir):
-        """Saves a directory object into this directory."""
+        """Saves a directory object into this directory"""
         self.subdirectories.append(subdir)
 
 class Model:
-    """
-    Wraps the L{File}s and L{Directory}s that get sent between the Controller and Views.
-    """
+    """Wraps the L{File}s and L{Directory}s created by the L{Controller} and used by L{View}s"""
 
     def __init__(self):
         self._rootDirectory = Directory('/')
@@ -196,8 +192,7 @@ class Model:
     log = attribute('_log', doc="""The comment the user entered for this commit""")
 
     def directory(self, path):
-        """
-        @return: the model's L{Directory} for C{path}; creates new directories and sub directories if needed
+        """@return: the model's L{Directory} for C{path}; creates new directories and sub directories if needed
         """
         if path[0] != '/' or path[-1] != '/':
             raise CmException, 'Directory paths must start with a forward slash and end with a forward slash.'
@@ -218,8 +213,7 @@ class Model:
         return currentDirectory
 
     def addDirectory(self, directory):
-        """
-        Adds C{directory} into the model's directory tree.
+        """Adds C{directory} into the model's directory tree
 
         Uses C{self.directory(path)}, except it takes a default value for the
         new directory to add at the bottom of the hierarchy.
@@ -257,7 +251,7 @@ class Model:
         return self._files(self.rootDirectory, action)
 
     def _files(self, directory, action):
-        """Internal helper method to recursively build a flat list of files."""
+        """@return: a flat list of L{File}s (helper method)"""
         files = []
         for file in directory.files:
             if action is not None:
@@ -276,7 +270,7 @@ class Model:
         return dirs
 
     def _directories(self, directory, action):
-        """Internal helper method to recursively build a flat list of directories."""
+        """@return: a flat list of L{Directory}s (helper method)"""
         dirs = []
         if action is not None:
             if directory.action == action:
@@ -295,10 +289,7 @@ class Model:
         return dirs
 
     def _directoriesWithFiles(self, directory, action):
-        """
-        Internal helper method to recursively build a flat list of directories
-        that contain changes to files in them.
-        """
+        """@return: a flat list of L{Directory}s (helper method)"""
         dirs = []
         if len(directory.filesByAction(action)) > 0:
             dirs.append(directory)
@@ -307,19 +298,20 @@ class Model:
         return dirs
 
 class View:
-    """Provides a base View for specific implementations to extend."""
+    """A base class for specific view implementations to extend"""
 
     def __init__(self, name, model):
-        """Initializes a new view given it's instance C{name} and C{model}."""
+        """Initializes a new view given it's instance C{name} and C{model}"""
         self.acceptance = 0
         self.name = name
         self.model = model
 
     def execute(self):
-        """Provides child Views with a method they should override to provide their specific behavior."""
+        """A method for child views to override and provide their specific behavior"""
         pass
 
     def isTesting(self):
+        """@return: whether acceptance testing is being performed"""
         return self.acceptance != 0
 
     def testFilePath(self):
@@ -327,13 +319,12 @@ class View:
         return '%s/%s.txt' % (self.acceptance, str(self).split(' ')[0].split('.')[-1])
 
     def dumpToTestFile(self, text):
-        """Writes out text to a file called 'SubClassName.txt'."""
+        """Writes out text to a file called C{SubClassName.txt}"""
         f = file(self.testFilePath(), 'w')
         f.write(text)
         f.close()
 
 def _test():
-    """Executes doctest on this module."""
     import doctest, framework
     return doctest.testmod(framework)
 

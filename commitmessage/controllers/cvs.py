@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 #
 # commitmessage
-# Copyright 2002, 2003 Stephen Haberman
+# Copyright 2002-2003 Stephen Haberman
 #
 
 """
-The controller and utils for the CVS SCM (http://www.cvshome.org).
+The controller and utils for the CVS SCM (U{http://www.cvshome.org})
 """
 
 import os
@@ -38,7 +38,7 @@ def cvs_status(file):
     return rev, delta
 
 def cvs_previous_rev(rev):
-    """@return: the revision previous to C{rev}."""
+    """@return: the revision previous to C{rev}"""
     prev = ''
     match = re.compile(r"^(.*)\.([0-9]+)$").search(rev)
     if match != None:
@@ -50,7 +50,7 @@ def cvs_previous_rev(rev):
     return prev
 
 def cvs_diff(file, rev):
-    """@return: the (delta,diff) on the given L{File} during a commit"""
+    """@return: the C{(delta,diff)} on the given L{File} during a commit"""
     p = re.compile(r"\.(?:pdf|gif|jpg|mpg)$", re.I)
     if (p.search(file.name)):
         return '+0 -0', '===================================================================\n<<Binary file>>\n'
@@ -83,7 +83,7 @@ def cvs_diff(file, rev):
     return '+%s -%s' % (added, removed), diff
 
 class CvsController(Controller):
-    """Translates CVS loginfo/commitinfo information into the Model."""
+    """Translates CVS loginfo/commitinfo information into the model"""
 
     # A unique prefix to avoid multiple processes stepping on each other's toes.
     #
@@ -97,10 +97,7 @@ class CvsController(Controller):
     LAST_DIRECTORY_FILE = ''
 
     def __init__(self, config, argv, stdin):
-        """
-        Sets the 'done' attribute to false so we handle the multiple executions
-        CVS does of main.py (one per directory in the commit).
-        """
+        """Initializes up the L{FILE_PREFIX}, L{LAST_DIRECTORY_FILE}, and other variables"""
         try:
             CvsController.FILE_PREFIX = '#cvs.%s.' % os.getpgrp()
         except AttributeError:
@@ -114,23 +111,21 @@ class CvsController(Controller):
         self.removecvsmoduleprefix = 'yes'
 
     def removeCvsModulePrefix(self):
+        """@return: whether the name of the CVS module should be stripped from directory paths"""
         if self.removecvsmoduleprefix == 'yes':
             return True
         else:
             return False
 
     def _populateModel(self):
-        """Read in the information."""
+        """Performs L{_doCommitInfo} (done first for each directory) or L{_doLogInfo} (done last for each directory)"""
         if len(self.argv) > 2:
             self._doCommitInfo()
         else:
             self._doLogInfo()
 
     def _stopProcessForNow(self):
-        """
-        @return: whether we should stop and wait for CVS to re-execute main.py
-        on the next directory of the commit.
-        """
+        """@return: C{True} if we're in L{_doCommitInfo} or not the last directory for which L{_doLogInfo} will be invoked"""
         # If in commitinfo, always stop
         if not hasattr(self, 'currentDirectory'):
             return True
@@ -182,11 +177,12 @@ class CvsController(Controller):
         return False
 
     def _doCommitInfo(self):
-        """
-        Executed first and saves the current directory name to
-        LAST_DIRECTORY_FILE so that doLogInfo will know when it is done (it will
-        be done with it's on the same directory as the last one that
-        doCommitInfo saved).
+        """Saves the current directory name to C{LAST_DIRECTORY_FILE} so that
+        L{_doLogInfo} will know when it is done (when it's on the same directory
+        as the last one L{_doCommitInfo} saved)
+
+        Executed for each directory in the commit before any L{_doLogInfo}s are
+        called.
         """
         f = file(CvsController.LAST_DIRECTORY_FILE, 'w')
 
@@ -198,10 +194,10 @@ class CvsController(Controller):
         f.close()
 
     def _doLogInfo(self):
-        """
-        Executed after all of the directories' commitinfos have ran, so we know
-        the last directory and can start to build the Model of commit
-        information.
+        """Starts building the model if this is the last L{_doLogInfo} of the commit
+
+        Executed for each directory in the commit after all of the
+        L{_doCommitInfo}s are called.
         """
         temp = self.argv[1].split(' ')
         directoryPath = '/' + temp[0] + '/'
@@ -233,7 +229,7 @@ class CvsController(Controller):
             self._saveDirectory()
 
     def _parseLogLinesIntoModel(self):
-        """Saves the logLines found on stdin into the model."""
+        """Saves the log lines found on C{stdin} into the model"""
         while len(self.logLines) > 0 and self.logLines[0] == '':
             del self.logLines[0]
         while len(self.logLines) > 0 and self.logLines[-1] == '':
@@ -245,7 +241,7 @@ class CvsController(Controller):
             self.model.log = '\n'.join(self.logLines)
 
     def _saveDirectory(self):
-        """Pickles the given directory off to TMPDIR/FILE_PREFIX directory."""
+        """Pickles the current L{Directory} off to the C{TMPDIR/FILE_PREFIX} directory"""
         path = '%s/%s%s' % (
             Controller.TMPDIR,
             CvsController.FILE_PREFIX,
@@ -255,7 +251,7 @@ class CvsController(Controller):
         f.close()
 
     def _fillInValues(self):
-        """Goes through each file and fills in the missing rev/delta/diff information."""
+        """Goes through each file in this execution's directory and fills in the missing rev/delta/diff information"""
         for file in self.currentDirectory.files:
             (file.rev, file.delta) = cvs_status(file.name)
 
@@ -264,10 +260,7 @@ class CvsController(Controller):
 
 
     def _parseLoginfoStdinIntoFiles(self):
-        """
-        Reads in the loginfo text from self.stdin and retreives the
-        corresponding diff/delta information for each file.
-        """
+        """Reads in the loginfo text from C{stdin} and parses the file information into L{File}s"""
         self.logLines = []
 
         STATE_NONE = 0
@@ -311,13 +304,13 @@ class CvsController(Controller):
                 self.logLines.append(line)
 
     def _executeViews(self):
-        """Override the parent executeViews to re-build the model from the temporary files."""
+        """Overrides the parent C{_executeViews} to r-build the model with all of the temporary files"""
         self._loadSavedDirectoriesIntoModel()
         # Carry on with executing the views
         Controller._executeViews(self)
 
     def _loadSavedDirectoriesIntoModel(self):
-        """Reloads the directories into the Model."""
+        """Reloads the pickled L{Directory}s into the model"""
         allFiles = os.listdir(Controller.TMPDIR)
         for name in allFiles:
             if name.startswith(CvsController.FILE_PREFIX):

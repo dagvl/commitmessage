@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 #
-# commitmessage.py Version 2.0-alpha1
-# Copyright 2002, 2003 Stephen Haberman
+# commitmessage
+# Copyright 2002-2003 Stephen Haberman
 #
 
-"""Provides some basic utility classes, such as wrapping the ConfigParser to add
-commitmessage-specific logic to the view/module lookups."""
+"""Basic utility functions and classes (L{CmConfigParser}, L{getNewInstance}, and L{execute})"""
 
 from ConfigParser import ConfigParser
 from types import ModuleType
@@ -18,16 +17,15 @@ from commitmessage.Itpl import Itpl
 from commitmessage.exceptions import CmException
 
 class CmConfigParser(ConfigParser):
-    """Provides cm-specific logic, such as getting view settings from both the
-    view definition and the module-specific settings."""
+    """Provides config-centric logic for views and modules that would be confused elsewhere"""
 
     def __init__(self, filePath):
-        """Initializes the CmConfigParser against the given conf file."""
+        """Initializes with the configuration file at C{filePath}"""
         ConfigParser.__init__(self)
         ConfigParser.readfp(self, open(filePath))
 
     def getModulesForPath(self, commitPath):
-        """Returns the modules that match the given path."""
+        """@return: the modules that match the given path (and should hence have their views executed)"""
         modules = []
         for module in ConfigParser.options(self, 'modules'):
             match = ConfigParser.get(self, 'modules', module)
@@ -38,6 +36,11 @@ class CmConfigParser(ConfigParser):
         return modules
 
     def getViewsForModule(self, module, model):
+        """
+        @param module: the name of the model to get the views for
+        @param model: the L{commitmessage.model.Model} to initialize views with
+        @return: the configured views for a module
+        """
         viewLine = ConfigParser.get(self, module, 'views')
         p = re.compile(',\s?')
         viewNames = p.split(viewLine)
@@ -66,7 +69,7 @@ class CmConfigParser(ConfigParser):
         return views
 
 def getNewInstance(fullClassName, searchPath=['./']):
-    """Returns an instance of the fullClassName class WITHOUT the __init__ method having been called."""
+    """@return: an instance of the fullClassName class WITHOUT the C{__init__} method having been called"""
 
     # Was original, then modified with parts of
     # http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/223972
@@ -92,17 +95,17 @@ def getNewInstance(fullClassName, searchPath=['./']):
     return new.instance(function)
 
 def execute(command):
-    """Executes a command line and returns the contents of stdout as a list of liens."""
+    """@return: the contents of C{stdout} as a list of lines after executing C{command}"""
     pipeIn, pipeOut = os.popen2(command)
     lines = pipeOut.readlines()
     pipeIn.close()
     pipeOut.close()
     return lines
 
-def _test():
-    """Executes doctest on this module."""
+def _doctest():
     import doctest, util
     return doctest.testmod(util)
 
 if __name__ == "__main__":
-    _test()
+    _doctest()
+

@@ -5,11 +5,11 @@
 #
 
 """
-Contains the L{CmException} class.
+Contains the L{CmException} class
 """
 
 class CmException(Exception):
-    """The exception for all commitmessage-related exceptions."""
+    """The exception for all commitmessage-related exceptions"""
 
     def __init__(self, value):
         """@param value: a simple value"""

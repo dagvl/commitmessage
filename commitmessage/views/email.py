@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 #
-# commitmessage 2.0-alpha1
-# Copyright 2002 Stephen Haberman
+# commitmessage
+# Copyright 2002-2003 Stephen Haberman
 #
 
-"""Provides several email Views for the commitmessage framework."""
+"""Provides an email L{commitmessage.model.View}s"""
 
 import os
 import sys
@@ -15,13 +15,11 @@ from smtplib import SMTP
 from commitmessage.model import View
 
 class BaseEmailView(View):
-    """
-    Provides a basic implementation of sending an email for other style-specific
-    email views to extend.
+    """A basic email implementation for other style-specific email views to extend
     """
 
     def __init__(self, name, model):
-        """Initializes the the SMTP username to None, header to '', and footer to ''."""
+        """Initializes the the SMTP username to None, header to '', and footer to ''"""
         View.__init__(self, name, model)
 
         self.username = None
@@ -29,10 +27,11 @@ class BaseEmailView(View):
         self.footer = ''
 
     def __getitem__(self, name):
-        """Used to get the 'from' attribute."""
+        """Used to get the 'from' attribute (as it is a keyword)"""
         return self.__dict__[name]
 
     def execute(self):
+        """Sends the email with commit information"""
         text = StringIO('')
         text.write('To: %s\n' % self.to)
         text.write('From: %s\n' % self['from'])
@@ -60,12 +59,16 @@ class BaseEmailView(View):
             smtp.sendmail(self['from'], self.to, body)
             smtp.quit()
 
-# class ApacheStyleEmailView(BaseEmailView):
-#     """Sends out an email formatted in a style mimicking Apace commit emails."""
-#     pass
+class ApacheStyleEmailView(BaseEmailView):
+    """Sends out an email in a style mimicking U{Apache<http://www.apache.org>} commit emails (not implemented)"""
+    pass
+
+class HtmlEmailView(BaseEmailView):
+    """Sends out an email in a style using HTML tables for better readability with variable-width font (not implemented)"""
+    pass
 
 class TigrisStyleEmailView(BaseEmailView):
-    """Sends out an email formatted in a style mimicking Tigris commit emails."""
+    """Sends out an email in a style mimicking U{Tigris<http://www.tigris.org>} commit email format"""
 
     def printFiles(self, text, action):
         directories = self.model.directoriesWithFiles(action)
@@ -81,7 +84,7 @@ class TigrisStyleEmailView(BaseEmailView):
             text.write('\n')
 
     def generateBody(self, text):
-        """Returns a string for the body of the email."""
+        """@return: a string for the body of the email"""
         text.write('User: %s\n' % self.model.user)
         text.write('Date: %s\n' % time.strftime('%Y/%m/%d %I:%M %p'))
         text.write('\n')
@@ -108,8 +111,4 @@ class TigrisStyleEmailView(BaseEmailView):
                 text.write('File [%s]: %s\n' % (file.action, file.name))
                 text.write('Delta lines: %s\n' % file.delta)
                 text.write('%s\n' % file.diff)
-
-class HtmlEmailView(BaseEmailView):
-    """Sends out a HTML formatted email with the commit info in tables."""
-    pass
 

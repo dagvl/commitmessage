@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 #
-# commitmessage.py Version 2.0-alpha1
-# Copyright 2002 Stephen Haberman
+# commitmessage
+# Copyright 2002-2003 Stephen Haberman
 #
 
-"""
-Bootstraps the commitmessage framework by reading in the configuration file
-and initializing the controller.
+"""Bootstraps the commitmessage framework
+
+It does so by setting up the C{sys.path} (it assumes this file, C{main.py}, is
+in the C{commitmessage} package), reading in the configuration file, and
+initializing the controller.
 """
 
 import getopt
