@@ -133,3 +133,9 @@ Troubleshooting a Subversion installation is fairly easy:
 
     /path/to/python /path/to/commitmessage-2.0-beta-2/main.py "$1" "$2"
 
+ 4. If you are not seeing the diffs in emails, it is probably because svnlook is
+    trying to create an '.svnlook' directory and doesn't have the correct
+    permissions.  There is a fix in CVS for this to chdir to '/tmp', which only
+    works on Unix, but I don't think there will be a problem with this on Windows.
+    Let me know if you do.
+
