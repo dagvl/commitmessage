@@ -71,9 +71,14 @@ Delta lines: +1 -0
     <message>
 this
 has
-three
+four
 lines
     </message>
+    <changeFile name="foo.txt" fromLine="0" toLine="0">
+changed-one
+changed-two
+changed-three
+    </changeFile>
     <addFile name="foo2.txt">one-liner</addFile>
     <addFile name="foo3.txt">
 two-liner
@@ -92,6 +97,10 @@ Added
  /
   foo2.txt, foo3.txt
 
+Modified
+ /
+  foo.txt
+
 Log
  this
  has
@@ -103,6 +112,20 @@ File changes
 Directory: /
 ============
 
+File [modified]: foo.txt
+Delta lines: +3 -1
+===================================================================
+--- foo.txt	#####
++++ foo.txt	#####
+@@ -1 +1,3 @@
+-This text for foo...
+\ No newline at end of file
++changed-one
++changed-two
++changed-three
+\ No newline at end of file
+
+
 File [added]: foo2.txt
 Delta lines: +1 -0
 ===================================================================
@@ -112,7 +135,8 @@ Delta lines: +1 -0
 +one-liner
 \ No newline at end of file
 
-File [added]: foo2.txt
+
+File [added]: foo3.txt
 Delta lines: +2 -0
 ===================================================================
 --- foo3.txt	#####
