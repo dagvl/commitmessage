@@ -176,6 +176,7 @@ class Directory:
     def addFile(self, file):
         """Saves a file object into this directory."""
         self.files.append(file)
+        self.files.sort(lambda x,y: cmp(x.name, y.name))
 
     def addSubdirectory(self, subdir):
         """Saves a directory object into this directory."""
@@ -270,7 +271,9 @@ class Model:
 
     def directories(self, action=None):
         """@return: a flat list of L{Directory}s, optionally those that match C{action}."""
-        return self._directories(self.rootDirectory, action)
+        dirs = self._directories(self.rootDirectory, action)
+        dirs.sort(lambda x, y: cmp(x.name, y.name))
+        return dirs
 
     def _directories(self, directory, action):
         """Internal helper method to recursively build a flat list of directories."""
@@ -282,11 +285,14 @@ class Model:
             dirs.append(directory)
         for subdir in directory.subdirectories:
             dirs.extend(self._directories(subdir, action))
+
         return dirs
 
     def directoriesWithFiles(self, action=None):
         """@return: a flat list of L{Directory}s that have changes to files"""
-        return self._directoriesWithFiles(self.rootDirectory, action)
+        dirs = self._directoriesWithFiles(self.rootDirectory, action)
+        dirs.sort(lambda x, y: cmp(x.name, y.name))
+        return dirs
 
     def _directoriesWithFiles(self, directory, action):
         """
