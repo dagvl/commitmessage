@@ -97,10 +97,28 @@ def getNewInstance(fullClassName, searchPath=['./']):
 
 def execute(command):
     """@return: the contents of C{stdout} as a list of lines after executing C{command}"""
-    pipeIn, pipeOut = os.popen2(command)
+    pipeIn, pipeOut, pipeErr = os.popen3(command)
     lines = pipeOut.readlines()
-    pipeIn.close()
-    pipeOut.close()
+    err = '\n'.join(pipeErr.readlines())
+    pipeIn.close(), pipeOut.close(), pipeErr.close()
+
+    # If no lines are there, an error might have occurred
+    if len(lines) == 0:
+
+        # See if it is permission related (e.g. creating .svnlook)
+        if err.find('Permission denied') != -1:
+            os.chdir('/tmp')
+
+            # Retry
+            pipeIn, pipeOut, pipeErr = os.popen3(command)
+            lines = pipeOut.readlines()
+            err = '\n'.join(pipeErr.readlines())
+            pipeIn.close(), pipeOut.close(), pipeErr.close()
+
+        # If there is still an error, print it
+        if len(err) > 0:
+            print err
+
     return lines
 
 def _doctest():
