@@ -121,9 +121,7 @@ class TigrisStyleEmailView(BaseEmailView):
         text.write('File Changes:\n\n')
         for dir in self.model.directoriesWithFiles():
             s = 'Directory: %s' % dir.path
-            line = ''
-            for i in range(0, len(s)):
-                line = line + '='
+            line = ''.join(['='] * len(s))
             text.write('%s\n%s\n\n' % (s, line))
 
             for file in dir.files:
