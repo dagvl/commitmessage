@@ -7,7 +7,7 @@
 
 <p>
 commitmessage provides a modular, easy-to-use approach to sending
-CVS commit information to other systems.
+CVS and SVN commit information to other systems.
 </p>
 
 <p>
@@ -22,40 +22,37 @@ commitmessage takes smarter approach: MVC.
 </p>
 
 <p>
-Two scripts (<code>commitmessage_loginfo.pl</code> and
-<code>commitmessage_commitinfo.pl</code>) act the Controllers
-for the process and build a Model of the entire commit (not just
-per-directory) that can then be passed on to various Views.
+A controller exists for each supported SCM (CVS and SVN) that populates a
+generic module of the entire commit (not just per-directory as is the default in
+CVS) and then passes the model to the configured views.
 </p>
 
 <p>
-The Views are written as Perl packages to allow the Controllers to
-interact with the Views as objects.
+The views are written as Python classes and are dynamically configured via the
+<code>commitmessage.conf</code> file to allow the controller to allocate and
+execute them with no customization of the controllers or views by the user.
 </p>
 
 <p>
-Setting up different Views only requires editing a very simple property
-file: <code>commitmessage.config</code>. The Controllers never need editing.
-</p>
-
-<p>
-Also, the <code>commitmessage.config</code> can contain various properties
-on either a global or per-module basis to allow a single View package to be reused
-by various modules.
+Also, the <code>commitmessage.conf</code> can set view properties on either a
+global or per-module basis to allow a single view class to be reused by
+various modules with module-specific behavior (e.g. different email addresses
+per module).
 </p>
 
 <p>
 The overall affect is cutting down on the extreme duplication between scripts that
 used to occur just to change the target system or even simple properties such as 
-Urls or mailing address for different modules.
+Urls or mailing address for different modules. With commitmessage, the simple
+<code>commitmessage.conf</code> is the only file you'll ever have to edit.
 </p>
 
 <h3>Usage</h3>
 
 <p>
 commitmessage is very easy to use. Just download the file, extract it into
-your <code>CVSROOT</code> and follow the <code>commitmessage.readme</code>
-file.
+either your <code>CVSROOT</code> or SVN <code>hooks</code> directory and follow
+the <code>commitmessage.readme</code> file (currently out of date).
 </p>
 
 <h3>Related resources</h3>
@@ -63,11 +60,11 @@ file.
 <ul>
 
 <li>
-The Perl scripts are originally based on the Apache CVS scripts at 
-<a href="http://cvs.apache.org/viewcvs.cgi/CVSROOT/">http://cvs.apache.org/viewcvs.cgi/CVSROOT/</a>.
+The Perl scripts of the 1.0 branch are originally based on the Apache CVS
+scripts at <a href="http://cvs.apache.org/viewcvs.cgi/CVSROOT/">http://cvs.apache.org/viewcvs.cgi/CVSROOT/</a>.
 While the Apache scripts had the cool per-commit instead of per-directory
-functionality, the view logic of formatting together the email was spread
-all over the file and directly mixed in with other logic.
+functionality, the view logic of formatting together the email was spread all
+over the file and directly mixed in with other logic.
 </li>
 
 </ul>
