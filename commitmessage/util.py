@@ -28,8 +28,7 @@ class CmConfigParser(ConfigParser):
         """@return: the modules that match the given path (and should hence have their views executed)"""
         modules = []
         for module in ConfigParser.options(self, 'modules'):
-            match = ConfigParser.get(self, 'modules', module)
-            p = re.compile(match)
+            p = re.compile(ConfigParser.get(self, 'modules', module))
             if p.search(commitPath):
                 modules.append(module)
         modules.sort()
@@ -43,7 +42,7 @@ class CmConfigParser(ConfigParser):
         """
         viewLine = ConfigParser.get(self, module, 'views')
         p = re.compile(',\s?')
-        viewNames = p.split(viewLine)
+        viewNames = [name.strip() for name in p.split(viewLine) if len(name.strip()) > 0]
 
         views = []
         for viewName in viewNames:
@@ -76,19 +75,19 @@ def getNewInstance(fullClassName, searchPath=['./']):
     # http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/223972
 
     parts = fullClassName.split('.')
-    functionName = parts.pop()
+    className = parts.pop()
     moduleName = parts.pop()
-    path = '.'.join(parts)
+    package = '.'.join(parts)
 
     try:
-        module = sys.modules[moduleName]
+        module = sys.modules[package + '.' + moduleName]
     except KeyError:
         if len(parts) > 0:
-            module = __import__(path + "." + moduleName, globals(), locals(), [''])
+            module = __import__(package + "." + moduleName, globals(), locals(), [''])
         else:
             module = __import__(moduleName, globals(), locals())
 
-    function = getattr(module, functionName)
+    function = getattr(module, className)
 
     if not callable(function):
         raise ImportError(fullFuncError)
