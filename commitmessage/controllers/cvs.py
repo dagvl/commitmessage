@@ -50,25 +50,37 @@ def cvs_previous_rev(rev):
     return prev
 
 def cvs_diff(file, rev):
-    """@return: the diff on the given file during a commit"""
+    """@return: the (delta,diff) on the given L{File} during a commit"""
     p = re.compile(r"\.(?:pdf|gif|jpg|mpg)$", re.I)
-    if (p.search(file)):
-        return '<<Binary file>>'
+    if (p.search(file.name)):
+        return '+0 -0', '===================================================================\n<<Binary file>>\n'
+    if file.action == 'removed':
+        return '+0 -0', '===================================================================\n'
 
     diff, lines = '', []
 
     if rev == '1.1':
-        lines = execute('cvs -Qn update -p -r1.1 %s' % file)
-        diff = 'Index: %s\n===================================================================\n' % file
+        lines = execute('cvs -Qn update -p -r1.1 %s' % file.name)
+        diff = 'Index: %s\n===================================================================\n' % file.name
+        added, removed = 0, 0
     else:
-        lines = execute('cvs -Qn diff -u -r%s -r %s %s' % (cvs_previous_rev(rev), rev, file))
+        lines = execute('cvs -Qn diff -u -r%s -r %s %s' % (cvs_previous_rev(rev), rev, file.name))
+        added, removed = -1, -1
 
-    diff = diff + ''.join(lines)
+    for line in lines:
+        if rev == '1.1':
+            added = added + 1
+        elif len(line) > 0:
+            if line[0] == '+':
+                added = added + 1
+            elif line[0] == '-':
+                removed = removed + 1
+        diff = diff + line
 
     if rev == '1.1':
         diff = diff + '\n'
 
-    return diff
+    return '+%s -%s' % (added, removed), diff
 
 class CvsController(Controller):
     """Translates CVS loginfo/commitinfo information into the Model."""
@@ -247,13 +259,9 @@ class CvsController(Controller):
         for file in self.currentDirectory.files:
             (file.rev, file.delta) = cvs_status(file.name)
 
-            if file.action == 'added' or file.action == 'modified':
-                file.diff = cvs_diff(file.name, file.rev)
+            if file.action == 'added' or file.action == 'modified' or file.action == 'removed':
+                file.delta, file.diff = cvs_diff(file, file.rev)
 
-            if file.action == 'added':
-                # the cvs_diff does not include a delta on additions
-                if file.action == 'added':
-                    file.delta = '+%s -0' % (file.diff.count('\n') - 2)
 
     def _parseLoginfoStdinIntoFiles(self):
         """
