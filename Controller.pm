@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #
 # Model.pm
-# commitmessage Version 1.0-alpha1
+# commitmessage Version 1.0-beta1
 #
 # Wraps the module that gets sent between
 # the Controller and Views.
@@ -59,28 +59,33 @@ sub new {
 sub parseArgv {
     my($self, @argv) = @_;
 
-    # Pull the module name off of the commitDirectory to get the currentDirectory.
-    my($currentDirectoryWithModule, @files) = split(' ', $argv[0]);
-    my @directoryPath = split('/', $currentDirectoryWithModule);
-    my $module = $directoryPath[0];
+    # Pull the module name off of the commitDirectory to get the rootDirectory.
+    my($currentDirectoryWithRoot, @files) = split(' ', $argv[0]);
+    my @directoryPath = split('/', $currentDirectoryWithRoot);
 
-    # Handle for having no / if the commit is in the root dir of the module
-    if ($#directoryPath == 0) {
+    # Handle for having no / if the commit is in the root dir of the module, so that
+    # we can always go $self->{currentDirectoryWithSlash}$file and not worry about a 
+    # / being between the two or not.
+    my $rootDirectory;
+    if ($#directoryPath < 0) {
+        # Then the directory was really a file and we're in the rootDirectory
+        $rootDirectory = "";
         $self->{currentDirectory} = "";
+        $self->{currentDirectoryWithSlash} = "";
     } 
     else {
-        $self->{currentDirectory} = join('/', @directoryPath[1..$#directoryPath]) . "/";
+        $rootDirectory = $directoryPath[0];
+        $self->{currentDirectory} = join('/', @directoryPath[0..$#directoryPath]);
+        $self->{currentDirectoryWithSlash} = $self->{currentDirectory} . "/";
     }
 
-    # Save the path with the module in it for the $LAST_FILE check
-    $self->{currentDirectoryWithModule} = $currentDirectoryWithModule;
-
     my $user = $ENV{'USER'} || getlogin || (getpwuid($<))[0] || sprintf("uid#%d",$<);
-    $self->model(Model->new($user, $module));
+    $self->model(Model->new($user));
+    $self->model->rootDirectory($rootDirectory);
 
     # Check for - New Directory
     if ($#files == 2 && $files[0] eq "-" && $files[1] eq "New" && $files[2] eq "directory") {
-        $self->model->newDirectory($self->{currentDirectory});
+        $self->model->addDirectory($self->{currentDirectory});
     }
 }
 
@@ -107,57 +112,54 @@ sub views {
 # Runs the main logic flow
 #
 sub main {
-    my($self) = @_;
+    my $self = shift;
 
-    # See if this commit is just a new directory commit
-    if (defined($self->model->newDirectory)) {
-        $self->cleanupTempFiles;
+    # Make sure this commit is not just a new directory commit
+    if ($self->model->directoriesCount != 1) {
 
-        $self->loadViews;
-        $self->execNewDirectory;
+        # Save the files in the current directory to the persistent log
+        $self->saveCurrentFilesToPersistentLog;
 
-        return;
-    }
+        my $isImport = 0;
+        if ($self->couldBeImport) {
+            # Check the log for the definitive answer
+            $self->parseAndSaveLogMessage;
 
-    # Save the files in the current directory to the persistent log
-    $self->saveCurrentFilesToPersistentLog;
+            if ($self->isImport) {
+                $self->model->baseDirectory("CVSROOT");
+                $self->parseImportLog;
 
-    if ($self->couldBeImport) {
-        # Check the log for the definitive answer
-        $self->parseAndSaveLogMessage;
+                # Flag to go straight to cleanup/load/commit
+                $isImport = 1;
+            }
+        }
 
-        if ($self->isImport) {
-            $self->model->module("CVSROOT");
+        # Make sure an import hasn't occurred
+        if ($isImport == 0) {
+            # Could be a multi-directory commit
+            if (!$self->isLastDirectoryOfCommit) {
+                print "More commits to come...\n";
+                return;
+            }
 
-            $self->parseImportLog;
-            $self->loadViews;
-            $self->execCommit;
-
-            return;
+            # This was the last directory, get the log
+            $self->parseAndSaveLogMessage;
+            # Read in all of the filenames saved into the temp files into the model
+            $self->importPersistedLog("$FILES");
         }
     }
 
-    if (!$self->isLastDirectoryOfCommit) {
-        print "More commits to come...\n";
-        return;
-    }
-
-    $self->parseAndSaveLogMessage;
-
-    # Read in all of the filenames saved into the temp files into the model
-    $self->model->importPersistedLog("$FILES");
-
+    $self->model->calculateBaseDirectory;
     $self->cleanupTempFiles;
-
     $self->loadViews;
-    $self->execCommit;
+    $self->commit;
 }
 
 #
 # Return whether this loginfo could be the result of an import command
 #
 sub couldBeImport {
-    my($self) = @_;
+    my $self = shift;
 
     if (-e "$LAST_FILE") {
         return 0;
@@ -171,7 +173,7 @@ sub couldBeImport {
 # Return whether this loginfo was the result of an import command
 #
 sub isImport {
-    my($self) = @_;
+    my $self = shift;
 
     my $log = $self->model->log;
     if ($log =~ /Status:\n\nVendor Tag:\t/) {
@@ -186,7 +188,7 @@ sub isImport {
 # and puts the file information into the Model.
 #
 sub parseImportLog {
-    my($self) = @_;
+    my $self = shift;
 
     my $log = $self->model->log;
     my @mary = split("Status:\n\nVendor Tag:\t", $log);
@@ -198,7 +200,7 @@ sub parseImportLog {
         if ($line =~ /^N /) {
             my $file = substr($line, 2);
             my($delta, $rcsfile, $diff) = ("+", Controller->CVSROOT . $file, "<<new file>>");
-            $self->model->addEntry($file, "added", 1.1, $delta, $rcsfile, $diff);
+            $self->model->addFile($file, "added", 1.1, $delta, $rcsfile, $diff);
         }
     }
 }
@@ -207,11 +209,13 @@ sub parseImportLog {
 # Return whether this loginfo is in the last dir of the commit
 #
 sub isLastDirectoryOfCommit {
-    my($self) = @_;
+    my $self = shift;
 
     if (-e "$LAST_FILE") {
         my $lastDir = $self->readFirstLine("$LAST_FILE");
-        my $fullPath = Controller->CVSROOT . "/" . $self->{currentDirectoryWithModule};
+        my $fullPath = Controller->CVSROOT . "/" . $self->{currentDirectory};
+##        print "lastDir = $lastDir\n";
+##        print "fullPath = $fullPath\n";
         if ($fullPath eq $lastDir) {
             return 1;
         }
@@ -224,7 +228,7 @@ sub isLastDirectoryOfCommit {
 # Iterate over the body of the message (STDIN) collecting information
 #
 sub saveCurrentFilesToPersistentLog {
-    my($self)= @_;
+    my $self= shift;
 
     my $STATE_NONE = 0;
     my $STATE_MODIFIED = 1;
@@ -279,7 +283,7 @@ sub saveCurrentFilesToPersistentLog {
 # Parses the log_lines saved in self and sets log in the model.
 #
 sub parseAndSaveLogMessage {
-    my($self) = @_;
+    my $self = shift;
 
     my @log_lines = @{$self->{log_lines}};
 
@@ -304,12 +308,13 @@ sub parseAndSaveLogMessage {
 # that they can plug into the views variable.
 #
 sub loadViews {
-    my($self) = @_;
+    my $self = shift;
 
     my $EQUALS = " *= *";
-    my $VIEW_NAME = "[a-zA-Z0-9_]+";
+    my $MATCH_NAME = "[a-zA-Z0-9_-]+";
+    my $VIEW_NAME = "[a-zA-Z0-9_-]+";
     my $PACKAGE_NAME = "[^\n]*";
-    my $PROPERTY_NAME = "[a-zA-Z0-9_]+";
+    my $PROPERTY_NAME = "[a-zA-Z0-9_-]+";
     my $PROPERTY_VALUE = "[^\n]*";
     my $PROPERTY_EQUALS = " *((=>)|(=)) *";
     
@@ -322,43 +327,55 @@ sub loadViews {
     }
     close(FILE);
 
-    # Find any views for this specific module
+    # Find any views for this specific commit
 
+    # A hash to map views to their settings
     my %views = ();
-    my $module = $self->model->module;
 
-    # Look for view definitions
+    # A hash to map matches to their regex's
+    my %matches = ();
+    $matches{DEFAULT} = ".*";
+
+    # Module is no longer used, so match against the baseDirectory
+    my $basedir = $self->model->baseDirectory;
+
+    # Look for match definitions
     foreach my $line (@config) {
-        # Look for global definitions
-        if ($line =~ /^ALL\.($VIEW_NAME)$EQUALS($PACKAGE_NAME)$/) {
-##print "Found global view $1 = $2\n";
-            %{$views{$1}} = ();
-            $views{$1}{commitmessageName} = $1;
-            $views{$1}{commitmessagePackage} = $2;
-        }
-        # Look for module definitions
-        if ($line =~ /^$module\.($VIEW_NAME)$EQUALS($PACKAGE_NAME)$/) {
-##print "Found module view $1 = $2\n";
-            %{$views{$1}} = ();
-            $views{$1}{commitmessageName} = $1;
-            $views{$1}{commitmessagePackage} = $2;
+        if ($line =~ /^($MATCH_NAME)$EQUALS($PROPERTY_VALUE)$/) {
+            my $switch = 0;
+            my $eval = "if (\$basedir =~ /$2/) { \$switch = 1; }";
+##            print "Evaling: $eval\n";
+            eval($eval);
+            if ($switch == 1) {
+##                print "Added match $1\n";
+                $matches{$1} = 1;
+            }
+            else {
+##                print "Ignored match $1\n";
+            }
         }
     }
 
-    # Fill in global defaults
+    # Now that we have the matches, look for view
+    # definitions for all of the found matches
     foreach my $line (@config) {
-        if ($line =~ /^ALL.($VIEW_NAME)\.($PROPERTY_NAME)$PROPERTY_EQUALS($PROPERTY_VALUE)$/) {
-##print "Set global $1.$2 = " . Controller->optionalEval($6, $3, $self->model) . "\n";
-            $views{$1}{$2} = Controller->optionalEval($6, $3, $self->model->om);
-        }
-    }
+        if ($line =~ /^($MATCH_NAME)\.($VIEW_NAME)$EQUALS($PACKAGE_NAME)$/) {
+            # Found a View definition, make sure the match exists
+            if (exists $matches{$1}) {
+                %{$views{$2}} = ();
 
-    # Now override defaults and fill in module-specific properties
-    foreach my $line (@config) {
-        if ($line =~ /^$module\.($VIEW_NAME)\.($PROPERTY_NAME)$PROPERTY_EQUALS($PROPERTY_VALUE)$/) {
-##print "Set module $1.$2 = " . Controller->optionalEval($6, $3, $self->model) . "\n";
-            $views{$1}{$2} = Controller->optionalEval($6, $3, $self->model->om);
+                $views{$2}{commitmessageName} = $2;
+                $views{$2}{commitmessagePackage} = $3;
+            }
         }
+        # Look for the view definition
+        elsif ($line =~ /^($MATCH_NAME)\.($VIEW_NAME)\.($PROPERTY_NAME)$PROPERTY_EQUALS($PROPERTY_VALUE)$/) {
+            # Make sure the match is valid
+            if (exists $matches{$1}) {
+                $views{$2}{$3} = Controller->optionalEval($7, $4, $self->model);
+            }
+        }
+
     }
 
     # Now convert the views to objects
@@ -366,7 +383,9 @@ sub loadViews {
     foreach my $name (keys %views) {
         my $viewObject = "";
 
-        # Allow the global package definition to be ignored by a module one
+##        print "Executing view $name\n";
+
+        # Allow the global package definition to be ignored by a match one
         if ($views{$name}{commitmessagePackage} eq "") {
 ##            print "Skipping $name...\n";
             next;
@@ -378,11 +397,11 @@ sub loadViews {
         eval($foo) || die "An error occurred: $@\n";
 
         foreach my $prop (keys %{$views{$name}}) {
-##print "Setting $prop = $views{$name}{$prop}\n";
+##            print "Setting $prop = $views{$name}{$prop}\n";
             $viewObject->{$prop} = $views{$name}{$prop};
         }
 
-        $viewObject->init($self->model->om);
+        $viewObject->init($self->model);
 
         push(@viewObjects, $viewObject);
     }
@@ -414,7 +433,7 @@ sub appendFiles {
     foreach my $file (@files) {
         my($rev, $delta, $rcsfile) = CvsUtil->status("$file");
 
-        my $line = join(Controller->NULL, ("$self->{currentDirectory}$file", $action, $rev, $delta, $rcsfile ));
+        my $line = join(Controller->NULL, ("$self->{currentDirectoryWithSlash}$file", $action, $rev, $delta, $rcsfile ));
         print(FILE "$line\n");
         
         #
@@ -426,7 +445,7 @@ sub appendFiles {
             #
             # Save diff off to tmp file
             #
-            my $relativeFilePath = "$self->{currentDirectory}$file";
+            my $relativeFilePath = "$self->{currentDirectoryWithSlash}$file";
             my $tmpFile = Controller->getTempFileFullPath($relativeFilePath);
             open(DIFF, ">$tmpFile") || die("Couldn't open for write $tmpFile: $_");
             print(DIFF $diff);
@@ -456,7 +475,7 @@ sub readFirstLine {
 # Removes the temp files used by the Controller
 #
 sub cleanupTempFiles {
-    my($self) = @_;
+    my $self = shift;
 
     my(@files);
     opendir(DIR, $TMPDIR);
@@ -468,26 +487,14 @@ sub cleanupTempFiles {
 }
 
 #
-# Executes the newDirectory method on each View
-#
-sub execNewDirectory {
-    my($self) = @_;
-
-    my @views = @{$self->views};
-    foreach my $view (@views) {
-        $view->newDirectory($self->model->om);
-    }
-}
-
-#
 # Executes the commit method on each View
 #
-sub execCommit {
-    my($self) = @_;
+sub commit {
+    my $self = shift;
 
     my @views = @{$self->views};
     foreach my $view (@views) {
-        $view->commit($self->model->om);
+        $view->commit($self->model);
     }
 }
 
@@ -500,6 +507,46 @@ sub getTempFileFullPath {
     my($type, $file) = @_;
     $file =~ s,/,-,g;
     return "$TMPDIR/${FILE_PREFIX}$file";
+}
+
+#
+# Read a file into the model
+#
+# Params: filename
+#
+sub importPersistedLog {
+    my($self, $filename) = @_;
+
+    open(FILE, "<$filename");
+    while (<FILE>) {
+        chomp;
+        my $line = $_;
+        my $null = Controller->NULL;
+        my @mary = split(/$null/, $_);
+
+        my $file = $mary[0];
+        my $action = $mary[1];
+        my $diff = "";
+
+        # Check for a diff 
+        if ($action eq "added" || $action eq "modified") {
+            my $tmpFile = Controller->getTempFileFullPath($file);
+            open(DIFF, "<$tmpFile") || die("Couldn't open for read $tmpFile: $_");
+            while(<DIFF>) {
+                $diff .= $_;
+            }
+            close(DIFF);
+        }
+
+        $self->model->addFile(
+            $file,
+            $action,
+            $mary[2],
+            $mary[3],
+            $mary[4],
+            $diff);
+    }
+    close(FILE);
 }
 
 1;

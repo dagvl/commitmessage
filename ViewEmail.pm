@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #
 # ViewEmail.pm
-# commitmessage Version 1.0-alpha1
+# commitmessage Version 1.0-beta1
 #
 # Simple email script that acts as a view for the MVC-based
 # commitmessage script.
@@ -34,51 +34,42 @@ sub init {
 }
 
 #
-# Send a simple email on newdir creation
-#
-sub newDirectory {
-    my($self, $om) = @_;
-
-    $self->sendmail($om, "$om->{user} created $om->{newdir}");
-}
-
-#
 # Send a list of affected files and diffs on commit
 #
 sub commit {
-    my($self, $om) = @_;
+    my($self, $model) = @_;
 
     # First remove all of the <, >, and \n
-    my $log = $self->formatlog($om->{log});
+    my $log = $self->formatlog($model->log);
 
     # Basic header    
-    my $text = "$om->{user} committed the following changes on $self->{shortdatetime}.\n\n";
+    my $text = "$model->{user} committed the following changes on $self->{shortdatetime}.\n\n";
 
     # Create the the table header
     $text .= "$log\n\n";
     
     # Give a one-line description for each file
-    foreach my $file (sort keys %{$om->{files}}) {
-        my $action = $om->{files}{$file}{action};
+    foreach my $file ($model->fileKeysSorted) {
+        my $action = $model->files->{$file}{action};
 
         $text .= "$file\n";
-        $text .= "$om->{files}{$file}{rev}\n";
-        $text .= "$om->{files}{$file}{delta}\n";
+        $text .= $model->files->{$file}{rev} . "\n";
+        $text .= $model->files->{$file}{delta} . "\n";
         $text .= "$action\n\n";
     }
 
     # Go through the diffs of the added/modified files
     $text .= "Diffs:</p>\n\n";
-    foreach my $file (sort keys %{$om->{files}}) {
-        my $action = $om->{files}{$file}{action};
+    foreach my $file ($model->filesKeysSorted) {
+        my $action = $model->files->{$file}{action};
         if ($action eq "added" || $action eq "modified") {
-            $text .= "$om->{files}{$file}{diff}\n\n";
+            $text .= $model->files->{$file}{diff} . "\n\n";
         }
     }
 
     $text .= "\n\n";
 
-    $self->sendmail($om, $text);
+    $self->sendmail($model, $text);
 }
 
 #
@@ -100,7 +91,7 @@ sub formatlog {
 # Perform the sendmail operation
 #
 sub sendmail {
-    my($self, $om, $text) = @_;
+    my($self, $model, $text) = @_;
 
     # Don't send if 'to' is not set
     if (!defined($self->{to})) {

@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #
 # ViewHtmlEmail.pm
-# commitmessage Version 1.0-alpha1
+# commitmessage Version 1.0-beta1
 #
 # Simple email script that acts as a view for the MVC-based
 # commitmessage script.
@@ -17,22 +17,13 @@ use ViewEmail;
 use strict;
 
 #
-# Send a simple email on newdir creation
-#
-sub newDirectory {
-    my($self, $model) = @_;
-
-    $self->sendmail($model, "<p>$model->{user} created $model->{newDirectory}</p>");
-}
-
-#
 # Send a list of affected files and diffs on commit
 #
 sub commit {
     my($self, $model) = @_;
 
     # First remove all of the <, >, and \n
-    my $log = $self->formatlog($model->{log});
+    my $log = $self->formatlog($model->log);
 
     # Basic header    
     my $text = "<p>$model->{user} committed the following changes on $self->{shortdatetime}.</p>";
@@ -51,20 +42,20 @@ sub commit {
     $text .= "   </tr>\n";
 
     # Give a one-line description for each file
-    foreach my $file (sort keys %{$model->{files}}) {
-        my $action = $model->{files}{$file}{action};
+    foreach my $file ($model->fileKeysSorted) {
+        my $action = $model->files->{$file}{action};
 
         $text .= "   <tr>\n";
 
         if (defined($self->{cvsweb})) {
-            $text .= "      <td><nobr><a href=\"$self->{cvsweb}/$model->{module}/$file\">$file</a>&nbsp;</nobr></td>\n";
+            $text .= "      <td><nobr><a href=\"$self->{cvsweb}/$file\">$file</a>&nbsp;</nobr></td>\n";
         }
         else {
             $text .= "      <td><nobr>$file&nbsp;</nobr></td>\n";
         }
 
-        $text .= "      <td><center>$model->{files}{$file}{rev}</center></td>\n";
-        $text .= "      <td><nobr><center>$model->{files}{$file}{delta}</center></nobr></td>\n";
+        $text .= "      <td><center>" . $model->files->{$file}{rev} . "</center></td>\n";
+        $text .= "      <td><nobr><center>" . $model->files->{$file}{delta} . "</center></nobr></td>\n";
         $text .= "      <td><center>$action</center></td>\n";
         $text .= "   </tr>\n";
     }
@@ -73,10 +64,10 @@ sub commit {
 
     # Go through the diffs of the added/modified files
     $text .= "<p>Diffs:</p>\n";
-    foreach my $file (sort keys %{$model->{files}}) {
-        my $action = $model->{files}{$file}{action};
+    foreach my $file ($model->fileKeysSorted) {
+        my $action = $model->files->{$file}{action};
         if ($action eq "added" || $action eq "modified") {
-            my $diff = $model->{files}{$file}{diff};
+            my $diff = $model->files->{$file}{diff};
             $diff = $self->toHtml($diff);
 
             $text .= "<p><pre>$diff</pre></p>&nbsp<br />\n";

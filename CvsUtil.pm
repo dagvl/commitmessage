@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #
 # CvsUtil.pm
-# commitmessage Version 1.0-alpha1
+# commitmessage Version 1.0-beta1
 #
 # Executes and parsers a few generic cvs commands.
 #

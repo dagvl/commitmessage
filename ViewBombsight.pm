@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #
 # ViewBombsight.pm
-# commitmessage Version 1.0-alpha1
+# commitmessage Version 1.0-beta1
 #
 # Sample script that sends out notification of bug-related commits
 # to Bombsight.
@@ -36,15 +36,15 @@ sub commit {
     }
 
     if ($bugId > 0) {
-        foreach my $file (keys %{$model->{files}}) {
-            my $action = $model->{files}{$file}{action};
+        foreach my $file ($model->fileKeysSorted) {
+            my $action = $model->files->{$file}{action};
 
             my $get = "";
             $get .= "GET $self->{url}$self->{page}";
             $get .= "?ixBug=$bugId";
-            $get .= "&sFile=/$model->{module}/$file";
-            $get .= "&sPrev=$model->{files}{$file}{prev}";
-            $get .= "&sNew=$model->{files}{$file}{rev}";
+            $get .= "&sFile=/$file";
+            $get .= "&sPrev=" . $model->files->{$file}{prev};
+            $get .= "&sNew=" . $model->files->{$file}{rev};
             $get .= " HTTP/1.1\n";
 
             $get .= "Host: $self->{server}:$self->{port}\n\n";

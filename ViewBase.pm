@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #
 # ViewBase.pm
-# commitmessage Version 1.0-alpha1
+# commitmessage Version 1.0-beta1
 #
 # Provides a base implementation for all Views to extend.
 #
@@ -29,15 +29,7 @@ sub init {
 }
 
 #
-# Called when a new directory commit occurs
-#
-sub newDirectory {
-    my($self, $model) = @_;
-
-}
-
-#
-# Called when a regular commit occurs
+# Called when a commit occurs
 # 
 sub commit {
     my($self, $model) = @_;

@@ -1,7 +1,7 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 #
-# commitinfo.pl
-# commitmessage Version 1.0-alpha1
+# commitmessage_commitinfo.pl
+# commitmessage Version 1.0-beta1
 #
 # Perl filter to handle pre-commit checking of files.  This program
 # records the last directory where commits will be taking place for
