@@ -101,6 +101,7 @@ class Harness:
                         if self.wait == 1:
                             raw_input('Waiting...')
 
+                    facade.deleteActual(view.name)
 
             # We're done with this test case, so remove the repository.
             if not hasattr(self, 'donotdestroy'):
@@ -203,7 +204,15 @@ class ControllerFacade:
     def __init__(self):
         self.mainPath = os.path.join(os.getcwd().replace('\\', '/'), '..', 'commitmessage', 'main.py')
 
+    def actual(self, viewName):
+        """@return: the dumped results for the given view."""
+        return file('%s/%s.txt' % (self.workingDir, viewName)).read()
+
+    def deleteActual(self, viewName):
+        os.remove('%s/%s.txt' % (self.workingDir, viewName))
+
     def clean(self, expected):
+        """Removes the !svn/!cvs conditional lines from the expected output."""
         new = []
 
         goodStart = '!%s ' % self.name
@@ -286,10 +295,6 @@ class CvsFacade(ControllerFacade):
 
     def destroyRepository(self):
         _exec('rm -fr %s %s' % (self.repoDir, self.workingDir))
-
-    def actual(self, viewName):
-        """@return: the dumped results for the given view."""
-        return file('%s/%s.txt' % (self.workingDir, viewName)).read()
 
     def commit(self):
         self._openFile('temp-message.txt', 'w').write(self.message)
@@ -387,10 +392,6 @@ class SvnFacade(ControllerFacade):
 
     def destroyRepository(self):
         _exec('rm -fr %s %s' % (self.repoDir, self.workingDir))
-
-    def actual(self, viewName):
-        """@return: the dumped results for the given view."""
-        return file('%s/%s.txt' % (self.workingDir, viewName)).read()
 
     def commit(self):
         self._openFile('temp-message.txt', 'w').write(self.message)
