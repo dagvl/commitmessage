@@ -29,6 +29,16 @@ class CmConfigParser(ConfigParser):
             for name in self.options('userMap'):
                 self.userMap[name] = self.get('userMap', name)
 
+    def getSummaryThreshold(self):
+        """@return: the summary breakout threshold in KB. If the diffs exceed this size, the controller should null the individual file diffs"""
+        threshold = -1
+
+        if self.has_option('scm', 'summaryThreshold'):
+            #Convert the conf value from KB to bytes
+            threshold = long(self.getint('scm', 'summaryThreshold') * 1024)
+
+        return threshold
+
     def getModulesForPath(self, commitPath):
         """@return: the modules that match the given path (and should hence have their views executed)"""
         modules = []

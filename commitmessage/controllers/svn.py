@@ -47,12 +47,13 @@ class SvnController(Controller):
 
                 file = File(name, self.model.directory(self.prefix + directoryPath), action)
 
+        # Markers to tell us when we hit a new diff
         markers = ['Modified', 'Added', 'Copied', 'Deleted', 'Property changes on']
 
-        # And finally parse through the diffs and save them into our tree of changes
+        # Recontruct each diff by parsing through the output of svnlook line by line
         diffs = []
         partialDiff = None
-        for line in self._svnlook('diff'):
+        for line in self.getDiffLines():
             # Look for Modified:, Added:, etc.
             if line[0:line.find(':')] in markers:
                 # Handle starting a new diff
@@ -61,6 +62,12 @@ class SvnController(Controller):
             elif partialDiff:
                 partialDiff.append(line)
 
+        if len(diffs) == 0:
+            for file in self.model.files():
+                file.delta = '<Unavailable>'
+                file.diff = ''
+
+        # And finally parse through the diffs and save them into our tree of changes
         for diff in diffs:
             # Use [:-1] to leave of the trailing \n
             start = diff[0].find(': ') + 2
@@ -103,6 +110,34 @@ class SvnController(Controller):
                     else:
                         file.diff = ''.join(diff)
 
+    def getDiffLines(self):
+        """@return: a list of diff lines to process, if under the summary threshold"""
+
+        #Workaround for SVN issue 1789
+        tempDir = self.repoPath + '/cm_temp'
+        tempFile = tempDir + '/' + self.rev + '.diff'
+
+        #Ensure the temp directory exists in the repo
+        if not os.path.exists(tempDir):
+            os.mkdir(tempDir)
+
+        #Delete any files of the same name
+        if os.path.exists(tempFile):
+            os.remove(tempFile)
+
+        self._svnlook('diff', ' > ' + tempFile)
+
+        # getSummaryThreshold returns -1 if the option is undefined (ergo, no summary)
+        diff_lines = []
+        if self.config.getSummaryThreshold() == -1 or os.stat(tempFile).st_size <= self.config.getSummaryThreshold():
+            diff_file = open(tempFile, 'r')
+            diff_lines = diff_file.readlines()
+            diff_file.close()
+
+        os.remove(tempFile)
+
+        return diff_lines
+
     def _parse_diff(self, diff):
         text = ''
         added = 0
@@ -121,7 +156,7 @@ class SvnController(Controller):
 
         return ('+%s -%s' % (added, removed), text)
 
-    def _svnlook(self, command):
+    def _svnlook(self, command, opt_command=''):
         """@return: the lines ouput by the C{svnlook} command against the current repo and rev"""
-        return execute('svnlook %s %s -r %s' % (command, self.repoPath, self.rev))
+        return execute('svnlook %s %s -r %s %s' % (command, self.repoPath, self.rev, opt_command))
 
