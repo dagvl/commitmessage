@@ -4,5 +4,8 @@
     logReplacePattern = b(0|o)mb((site)|(sight)):\\s*([0-9]*)
     logReplaceResult = <a href="http://bombsight.beachead.com/editbug.asp?command=view&ixBug=%(5)">Fixed for bug %(5).</a>
 
-- Provide a nice CLI with '--help', module scanning to list the currently
-  available views, and the respective views' properties.
+- Provide a nice CLI with:
+
+  o '--help'
+  o module scanning to list the currently available views
+  o the respective views' properties
