@@ -28,7 +28,7 @@ Once you have all of these requirements, you can start installing commitmessage.
 
  1. Download and extract commitmessage.tar.gz to a convenient location
 
- 2. Customize the commitmessage-2.0-rc-2/commitmessage.conf
+ 2. Customize the commitmessage-2.0-rc-3/commitmessage.conf
 
     The commitmessage.conf has documentation within it about how to configure
     the various modules and views, along with a few examples that you should be
@@ -44,12 +44,12 @@ Once you have all of these requirements, you can start installing commitmessage.
  4. In the CVSROOT directory that was just checked out, edit the commitinfo file
     and add:
 
-    DEFAULT /path/to/commitmessage-2.0-rc-2/main.py
+    DEFAULT /path/to/commitmessage-2.0-rc-3/main.py
 
  5. Also in the CVSROOT directory that was just checked out, edit the loginfo
     file and add:
 
-    DEFAULT /path/to/commitmessage-2.0-rc-2/main.py %{s}
+    DEFAULT /path/to/commitmessage-2.0-rc-3/main.py %{s}
 
  6. Commit the changes to commitinfo and loginfo to CVS
 
@@ -66,11 +66,11 @@ Notes:
    both commitinfo and loginfo files to pass a -c parameter to main.py with the
    new location, such as:
 
-   DEFAULT /path/to/commitmessage-2.0-rc-2/main.py -c /path/to/repo/CVSROOT/commitmessage.conf
+   DEFAULT /path/to/commitmessage-2.0-rc-3/main.py -c /path/to/repo/CVSROOT/commitmessage.conf
 
    And:
 
-   DEFAULT /path/to/commitmessage-2.0-rc-2/main.py -c /path/to/repo/CVSROOT/commitmessage.conf %{s}
+   DEFAULT /path/to/commitmessage-2.0-rc-3/main.py -c /path/to/repo/CVSROOT/commitmessage.conf %{s}
 
 #####################################################################
 #
@@ -88,7 +88,7 @@ To install commitmessage for a SVN repository, you should have:
  1. Download and extract commitmessage.tar.gz or commitmessage.zip to a
     convenient location
 
- 2. Customize the commitmessage-2.0-rc-2/commitmessage.conf
+ 2. Customize the commitmessage-2.0-rc-3/commitmessage.conf
 
     The commitmessage.conf has documentation within it about how to configure
     the various modules and views, along with a few examples that you should be
@@ -96,13 +96,13 @@ To install commitmessage for a SVN repository, you should have:
 
  3. If on Windows: create the file svn-repo/hooks/post-commit.bat and add:
 
-    python c:\path\to\commitmessage-2.0-rc-2\main.py "%1" "%2"
+    python c:\path\to\commitmessage-2.0-rc-3\main.py "%1" "%2"
 
     If on Unix: create the file svn-repo/hooks/post-commit, make sure it
     has execute privileges, and add:
 
     #!/bin/sh
-    /path/to/commitmessage-2.0-rc-2/main.py "$1" "$2"
+    /path/to/commitmessage-2.0-rc-3/main.py "$1" "$2"
 
 That's it. Any commits in this SVN repository will be run through their
 configured commitmessage views.
@@ -118,10 +118,10 @@ Troubleshooting a Subversion installation is fairly easy:
  1. Try running main.py by itself, just as the Subversion hook file would. E.g.:
 
     (Windows)
-    python c:\path\to\commitmesasge-2.0-rc-2\main.py "c:\my-svn-repo" 1
+    python c:\path\to\commitmesasge-2.0-rc-3\main.py "c:\my-svn-repo" 1
 
     (Unix)
-    python /path/to/commitmesasge-2.0-rc-2/main.py "/my-svn-repo" 1
+    python /path/to/commitmesasge-2.0-rc-3/main.py "/my-svn-repo" 1
 
     Where 1 is a revision number you have previously committed.
 
@@ -136,11 +136,11 @@ Troubleshooting a Subversion installation is fairly easy:
  3. On unix, double check that the #! within the main.py is working. E.g. you
     may have to change your post-commit hook file to explicitly call python:
 
-    /path/to/python /path/to/commitmessage-2.0-rc-2/main.py "$1" "$2"
+    /path/to/python /path/to/commitmessage-2.0-rc-3/main.py "$1" "$2"
 
  4. If you are not seeing the diffs in emails, it is probably because svnlook is
     trying to create an '.svnlook' directory and doesn't have the correct
-    permissions.  There is a fix in 2.0-rc-2 for this to chdir to '/tmp', which
+    permissions.  There is a fix in 2.0-rc-3 for this to chdir to '/tmp', which
     only works on Unix, but I don't think there will be a problem with this on
     Windows. Let me know if you do.
 
