@@ -20,14 +20,6 @@ from xml.dom import minidom
 sys.path.append('../')
 
 
-class ControllerFacade:
-    """
-    Wraps the interface to add/remove/changes files and directories in terms of
-    each concrete repository.
-
-    See L{SvnFacade} and L{CvsFacade} for implementations.
-    """
-
 class Harness:
     """
     A class to wrap the test context: creates a repository, executes the views,
@@ -188,20 +180,145 @@ class View:
             if node.nodeType == node.TEXT_NODE:
                 self.expected = node.data
 
-class CvsFacade:
+class ControllerFacade:
+    """
+    Wraps the interface to add/remove/changes files and directories in terms of
+    each concrete repository.
 
-    def createRepository(self):
-        pass
-
-class SvnFacade:
+    See L{SvnFacade} and L{CvsFacade} for implementations.
+    """
 
     def __init__(self):
+        self.mainPath = os.path.join(os.getcwd().replace('\\', '/'), '..', 'commitmessage', 'main.py')
+
+class CvsFacade(ControllerFacade):
+    """
+    A facade for executing the test cases against a CVS installation (Unix only).
+    """
+
+    def __init__(self):
+        ControllerFacade.__init__(self)
+
+        self.repoDir = '%s/temp-cvs-repo' % os.getcwd().replace('\\', '/')
+        self.workingDir = '%s/temp-cvs-wd' % os.getcwd().replace('\\', '/')
+        self.message = ''
+
+    def _execCvs(self, cmd):
+        """Executes C{cmd} in the current directory with C{cvs -d :local:repoDir} as a prefix."""
+        _exec('cvs -d :local:%s %s' % (self.repoDir, cmd))
+
+    def _execInWorkingDir(self, cmd):
+        """Executes C{cmd} in the working directory."""
+        if hasattr(self, 'tracecvs'):
+            print cmd
+            raw_input('')
+
+        os.chdir(self.workingDir)
+        _exec(cmd)
+        os.chdir('../')
+
+    def createRepository(self, config):
+        _exec('mkdir temp-cvs-repo')
+        self._execCvs('init')
+        self._execCvs('checkout CVSROOT')
+
+        loginfo = file('CVSROOT/loginfo', 'w')
+        loginfo.write('DEFAULT %s -c %s/CVSROOT/commitmessage.conf %%{s} > commitmessage.out 2>&1' % (self.mainPath, self.repoDir))
+        loginfo.close()
+
+        commitinfo = file('CVSROOT/commitinfo', 'w')
+        commitinfo.write('DEFAULT %s -c %s/CVSROOT/commitmessage.conf' % (self.mainPath, self.repoDir))
+        commitinfo.close()
+
+        checkoutlist = file('CVSROOT/checkoutlist', 'w')
+        checkoutlist.write('commitmessage.conf')
+        checkoutlist.close()
+
+        cvsConfig = config.replace('CONTROLLER', 'commitmessage.controllers.cvs.CvsController')
+
+        newConfig = file('CVSROOT/commitmessage.conf', 'w')
+        newConfig.write(cvsConfig)
+        newConfig.close()
+
+        os.chdir('CVSROOT')
+        _exec('cvs add commitmessage.conf')
+        _exec('cvs commit -m "Installing commitmessage."')
+        os.chdir('..')
+
+        _exec('mkdir temp-cvs-wd')
+        os.chdir('temp-cvs-wd')
+        self._execCvs('import -m "Importing." temp-cvs-wd vendor release')
+        os.chdir('..')
+
+        _exec('rm -fr temp-cvs-wd')
+        self._execCvs('checkout temp-cvs-wd')
+
+    def destroyRepository(self):
+        _exec('rm -fr %s %s' % (self.repoDir, self.workingDir))
+
+    def actual(self, viewName):
+        """Returns the dumped results for the given view."""
+        return file('%s/%s.txt' % (self.workingDir, viewName)).read()
+
+    def commit(self):
+        self._openFile('temp-message.txt', 'w').write(self.message)
+        self._execInWorkingDir('cvs commit -F temp-message.txt')
+
+    def _openFile(self, name, flags):
+        return file('%s/%s' % (self.workingDir, name), flags)
+
+    def addDirectory(self, name=''):
+        os.mkdir('%s/%s' % (self.workingDir, name))
+        self._execInWorkingDir('cvs add %s' % name)
+
+    def addFile(self, name='', content=''):
+        self._openFile(name, 'w').write(content)
+        self._execInWorkingDir('cvs add %s' % name)
+
+    def addReferencedFile(self, name='', location=''):
+        self._openFile(name, 'w').writelines(self._openFile(location, 'r').readlines())
+        self._execInWorkingDir('cvs add %s' % name)
+
+    def moveFile(self, fromPath='', toPath=''):
+        self._execInWorkingDir('mv %s %s' % (fromPath, toPath))
+        self._execInWorkingDir('cvs remove %s' % fromPath)
+        self._execInWorkingDir('cvs add %s' % toPath)
+
+    def removeFile(self, name=''):
+        self._execInWorkingDir('rm %s' % name)
+        self._execInWorkingDir('cvs remove %s' % name)
+
+    def changeFile(self, name='', fromLine='', toLine='', content=''):
+        fromLine = int(fromLine)
+        toLine = int(toLine)
+
+        oldLines = self._openFile(name, 'r').readlines()
+        newLines = []
+
+        for i in range(0, fromLine):
+            newLines.append(oldLines[i])
+
+        newLines.extend(content.split('\n'))
+
+        for i in range(fromLine, toLine):
+            newLines.append(oldLines[i])
+
+        self._openFile(name, 'w').write('\n'.join(newLines))
+
+class SvnFacade(ControllerFacade):
+    """
+    A facade for executing the test cases against SVN installation (both Unix and Windows).
+    """
+
+    def __init__(self):
+        ControllerFacade.__init__(self)
+
         self.repoDir = '%s/temp-svn-repo' % os.getcwd().replace('\\', '/')
         self.workingDir = '%s/temp-svn-wd' % os.getcwd().replace('\\', '/')
         self.message = ''
 
-    def _execsvn(self, cmd):
-        """Executes cmd in the working directory."""
+    def _execInWorkingDir(self, cmd):
+        """Executes C{cmd} in the working directory."""
         # See if we should briefly pause.
         if hasattr(self, 'tracesvn'):
             print cmd
@@ -222,7 +339,7 @@ class SvnFacade:
             arg = '%'
 
         newHook.write('#!/bin/sh%s%spython %s -c "%s/commitmessage.conf" %s1 %s2 > commitmessage.out 2>&1' %
-            (os.linesep, os.linesep, os.path.join('..', '..', 'commitmessage', 'main.py'), self.repoDir, arg, arg))
+            (os.linesep, os.linesep, self.mainPath, self.repoDir, arg, arg))
 
         svnConfig = config.replace('CONTROLLER', 'commitmessage.controllers.svn.SvnController')
 
@@ -244,28 +361,28 @@ class SvnFacade:
 
     def commit(self):
         self._openFile('temp-message.txt', 'w').write(self.message)
-        self._execsvn('svn commit -F temp-message.txt')
+        self._execInWorkingDir('svn commit -F temp-message.txt')
 
     def _openFile(self, name, flags):
         return file('%s/%s' % (self.workingDir, name), flags)
 
     def addDirectory(self, name=''):
         os.mkdir('%s/%s' % (self.workingDir, name))
-        self._execsvn('svn add %s' % name)
+        self._execInWorkingDir('svn add %s' % name)
 
     def addFile(self, name='', content=''):
         self._openFile(name, 'w').write(content)
-        self._execsvn('svn add %s' % name)
+        self._execInWorkingDir('svn add %s' % name)
 
     def addReferencedFile(self, name='', location=''):
         self._openFile(name, 'w').writelines(self._openFile(location, 'r').readlines())
-        self._execsvn('svn add %s' % name)
+        self._execInWorkingDir('svn add %s' % name)
 
     def moveFile(self, fromPath='', toPath=''):
-        self._execsvn('svn move %s %s' % (fromPath, toPath))
+        self._execInWorkingDir('svn move %s %s' % (fromPath, toPath))
 
     def removeFile(self, name=''):
-        self._execsvn('svn remove %s' % name)
+        self._execInWorkingDir('svn remove %s' % name)
 
     def changeFile(self, name='', fromLine='', toLine='', content=''):
         fromLine = int(fromLine)
@@ -285,7 +402,7 @@ class SvnFacade:
         self._openFile(name, 'w').write('\n'.join(newLines))
 
 def _exec(cmd):
-    """Executes cmd and returns the lines of stdout."""
+    """Executes C{cmd} and returns the lines of C{stdout}."""
     stdin, stdout, stderr = os.popen3(cmd)
 
     outlines = stdout.readlines()
@@ -299,6 +416,9 @@ def _exec(cmd):
         print 'Error executing: %s' % cmd
         print ''.join(errlines)
         print ''
+
+    print ''.join(outlines)
+    print ''
 
     return outlines
 
@@ -324,14 +444,18 @@ def cleanup():
     """Removes lingering temp files from old tests."""
     if os.path.exists('commitmessage.out'):
         os.remove('commitmessage.out')
-    for old in filter(lambda x: x.startswith('temp-'), os.listdir('.')):
+    for old in filter(lambda x: x.startswith('temp-') or x == 'CVSROOT', os.listdir('.')):
         shutil.rmtree(old)
 
 if __name__ == '__main__':
     cleanup()
 
     # Create the harness for (currently, just) svn
-    harness = Harness([SvnFacade()], sys.argv[1:])
+    facades = [] #SvnFacade()]
+    if os.name == 'posix':
+        facades.append(CvsFacade())
+
+    harness = Harness(facades, sys.argv[1:])
 
     # Create a L{Case} for each xml test file in this directory
     cases = [Case(x) for x in os.listdir('.') if x.endswith('.xml')]
