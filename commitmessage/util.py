@@ -53,7 +53,6 @@ class CmConfigParser(ConfigParser):
         for name in viewNames:
             fullClassName = ConfigParser.get(self, 'views', name)
             view = getNewInstance(fullClassName)
-            print view
             view.__init__(name, model)
             # Setup default values
             for option in ConfigParser.options(self, name):
