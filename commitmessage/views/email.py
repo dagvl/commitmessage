@@ -8,6 +8,7 @@
 
 import os
 import sys
+import time
 
 if __name__ == '__main__':
     # Setup sys.path to correctly search for commitmessage.xxx[.yyy] modules
@@ -15,6 +16,7 @@ if __name__ == '__main__':
     rootCmPath = os.path.abspath(currentDir + '/../../')
     sys.path.append(rootCmPath)
 
+from StringIO import StringIO
 from smtplib import SMTP
 from commitmessage.framework import View
 
@@ -23,9 +25,27 @@ class BaseEmailView(View):
     style-specific email Views to extend."""
 
     def execute(self):
-        text = '%s\n%s\n%s' % (header(), self.generateBody(), footer())
+        to = self.to().split(',')
+        to = map(lambda t: t.strip(), to)
+
+        text = StringIO('')
+        text.write('To: %s\r\n' % ', '.join(to))
+        text.write('From: %s\r\n' % self.keyword_from())
+        text.write('Subject: %s\r\n' % self.subject())
+        text.write('Date: %s -0000 (GMT)\r\n' % time.strftime('%A %d %B %Y %H:%M:%S', time.gmtime()))
+        text.write('\r\n\r\n')
+
+        if len(self.header()) > 0:
+            text.write('%s\n\n' % self.header())
+        self.generateBody(text)
+        if len(self.footer()) > 0:
+            text.write('\n\n%s' % self.footer())
+
+        text.seek(0)
+        body = text.read()
+
         smtp = SMTP(self.server())
-        smtp.sendmail(self.keyword_from(), self.to(), text)
+        smtp.sendmail(self.keyword_from(), to, body)
         smtp.quit()
 
     def footer(self, footer=None):
@@ -68,7 +88,63 @@ class ApacheStyleEmailView(BaseEmailView):
 
 class TigrisStyleEmailView(BaseEmailView):
     """Sends out an email formatted in a style mimicking Tigris commit emails."""
-    pass
+
+    def generateBody(self, text):
+        """Returns a string for the body of the email."""
+        text.write('User: %s\n' % self.model.user())
+        text.write('Date: %s\n' % time.strftime('%Y/%m/%d %I:%M %p'))
+        text.write('\n')
+
+        addFileDirs = self.model.directoriesWithFiles('added')
+        if len(addFileDirs) > 0:
+            text.write('Added\n')
+            for dir in addFileDirs:
+                text.write(' %s\n' % dir.path())
+                files = dir.files('added')
+                text.write('  %s' % files[0].name())
+                for file in files[1:]:
+                    text.write(', %s' % file.name())
+                text.write('\n')
+            text.write('\n')
+
+        remFileDirs = self.model.directoriesWithFiles('removed')
+        if len(remFileDirs) > 0:
+            text.write('Removed\n')
+            for dir in remFileDirs:
+                text.write(' %s\n' % dir.path())
+                files = dir.files('removed')
+                text.write('  %s' % files[0].name())
+                for file in files[1:]:
+                    text.write(', %s' % file.name())
+                text.write('\n')
+            text.write('\n')
+
+        modFileDirs = self.model.directoriesWithFiles('modified')
+        if len(modFileDirs) > 0:
+            text.write('Modified\n')
+            for dir in modFileDirs:
+                text.write(' %s\n' % dir.path())
+                files = dir.files('modified')
+                text.write('  %s' % files[0].name())
+                for file in files[1:]:
+                    text.write(', %s' % file.name())
+                text.write('\n')
+            text.write('\n')
+
+        text.write('Log\n %s\n\n' % self.model.log())
+
+        text.write('File changes\n\n')
+        for dir in self.model.directoriesWithFiles():
+            s = 'Directory: %s' % dir.path()
+            line = ''
+            for i in range(0, len(s)):
+                line = line + '='
+            text.write('%s\n%s\n\n' % (s, line))
+
+            for file in dir.files():
+                text.write('File [%s]: %s\n' % (file.action(), file.name()))
+                text.write('Delta lines: %s\n' % file.delta())
+                text.write('%s\n' % file.diff())
 
 class HtmlEmailView(BaseEmailView):
     """Sends out a HTML formatted email with the commit info in tables."""
