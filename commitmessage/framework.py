@@ -56,11 +56,21 @@ class Controller:
 class DomainObject:
     """Puts in some getter/setter infrastructure."""
 
+    def __init__(self, readonly={}):
+        # Use __dict__ to avoid going to __setattr__
+        self.__dict__['readonly'] = readonly
+        for key, value in self.readonly.items():
+            self.__dict__[key] = value
+
     def _upper(self, name):
         return name[0].upper() + name[1:]
 
     def __setattr__(self, name, value):
         """Optionally delegate checking out to setters."""
+
+        if self.readonly.has_key(name):
+            raise CmException, 'The attribute %s is read only.' % name
+
         setter = 'set%s' % self._upper(name)
         if hasattr(self, setter):
             method = getattr(self, setter)
@@ -80,7 +90,7 @@ class DomainObject:
                 return method()
 
         # There was no getter to calculate the value, so fall back with it not being a valid attribute
-        raise AttributeError('Attribute %s does not have a valid getter or simply does not exist.' % name)
+        raise AttributeError, 'Attribute %s does not have a valid getter or simply does not exist.' % name
 
 class File(DomainObject):
     """Represents a file that has been affected by the commit."""
@@ -90,8 +100,9 @@ class File(DomainObject):
         if name.find('/') != -1:
             raise CmException, "File names may not have foward slashes in them."
 
-        self.__dict__['name'] = name
-        self.__dict__['directory'] = directory
+        # Set up the read only attributes
+        DomainObject.__init__(self, {'name': name, 'directory': directory})
+
         self.action = action
         self.rev = None
         self.delta = None
@@ -119,10 +130,10 @@ class Directory(DomainObject):
         if path == '' or not path.startswith('/') or not path.endswith('/'):
             raise CmException, 'Directory paths must start with a forward slash and end with a forward slash.'
 
-        self.__dict__['path'] = path
+        # Setup the read only attribute
+        DomainObject.__init__(self, {'path': path, 'files': [], 'subdirectories': []})
+
         self.action = action
-        self.files = []
-        self.subdirectories = []
 
     def __repr__(self):
         """Return the path of the directory."""
@@ -184,8 +195,8 @@ class Model(DomainObject):
     Properties are available via accessors to allow easy documentation."""
 
     def __init__(self):
+        DomainObject.__init__(self, {'rootDirectory': Directory('/')})
         self.user = ''
-        self.rootDirectory = Directory('/')
 
     def directory(self, path):
         """Returns the Model's corresponding directory for the given path.
