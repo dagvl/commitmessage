@@ -1,6 +1,7 @@
 #!/usr/bin/perl -w
 #
-# Version: 2.0
+# commitmessage_loginfo.pl
+# Version 0.9
 #
 # Perl filter to handle the log messages from the checkin of files in
 # a directory. This script will group the lists of files by log

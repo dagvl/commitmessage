@@ -1,5 +1,8 @@
 #!/usr/bin/perl
 #
+# commitmessage_commitinfo.pl
+# Version 0.9
+#
 # Perl filter to handle pre-commit checking of files.  This program
 # records the last directory where commits will be taking place for
 # use by the log_accum.pl script.
