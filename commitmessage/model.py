@@ -109,7 +109,7 @@ class File:
         return locals()
     path = property(**path())
 
-_re_path = re.compile('^/([a-z-_@#]+/)*$')
+_re_path = re.compile('^/([^/]+/)*$')
 
 class Directory:
     """Represents a directory that has been affected by the commit."""
