@@ -72,18 +72,28 @@ if sys.argv[1] == 'tags':
     os.popen('exctags -R commitmessage')
 
 if sys.argv[1] == 'dist':
-    subdir = 'commitmessage-2.0/'
+    version = '2.0'
+    subdir = 'commitmessage-%s/' % version
 
-    t = tarfile.TarFile('commitmessage.tar', 'w')
-    z = zipfile.ZipFile('commitmessage.zip', 'w')
+    if not os.path.exists('dist'):
+        os.mkdir('dist')
+
+    t = tarfile.TarFile('dist/commitmessage-%s.tar' % version, 'w')
+    z = zipfile.ZipFile('dist/commitmessage-%s.zip' % version, 'w')
 
     for root, dirs, files in os.walk('commitmessage'):
+        # Avoid recursion
+        if root == 'dist':
+            continue
+
+        print root
+
         dirAdded = False
         for file in files:
             if file.endswith('.py'):
                 # See if we need to add the directory
                 if not dirAdded:
-                    t.add('%s' % root, subdir + root, recursive=False)
+                    t.add(root, subdir + root, recursive=False)
                     dirAdded = True
                 file = root + os.sep + file
                 t.add(file, subdir + file)
