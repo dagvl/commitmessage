@@ -79,7 +79,7 @@ sub parseArgv {
     $self->model(Model->new($user, $module));
 
     # Check for - New Directory
-    if ($#argv == 4 && $argv[1] eq "-" && $argv[2] eq "New" && $argv[3] eq "Directory") {
+    if ($#files == 2 && $files[0] eq "-" && $files[1] eq "New" && $files[2] eq "directory") {
         $self->model->newDirectory($self->{currentDirectory});
     }
 }
