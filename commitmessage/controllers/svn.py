@@ -74,13 +74,18 @@ class SvnController(Controller):
         text = ''
         added = 0
         removed = 0
-        for line in diff[1:]:
+        for line in diff[1:-1]:
             if len(line) > 0:
                 if line[0] == '+' and not line[0:4] == '+++ ':
                     added = added + 1
                 elif line[0] == '-' and not line[0:4] == '--- ':
                     removed = removed + 1
             text = text + line
+
+        # Handle copy without modification, with results in no diff
+        if text == '':
+            text = diff[0]
+
         return ('+%s -%s' % (added, removed), text)
 
     def svnlook(self, command):
