@@ -263,5 +263,65 @@ Delta lines: +1 -0
 \ No newline at end of file
     </view>
   </commit>
+  <commit>
+    <moveFile fromPath="sub1/foo2.txt" toPath="sub1/foo2a.txt" />
+    <changeFile name="sub1/foo2a.txt" fromLine="0" toLine="1">
+      this is in a sub directory
+    </changeFile>
+    <moveFile fromPath="sub1/foo1.txt" toPath="sub1/foo1a.txt" />
+    <view name="TigrisStyleEmailView">
+To: stephen@beachead.com
+From: stephen@beachead.com
+Subject: cvs commit: /sub1/
+Date: #####
+
+User: stephen
+Date: #####
+
+Added
+ /sub1/
+  foo1a.txt, foo2a.txt
+
+Removed
+ /sub1/
+  foo1.txt, foo2.txt
+
+Log
+ a subdirectory
+
+File changes
+
+Directory: /sub1/
+=================
+
+File [removed]: foo1.txt
+Delta lines: +0 -1
+===================================================================
+--- sub1/foo1.txt	#####
++++ sub1/foo1.txt	#####
+@@ -1 +0,0 @@
+-this is a sub directory
+\ No newline at end of file
+
+
+File [added]: foo1a.txt
+Delta lines: None
+None
+File [removed]: foo2.txt
+Delta lines: +0 -1
+===================================================================
+--- sub1/foo2.txt	#####
++++ sub1/foo2.txt	#####
+@@ -1 +0,0 @@
+-this is also a sub directory
+\ No newline at end of file
+
+
+File [added]: foo2a.txt
+Delta lines: None
+None
+
+    </view>
+  </commit>
 </test>
 
