@@ -56,7 +56,10 @@ class BaseEmailView(View):
             smtp = SMTP(self.server)
             if self.username is not None:
                 smtp.login(self.username, self.password)
-            smtp.sendmail(self['from'], self.to, body)
+            smtp.sendmail(
+                self['from'],
+                [addr.strip() for add in self.to.split(',')],
+                body)
             smtp.quit()
 
 class ApacheStyleEmailView(BaseEmailView):
