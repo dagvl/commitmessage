@@ -111,6 +111,13 @@ class Directory:
         self.__files = []
         self.__subdirectories = []
 
+    def __repr__(self):
+        """Return the path of the directory."""
+        return """<Directory '%s'>""" % self.path()
+
+    def __str__(self):
+        return self.__repr__()
+
     def path(self, path=None):
         """The path relative to the repository root, e.g. CVSROOT/testdir."""
         if path is not None:
@@ -170,14 +177,18 @@ class Model:
         self.user('')
         self.__rootDirectory = Directory('/')
 
-    def addDirectory(self, directory):
-        """Adds a directory into the Model's directory tree along."""
-        # Skip the first blank dir, dirs = ['', 'a', 'a-a']
-        dirs = directory.path().split('/')[1:]
+    def directory(self, path):
+        """Returns the Model's corresponding directory for the given path.
+        Creates the new directories and its sub hierarchy if need be."""
+        if path[0] != '/':
+            raise CmException, 'Directory paths must start with a forward slash.'
+        if path == '/':
+            return self.rootDirectory()
 
+        # Skip the first blank dir, parts = ['', 'a', 'a-a']
+        parts = path.split('/')[1:]
         currentDirectory = self.rootDirectory()
-        # Skip the last one, as we don't auto-create it, it's a given param
-        for dir in dirs[0:-1]:
+        for dir in parts:
             if currentDirectory.hasSubdirectory(dir):
                 currentDirectory = currentDirectory.subdirectory(dir)
             else:
@@ -189,8 +200,16 @@ class Model:
                 newdir = Directory(path)
                 currentDirectory.addSubdirectory(newdir)
                 currentDirectory = newdir
-        if not currentDirectory.hasSubdirectory(directory.name()):
-            currentDirectory.addSubdirectory(directory)
+        return currentDirectory
+
+    def addDirectory(self, directory):
+        """Adds a directory into the Model's directory tree along. Uses
+        self.directory(path), except takes a default value for the new directory
+        to add at the bottom of the hierarchy."""
+        parentPath = '/' + '/'.join(directory.path().split('/')[1:-1])
+        parentDirectory = self.directory(parentPath)
+        if not parentDirectory.hasSubdirectory(directory.name()):
+            parentDirectory.addSubdirectory(directory)
 
     def greatestCommonDirectory(self):
         """The greatest commont directory of a commit to base the module matching on."""

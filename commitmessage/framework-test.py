@@ -26,6 +26,10 @@ class TestDirectoryHierarchy(unittest.TestCase):
         """Creates an empty model to work against."""
         self.model = Model()
 
+    def testGetRootDirectory(self):
+        """Make sure getting the root directory works."""
+        self.assertEquals(1, self.model.rootDirectory() is self.model.directory('/'))
+
     def testOne(self):
         """Simple test of adding a dir to the model."""
         self.model.addDirectory(Directory('/test1'))
@@ -81,11 +85,14 @@ class TestDirectoryHierarchy(unittest.TestCase):
         self.assertEquals(1, len(dir.files('added')))
         self.assertEquals(1, len(dir.files('modified')))
 
+    def testDirectory(self):
+        dir = self.model.directory('/x/y')
+        self.assertEquals(3, len(self.model.directories()))
+
     def testModelWithRootFileChange(self):
-        m = Model()
-        f = File('x.txt', m.rootDirectory(), 'added')
-        self.assertEquals(1, len(m.files()))
-        self.assertEquals(1, len(m.directoriesWithFiles('added')))
+        f = File('x.txt', self.model.rootDirectory(), 'added')
+        self.assertEquals(1, len(self.model.files()))
+        self.assertEquals(1, len(self.model.directoriesWithFiles('added')))
 
 if __name__ == '__main__':
     unittest.main()
