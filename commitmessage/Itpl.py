@@ -1,7 +1,8 @@
 """String interpolation for Python (by Ka-Ping Yee, 14 Feb 2000).
 
-(Found Itpl via PEP 215 on 2/10/03 for use in commitmessage...licensing issues?
-PEP 215 says it is public domain, so it should be okay. - Stephen Haberman)
+(Found Itpl via PEP 215 on 2/10/03 for use in commitmessage...Contacted the
+original author and received permission to use Itpl.py for any means.
+- Stephen Haberman)
 
 This module lets you quickly and conveniently interpolate values into
 strings (in the flavour of Perl or Tcl, but with less extraneous
