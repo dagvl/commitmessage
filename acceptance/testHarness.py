@@ -26,13 +26,15 @@ class Harness:
         self.passes = 0
         self.failures = 0
 
-        options, args = getopt.getopt(args, '', ['trace', 'trace-svn'])
+        options, args = getopt.getopt(args, '', ['trace', 'trace-svn', 'do-not-destroy'])
         for option, value in options:
             if option == '--trace':
                 self.facades = [Tracer(x) for x in self.facades]
             if option == '--trace-svn':
                 for facade in self.facades:
                     facade.tracesvn = 1
+            if option == '--do-not-destroy':
+                self.donotdestroy = 1
 
     def run(self, cases):
         """Runs XML test cases."""
@@ -74,7 +76,8 @@ class Harness:
 
 
             """We're done with this test case, so remove the repository."""
-            facade.destroyRepository()
+            if not hasattr(self, 'donotdestroy'):
+                facade.destroyRepository()
 
         print ''
         print 'Passes: %s' % self.passes
