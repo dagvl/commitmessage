@@ -7,6 +7,7 @@ This file contains the install instructions for:
 
  A. CVS on Unix
  B. Subversion on Unix or Windows
+ C. Troubleshooting Tips
 
 Either set of instructions should take about 5 minutes to hook into
 commitmessage into your repository and have it start sending out commit emails.
@@ -101,4 +102,33 @@ To install commitmessage for a Unix CVS repository, you should have:
 That's it. Any commits in this SVN repository will be run through their
 configured commitmessage views.
 
+#####################################################################
+#
+# C. Troubleshooting Tips
+#
+#####################################################################
+
+Troubleshooting a Subversion installation is fairly easy:
+
+ 1. Try running main.py by itself, just as the Subversion hook file would. E.g.:
+
+    (Windows)
+    python c:\path\to\commitmesasge-2.0-beta-1\main.py "c:\my-svn-repo" 1
+
+    (Unix)
+    python /path/to/commitmesasge-2.0-beta-1/main.py "/my-svn-repo" 1
+
+    Where 1 is a revision number you have previously committed.
+
+ 2. Try running the hook file by itself, just as Subversion would. E.g.:
+
+    (Windows)
+    c:\my-svn-repo\hooks\post-commit.bat "c:\my-svn-repo" 1
+
+    (Unix)
+    /my-svn-repo/hooks/post-commit "/my-svn-repo" 1
+
+ 3. On unix, double check that the #! within the main.py is working (e.g. you
+    may have to explicitly call 'python .../main.py' instead of just
+    '.../main.py' to ensure the Python interpreter is executed).
 
