@@ -167,6 +167,9 @@ class Case:
         """Returns the commits that this case wants to do."""
         return [Commit(x) for x in self.xmldoc.getElementsByTagName("commit")]
 
+    def __repr__(self):
+        return '<Case %s>' % self.fileName
+
 class Commit:
     """A class to wrap a series of changes to a working directory."""
 
