@@ -223,7 +223,6 @@ class SvnFacade:
         self._execsvn('svn add %s' % name)
 
     def moveFile(self, fromPath='', toPath=''):
-        print fromPath
         self._execsvn('svn move %s %s' % (fromPath, toPath))
 
     def removeFile(self, name=''):
