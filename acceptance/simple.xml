@@ -45,14 +45,14 @@ Date: #####
 User: stephen
 Date: #####
 
-Added
+Added:
  /
   foo.txt
 
-Log
+Log:
  foo
 
-File changes
+File Changes:
 
 Directory: /
 ============
@@ -93,21 +93,21 @@ Date: #####
 User: stephen
 Date: #####
 
-Added
+Added:
  /
   foo2.txt, foo3.txt
 
-Modified
+Modified:
  /
   foo.txt
 
-Log
+Log:
  this
  has
  four
  lines
 
-File changes
+File Changes:
 
 Directory: /
 ============
@@ -171,24 +171,24 @@ Date: #####
 User: stephen
 Date: #####
 
-Added
+Added:
  /
   foo4.txt
  /sub1/
   binary.gif, foo1.txt, foo2.txt
 
-Removed
+Removed:
  /
   foo2.txt
 
-Modified
+Modified:
  /
   foo3.txt
 
-Log
+Log:
  a subdirectory
 
-File changes
+File Changes:
 
 Directory: /
 ============
@@ -271,18 +271,18 @@ Date: #####
 User: stephen
 Date: #####
 
-Added
+Added:
  /sub1/
   foo1a.txt, foo2a.txt
 
-Removed
+Removed:
  /sub1/
   foo1.txt, foo2.txt
 
-Log
+Log:
  a subdirectory
 
-File changes
+File Changes:
 
 Directory: /sub1/
 =================
