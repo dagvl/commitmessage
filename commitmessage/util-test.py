@@ -26,9 +26,7 @@ class TestNewInstance(unittest.TestCase):
     def testCvsController(self):
         c = getNewInstance('commitmessage.controllers.cvs.CvsController')
         self.assertEquals('CvsController', c.__class__.__name__)
-
-        c.__init__('foo')
-        self.assertEquals('foo', c.getTest())
+        c.__init__(None, None, None)
 
     def testBadController(self):
         self.assertRaises(CmException, getNewInstance, 'blah.blah.BlahController')
@@ -45,7 +43,8 @@ class BaseConfigTest(unittest.TestCase):
             'cvsroot': '^CVSROOT',
             'ibm2': '^ibm2',
             'stephen': '^stephen',
-            'stephen-misc': '^stephen/misc'}
+            'stephen-misc': '^stephen/misc',
+            'module1': '^module1'}
         for name, value in expected.items():
             self.assertEquals(value, self.config.get('modules', name))
         self.assertEquals(len(expected), len(self.config.options('modules')))
@@ -54,7 +53,8 @@ class BaseConfigTest(unittest.TestCase):
         """Makes sure the views are being read in correctly."""
         expected = {
             'bombsight': 'commitmessage.views.bugtracking.FogBugzView',
-            'email': 'commitmessage.views.email.HtmlEmailView'}
+            'email': 'commitmessage.views.email.HtmlEmailView',
+            'dump': 'commitmessage.views.misc.DumpView'}
         for name, value in expected.items():
             self.assertEquals(value, self.config.get('views', name))
         self.assertEquals(len(expected), len(self.config.options('views')))

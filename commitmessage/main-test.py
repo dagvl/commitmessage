@@ -33,7 +33,8 @@ class TestCvsController(unittest.TestCase):
 
     def setUp(self):
         """Set the CVSROOT environment variable."""
-        os.environ['CVSROOT'] = '/home/stephen/test/cvs'
+        os.environ['CVSROOT'] = os.path.expanduser('~/test/cvs')
+        os.chdir(os.path.expanduser('~/test'))
 
     def testFile(self):
         tests = self.parseTestFile()

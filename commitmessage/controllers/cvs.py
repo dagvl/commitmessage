@@ -90,7 +90,6 @@ class CvsController(Controller):
         """Sets the 'done' attribute to false so we handle the multiple
         executions CVS does against main.py."""
         Controller.__init__(self, config, argv, stdin)
-        self.done = 0
 
     def process(self):
         """Read in the information."""
@@ -102,7 +101,18 @@ class CvsController(Controller):
     def stopProcessForNow(self):
         """Return whether doLogInfo has said it's okay to stop (e.g. it has
         reached the last directory recorded by doCommitInfo)."""
-        return self.done
+        path = '%s/%s' % (CvsController.CVSROOT, self.currentDirectory)
+        matched = 0
+        f = file(CvsController.LAST_DIRECTORY_FILE, 'r')
+        for line in f.readlines():
+            if line == pathToMatch:
+                matched = 1
+        f.close()
+
+        if matched:
+            return 0
+        else:
+            return 1
 
     def doCommitInfo(self):
         """Executed first and saves the current directory name to
@@ -123,23 +133,43 @@ class CvsController(Controller):
     def saveCurrentDirectoryChangesToFile(self, arg):
         """Parses in the current input to loginfo."""
         temp = arg.split(' ')
-        logLines, currentDirectory = self.parseDirectoryInfoFromStdin(temp[0])
-        self.fillInValues(currentDirectory)
+        currentDirectoryName = temp[0]
+        directoryFiles = temp[1:]
 
-    def fillInValues(self, directory):
+        # Creates self.currentDirectory and self.logLines
+        self.parseLoginfoStdin(currentDirectoryName)
+
+        # Check for a new directory commit
+        if len(directoryFiles) == 3 \
+            and directoryFiles[0] == '-' \
+            and directoryFiles[1] == 'New' \
+            and directoryFiles[2] == 'directory':
+            currentDirectory.action('added')
+
+        self.fillInValues()
+        self.saveCurrentDirectory()
+
+    def saveDirectory(self):
+        """Pickles the given directory off to TMPDIR/FILE_PREFIXdir-path."""
+        path = '%s/%s%s' % (Controller.TMPDIR, FILE_PREFIX, self.currentDirectory.path().replace('/', '-'))
+        file = file(path, 'r')
+        pickle.dump(directory, file, 1)
+        file.close()
+
+    def fillInValues(self):
         """Goes through each file and fills in the missing rev/delta/diff information."""
-        for file in directory.files():
+        for file in self.currentDirectory.files():
             rev, delta = cvs_status(file.name())
             file.rev(rev)
             file.delta(delta)
             if file.action() == 'added' or file.action() == 'modified':
                 file.diff(cvs_diff(file.name(), rev))
 
-    def parseDirectoryInfoFromStdin(self, directoryName):
+    def parseLoginfoStdin(self, directoryName):
         """Reads in the loginfo text from self.stdin and retreives the
         corresponding diff/delta information for each file."""
-        logLines = []
-        currentDirectory = Directory(directoryName)
+        self.logLines = []
+        self.currentDirectory = Directory(directoryName)
 
         STATE_NONE = 0
         STATE_MODIFIED = 1
@@ -147,11 +177,6 @@ class CvsController(Controller):
         STATE_REMOVED = 3
         STATE_LOG = 4
         state = STATE_NONE
-
-        # Check for a new directory commit
-        files = temp[1:]
-        if len(files) == 3 and files[0] == '-' and files[1] == 'New' and files[2] == 'directory':
-            currentDirectory.action('added')
 
         m = re.compile(r"^Modified Files")
         a = re.compile(r"^Added Files")
@@ -177,14 +202,28 @@ class CvsController(Controller):
 
             files = line.split(' ')
             if (state == STATE_MODIFIED):
-                for name in files: File(name, currentDirectory, 'modified')
+                for name in files: File(name, self.currentDirectory, 'modified')
             if (state == STATE_ADDED): 
-                for name in files: File(name, currentDirectory, 'added')
+                for name in files: File(name, self.currentDirectory, 'added')
             if (state == STATE_REMOVED): 
-                for name in files: File(name, currentDirectory, 'removed')
+                for name in files: File(name, self.currentDirectory, 'removed')
             if (state == STATE_LOG):
-                logLines.append(line)
-        return logLines, currentDirectory
+                self.logLines.append(line)
+
+    def executeViews():
+        """Over-ride the parent executeViews to re-build the model from the
+        temporary files."""
+        self.loadSavedDirectoriesIntoModel()
+        # Carry on with executing the views
+        Controller.executeViews(self)
+
+    def loadSavedDirectoriesIntoModel():
+        """Re-loads the directories into the Model."""
+        allFiles = os.listdir(Controller.TMPDIR)
+        for file in allFiles:
+            if file.startsWith(FILE_PREFIX):
+                directory = pickle.load('%s/%s' % (Controller.TMPDIR, file))
+                self.model.merge(directory)
 
 if __name__ == '__name__':
     print('hello kitty')

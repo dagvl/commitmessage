@@ -7,6 +7,7 @@
 """Provides the core classes for the commitmessage framework."""
 
 import os
+import pickle
 import string
 import sys
 
@@ -165,6 +166,10 @@ class Model:
         """The user who made the commit."""
         if user is not None: self._user = user
         return self._user
+
+    def merge(self, directory):
+        """Merges a directory object into the existing hierarchy."""
+        pass
 
 class View:
     """Provides a base View for specific implementations to extend."""

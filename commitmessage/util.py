@@ -40,6 +40,7 @@ class CmConfigParser(ConfigParser):
             p = re.compile(match)
             if p.search(commitPath):
                 modules.append(module)
+        modules.sort()
         return modules
 
     def getViewsForModule(self, module, model):
