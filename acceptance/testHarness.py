@@ -50,42 +50,32 @@ class Harness:
                 """Let the case do its stuff."""
                 commit.doChanges(facade)
 
-                """Tell the facade to commit, which will 'commit' and have the controller executed."""
+                """Tell the facade to commit, which will 'commit' and have the controller executed by the SCM system."""
                 facade.commit()
 
                 """Check the results."""
                 for view in commit.views():
-                    matched = 1
-
-                    e = view.expected.strip().split('\n')
-                    a = facade.actual(view.name).strip().split('\n')
-
-                    if len(e) != len(a):
-                        matched = 0
+                    if self.matchesIgnoringDates(view.expected, facade.actual(view.name)):
+                        self.passes = self.passes + 1
                     else:
-                        for i in range(0, len(e)):
-                            ignoredDateIndex = e[i].find('#####')
-                            if ignoredDateIndex > -1:
-                                if e[i][0:ignoredDateIndex] != a[i][0:ignoredDateIndex]:
-                                    matched = 0
-                                    break
-                            elif e[i] != a[i]:
-                                matched = 0
-                                break
-
-                    if matched == 0:
                         self.failures = self.failures + 1
 
+                        delim = '=================================================='
+
                         print 'Error:'
+
                         print 'Expected:'
-                        print ' ' + '\n '.join(e)
+                        print delim
+                        print view.expected
+                        print delim
+
                         print 'Actual:'
-                        print ' ' + '\n '.join(a)
+                        print delim
+                        print facade.actual(view.name)
+                        print delim
 
                         if self.wait == 1:
                             raw_input('Waiting...')
-                    else:
-                        self.passes = self.passes + 1
 
 
             """We're done with this test case, so remove the repository."""
@@ -94,6 +84,23 @@ class Harness:
         print ''
         print 'Passes: %s' % self.passes
         print 'Failures: %s' % self.failures
+
+    def matchesIgnoringDates(self, expected, actual):
+        expected = expected.strip().split('\n')
+        actual = actual.strip().split('\n')
+
+        if len(expected) != len(actual):
+            return 0
+
+        for i in range(0, len(expected)):
+            ignoredDateIndex = expected[i].find('#####')
+            if ignoredDateIndex > -1:
+                if expected[i][0:ignoredDateIndex] != actual[i][0:ignoredDateIndex]:
+                    return 0
+            elif expected[i] != actual[i]:
+                return 0
+
+        return 1
 
 class Case:
     """A class to wrap the XML workflow files."""
@@ -162,6 +169,7 @@ class SvnFacade:
     def __init__(self):
         self.repoDir = '%s/temp-svn-repo' % os.getcwd().replace('\\', '/')
         self.workingDir = '%s/temp-svn-wd' % os.getcwd().replace('\\', '/')
+        self.log = ''
 
     def _execsvn(self, cmd):
         """Executes cmd in the working directory."""
@@ -188,11 +196,14 @@ class SvnFacade:
         return file('%s/%s.txt' % (self.workingDir, viewName)).read()
 
     def commit(self):
-        self._execsvn('svn commit -m "foo"')
+        self._execsvn('svn commit -m "%s"' % self.log)
 
     def addFile(self, name, content):
-        file('%s/%s' % (self.workingDir, name), 'w').write(content)
+        file('%s/%s' % (self.workingDir, name), 'w').write(content.strip())
         self._execsvn('svn add %s' % name)
+
+    def message(self, log):
+        self.log = log.strip()
 
 def _exec(cmd):
     """Executes cmd and returns the lines of stdout."""
