@@ -233,6 +233,7 @@ class ControllerFacade:
         f = file('%s/%s' % (self.workingDir, name), 'r')
         lines = f.readlines()
         f.close()
+        return lines
 
     def _writeFile(self, name, lines):
         f = file('%s/%s' % (self.workingDir, name), 'w')
