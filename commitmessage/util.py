@@ -9,17 +9,10 @@ commitmessage-specific logic to the view/module lookups."""
 
 from ConfigParser import ConfigParser
 from types import ModuleType
-import imp
 import new
 import os
 import re
 import sys
-
-if __name__ == '__main__':
-    # Setup sys.path to correctly search for commitmessage.xxx[.yyy] modules
-    currentDir = os.path.dirname(sys.argv[0])
-    rootCmPath = os.path.abspath(currentDir + '/../')
-    sys.path.append(rootCmPath)
 
 from commitmessage.Itpl import Itpl
 from commitmessage.exceptions import CmException

@@ -11,12 +11,6 @@ import cPickle
 import re
 import sys
 
-if __name__ == '__main__':
-    # Setup sys.path to correctly search for commitmessage.xxx[.yyy] modules
-    currentDir = os.path.dirname(sys.argv[0])
-    rootCmPath = os.path.abspath(currentDir + '/../../')
-    sys.path.append(rootCmPath)
-
 from commitmessage.framework import Controller, Directory, File, Model
 from commitmessage.util import execute
 
