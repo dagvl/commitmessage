@@ -56,6 +56,7 @@ class Controller:
         for module in modules:
             views = self.config.getViewsForModule(module, self.model)
             for view in views:
+                print('Firing view %s' % view.name)
                 view.execute()
 
 class File:
@@ -104,19 +105,23 @@ class File:
 class Directory:
     """Represents a directory that has been affected by the commit."""
 
-    def __init__(self, path):
+    def __init__(self, path, action='none'):
         self.path(path)
+        self.action(action)
         self.__files = []
         self.__subdirectories = []
 
     def path(self, path=None):
         """The path relative to the repository root, e.g. CVSROOT/testdir."""
-        if path is not None: self.__path = path
+        if path is not None:
+            if path != '' and not path.startswith('/'):
+                raise CmException, 'Directory paths must start with a forward slash.'
+            self.__path = path
         return self.__path
 
     def name(self):
         """Returns just the name of the directory, e.g. testdir."""
-        return self.path().split('/')[-1]
+        return os.path.split(self.path())[-1]
 
     def action(self, action=None):
         """The action that was performed: added, removed, modified, moved, branch"""
@@ -127,16 +132,30 @@ class Directory:
         """Returns all of the files in this directory affected by the commit."""
         return self.__files
 
+    def subdirectory(self, name):
+        """Return a subdirectory with a specific name."""
+        for dir in self.subdirectories():
+            if dir.name() == name:
+                return dir
+        return None
+
     def subdirectories(self):
-        """Returns all of hte subdirectories in this directory with files affected by the commit."""
+        """Returns all of the subdirectories in this directory with files affected by the commit."""
         return self.__subdirectories
+
+    def hasSubdirectory(self, name):
+        """Returns whether the directory has a subdirectory named 'name'."""
+        for dir in self.subdirectories():
+            if dir.name() == name:
+                return 1
+        return 0
 
     def addFile(self, file):
         """Saves a file object into this directory."""
         self.__files.append(file)
 
     def addSubdirectory(self, subdir):
-        """Saves a subdirectory object into this directory."""
+        """Saves a directory object into this directory."""
         self.__subdirectories.append(subdir)
 
 class Model:
@@ -145,39 +164,49 @@ class Model:
     Properties are available via accessors to allow easy documentation."""
 
     def __init__(self):
+        self.__rootDirectory = Directory('')
         self.user(os.getenv('USER') or os.getlogin())
-        self.directories = []
-        self.indirectlyAffectedDirectories = []
 
-    def addDirectory(self, directory, action):
-        """Adds a directory to the Model with its action."""
-        self.directories.append(Directory(directory, action))
+    def addDirectory(self, directory):
+        """Adds a directory into the Model's directory tree along."""
+        # Skip the first blank dir, dirs = ['', 'a', 'a-a']
+        dirs = directory.path().split('/')[1:]
 
-    def baseDirectory(self, baseDirectory=None):
-        """The lowest commont directory of a commit to base the module matching on."""
-        if baseDirectory is not None: self._baseDirectory = baseDirectory
-        return self._baseDirectory
+        currentDirectory = self.rootDirectory()
+        # Skip the last one, as we don't auto-create it, it's a given param
+        for dir in dirs[:-1]:
+            if currentDirectory.hasSubdirectory(dir):
+                currentDirectory = currentDirectory.subdirectory(dir)
+            else:
+                newdir = Directory('%s/%s' % (currentDirectory.path(), dir))
+                currentDirectory.addSubdirectory(newdir)
+                currentDirectory = newdir
+        if not currentDirectory.hasSubdirectory(directory.name()):
+            currentDirectory.addSubdirectory(directory)
 
-    def rootDirectory(self, rootDirectory=None):
-        """The common root directory for the commit."""
-        if rootDirectory is not None: self._rootDirectory = rootDirectory
-        return self._rootDirectory
+    def greatestCommonDirectory(self):
+        """The greatest commont directory of a commit to base the module matching on."""
+        dir = self.rootDirectory()
+        while dir.action() == 'none' and len(dir.subdirectories()) == 1:
+            dir = dir.subdirectories()[0]
+        return dir.path()
+
+    def rootDirectory(self):
+        """The root directory for the commit, always '' for framework simplicity."""
+        return self.__rootDirectory
 
     def user(self, user=None):
         """The user who made the commit."""
         if user is not None: self._user = user
         return self._user
 
-    def merge(self, directory):
-        """Merges a directory object into the existing hierarchy."""
-        pass
-
 class View:
     """Provides a base View for specific implementations to extend."""
 
-    def __init__(self, name):
+    def __init__(self, name, model):
         """Initializes a new module given it's name."""
         self.name = name
+        self.model = model
 
     def execute(self):
         """Provides child Views with a method they should override to provide
