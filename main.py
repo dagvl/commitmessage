@@ -65,9 +65,9 @@ def main():
     controller.__init__(config, cleanArgs, sys.stdin)
 
     # Get the other others in the 'scm' section
-    for (name, value) in config.items('scm'):
+    for name in config.options('scm'):
         if name != 'controller':
-            setattr(controller, name, value)
+            setattr(controller, name, config.get('scm', name))
 
     controller.process()
 
