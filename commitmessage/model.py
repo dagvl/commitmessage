@@ -153,11 +153,13 @@ class Directory:
         self._action = action
         self._files = []
         self._subdirectories = []
+        self._diff = None
 
     path = attribute('_path', permit='r', doc="""The full path of the directory (C{/dir/dir/})""")
     action = attribute('_action', permit='r', doc="""The action performed on this directory that caused the commit""")
     files = attribute('_files', permit='r', doc="""The L{File}s within this directory affected by the commit""")
     subdirectories = attribute('_subdirectories', permit='r', doc="""The L{Directory}s within this directory affected by the commit""")
+    diff = attribute('_diff', doc="""The diff of what changed in the file""")
 
     def name():
         doc = """The name of the directory (C{dir} with no slashes)"""

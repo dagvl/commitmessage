@@ -100,4 +100,116 @@ Name: svn:mime-type
    + text/css
     </view>
   </commit>
+  <commit>
+    <message>set property on new directory</message>
+    <addDirectory name="sub1"/>
+    <setProperty name="sub1" property="svn:ignore" value="*.dll"/>
+    <view name="TigrisStyleEmailView">
+To: stephen@beachead.com
+From: stephen@beachead.com
+Subject: commit: /sub1/
+Date: #####
+
+User: stephen
+Date: #####
+
+Added:
+ /sub1/
+
+Log:
+ set property on new directory
+
+Directory Changes:
+
+Directory: /sub1/
+=================
+
+Property changes on: sub1
+___________________________________________________________________
+Name: svn:ignore
+   + *.dll
+    </view>
+  </commit>
+  <commit>
+    <message>set property on old directory</message>
+    <setProperty name="sub1" property="svn:ignore" value="*.so"/>
+    <view name="TigrisStyleEmailView">
+To: stephen@beachead.com
+From: stephen@beachead.com
+Subject: commit: /sub1/
+Date: #####
+
+User: stephen
+Date: #####
+
+Modified:
+ /sub1/
+
+Log:
+ set property on old directory
+
+Directory Changes:
+
+Directory: /sub1/
+=================
+
+Property changes on: sub1
+___________________________________________________________________
+Name: svn:ignore
+   - *.dll
+
+   + *.so
+    </view>
+  </commit>
+  <commit>
+    <message>change both file and directory</message>
+    <setProperty name="foo.txt" property="svn:mime-type" value="text/html"/>
+    <setProperty name="sub1" property="svn:ignore" value="*.dll"/>
+    <view name="TigrisStyleEmailView">
+To: stephen@beachead.com
+From: stephen@beachead.com
+Subject: commit: /
+Date: #####
+
+User: stephen
+Date: #####
+
+Modified:
+ /
+  foo.txt
+ /sub1/
+
+Log:
+ change both file and directory
+
+Directory Changes:
+
+Directory: /sub1/
+=================
+
+Property changes on: sub1
+___________________________________________________________________
+Name: svn:ignore
+   - *.so
+
+   + *.dll
+
+
+
+File Changes:
+
+Directory: /
+============
+
+File [modified]: foo.txt
+Delta lines: +0 -0
+===================================================================
+
+Property changes on: foo.txt
+___________________________________________________________________
+Name: svn:mime-type
+   - text/css
+   + text/html
+    </view>
+  </commit>
 </test>

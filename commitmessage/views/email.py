@@ -125,6 +125,16 @@ class TigrisStyleEmailView(BaseEmailView):
             text.write(' %s\n' % line)
         text.write('\n')
 
+        dirsWithDiffs = [d for d in self.model.directories() if d.diff]
+        if len(dirsWithDiffs) > 0:
+            text.write('Directory Changes:\n\n')
+            for dir in dirsWithDiffs:
+                s = 'Directory: %s' % dir.path
+                line = ''.join(['='] * len(s))
+                text.write('%s\n%s\n\n' % (s, line))
+                text.write(dir.diff)
+            text.write('\n')
+
         if len(self.model.directoriesWithFiles()) > 0:
             text.write('File Changes:\n\n')
             for dir in self.model.directoriesWithFiles():

@@ -68,27 +68,31 @@ class SvnController(Controller):
             if stop == -2: stop = len(diff[0])
 
             filePath = '/' + diff[0][:-1][start:stop]
-
-            #f not diff[0].startswith('Property changes on:'):
-            #   filePath = '/' + diff[0][:-1].split(' ')[1]
-            #lse:
-            #   # Property changes line puts the file name somewhere else
-            #   filePath = '/' + diff[0][:-1].split(' ')[-1]
-
             file = self.model.file(self.prefix + filePath)
+
+            # Maybe its a directory
+            if file:
+                isFile = True
+            else:
+                file = self.model.directory(self.prefix + filePath + '/')
+                isFile = False
 
             if not diff[0].startswith('Property changes on:'):
                 file.delta, file.diff = self._parse_diff(diff)
             else:
                 if file.diff:
+                    # Only files will already have a diff set
                     file.diff = file.diff + '\n\n' + ''.join(diff)
                 else:
                     # If the 'Property changes on' line is here without a
                     # file.diff, that file.diff will never come because it would
                     # have been printed before us
-                    sep = '===================================================================\n\n'
-                    file.diff = ''.join([sep] + diff)
-                    file.delta = '+0 -0'
+                    if isFile:
+                        sep = '===================================================================\n\n'
+                        file.diff = ''.join([sep] + diff)
+                        file.delta = '+0 -0'
+                    else:
+                        file.diff = ''.join(diff)
 
     def _parse_diff(self, diff):
         text = ''
