@@ -4,6 +4,7 @@ import glob
 import logging
 import os
 import sys
+import tarfile
 import unittest
 
 sys.path.extend(['./src', './test'])
@@ -68,4 +69,18 @@ if sys.argv[1] == 'docs':
 if sys.argv[1] == 'tags':
     import os
     os.popen('exctags -R commitmessage')
+
+if sys.argv[1] == 'dist':
+    t = tarfile.TarFile('commitmessage.tar', 'w')
+    for root, dirs, files in os.walk('commitmessage'):
+        dirAdded = False
+        for file in files:
+            if file.endswith('.py'):
+                # See if we need to add the directory
+                if not dirAdded:
+                    t.add('%s' % root, recursive=False)
+                    dirAdded = True
+                t.add('%s%s%s' % (root, os.sep, file))
+    t.add('commitmessage.conf')
+    t.close()
 
