@@ -70,7 +70,7 @@ class BaseEmailView(View):
             print 'No server provided, not sending an email.'
 
 class ApacheStyleEmailView(BaseEmailView):
-    """Sends out an email in a style mimicking U{Apache<http://www.apache.org>} commit emails (not implemented)"""
+    """Sends out an email in a style mimicking the U{Apache<http://www.apache.org>} commit email format (not implemented)"""
     pass
 
 class HtmlEmailView(BaseEmailView):
@@ -78,7 +78,7 @@ class HtmlEmailView(BaseEmailView):
     pass
 
 class TigrisStyleEmailView(BaseEmailView):
-    """Sends out an email in a style mimicking U{Tigris<http://www.tigris.org>} commit email format
+    """Sends out an email in a style mimicking the U{Tigris<http://www.tigris.org>} commit email format
 
     This view has several properties:
 
