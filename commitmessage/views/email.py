@@ -132,7 +132,7 @@ class TigrisStyleEmailView(BaseEmailView):
                 text.write('%s\n' % file.diff)
 
 class InlineAttachmentEmailView(BaseEmailView):
-    """Sends out an email with the diffs inlined in the email as attachments
+    """Sends out an email with the diff of the commit attached as a file
 
     This view has several properties:
 
