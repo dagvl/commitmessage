@@ -35,7 +35,7 @@ class BaseEmailView(View):
         text = StringIO('')
         text.write('To: %s\n' % self.to)
         text.write('From: %s\n' % self['from'])
-        text.write('Subject: %s\n' % self.subject)
+        text.write('Subject: %s\n' % self.subject.split('\n')[0])
         text.write('Date: %s -0000 (GMT)\n' % time.strftime('%A %d %B %Y %H:%M:%S', time.gmtime()))
         text.write('\n')
 
