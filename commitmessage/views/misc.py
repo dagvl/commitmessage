@@ -22,7 +22,8 @@ class DumpView(View):
     a text file."""
 
     def execute(self):
-        f = file(self.file(), 'w')
+        # file(...) conflicts with self.file(), so use open(.,.)
+        f = open(self.file(), 'w')
 
         addedFiles = self.model.files('added')
         addedDirs = self.model.directories('added')
@@ -36,5 +37,5 @@ class DumpView(View):
 
     def file(self, file=None):
         """The path of the file to dump the Model to."""
-        if file is not None: self.__file = file
-        return self.__file
+        if file is not None: self._file = file
+        return self._file
