@@ -22,7 +22,7 @@ page = cvsSubmit.asp
 to = stephen@beachead.com
 server = mail.beachead.com
 from = stephen@beachead.com
-subject = cvs commit: $model.greatestCommonDirectory()
+subject = commit: $model.greatestCommonDirectory()
 header =
 footer =
 acceptance = 1
@@ -39,7 +39,7 @@ views = bombsight, email
     <view name="TigrisStyleEmailView">
 To: stephen@beachead.com
 From: stephen@beachead.com
-Subject: cvs commit: /
+Subject: commit: /
 Date: #####
 
 User: stephen
@@ -87,7 +87,7 @@ see
     <view name="TigrisStyleEmailView">
 To: stephen@beachead.com
 From: stephen@beachead.com
-Subject: cvs commit: /
+Subject: commit: /
 Date: #####
 
 User: stephen
@@ -165,7 +165,7 @@ Delta lines: +2 -0
     <view name="TigrisStyleEmailView">
 To: stephen@beachead.com
 From: stephen@beachead.com
-Subject: cvs commit: /
+Subject: commit: /
 Date: #####
 
 User: stephen
@@ -266,7 +266,7 @@ Delta lines: +1 -0
     <view name="TigrisStyleEmailView">
 To: stephen@beachead.com
 From: stephen@beachead.com
-Subject: cvs commit: /sub1/
+Subject: commit: /sub1/
 Date: #####
 
 User: stephen
