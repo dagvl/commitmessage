@@ -94,7 +94,7 @@ def getNewInstance(fullClassName, searchPath=['./']):
 
 def execute(command):
     """Executes a command line and returns the contents of stdout as a list of liens."""
-    pipeIn, pipeOut = os.popen2(command, 'r')
+    pipeIn, pipeOut = os.popen2(command)
     lines = pipeOut.readlines()
     pipeIn.close()
     pipeOut.close()
