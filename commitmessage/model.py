@@ -9,6 +9,7 @@ Provides the model classes for the commitmessage framework.
 """
 
 import os
+import re
 import string
 import sys
 
@@ -108,12 +109,16 @@ class File:
         return locals()
     path = property(**path())
 
+_re_path = re.compile('^/([a-z-_@#]+/)*$')
+
 class Directory:
     """Represents a directory that has been affected by the commit."""
 
     def __init__(self, path, action='none'):
         if path == '' or not path.startswith('/') or not path.endswith('/'):
-            raise CmException, 'Directory paths must start with a forward slash and end with a forward slash.'
+            raise CmException, 'Directory path (%s) must start with a forward slash and end with a forward slash.' % path
+        elif not _re_path.match(path):
+            raise CmException, 'Directory path (%s) must start with a forward slash and end with a forward slash.' % path
 
         self._path = path
         self._action = action
