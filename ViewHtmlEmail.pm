@@ -127,10 +127,11 @@ sub formatlog {
     $log = $self->toHtml($log);
 
     if (defined($self->{logReplacePattern})) {
-        $log =~ /$self->{logReplacePattern}/i;
-        my $replace = "";
-        eval("\$replace = \"$self->{logReplaceResult}\";");
-        $log =~ s/$self->{logReplacePattern}/$replace/i;
+        if($log =~ /$self->{logReplacePattern}/i) {
+            my $replace = "";
+            eval("\$replace = \"$self->{logReplaceResult}\";");
+            $log =~ s/$self->{logReplacePattern}/$replace/i;
+        }
     }
 
     return $log;
