@@ -16,7 +16,7 @@ class SvnController(Controller):
     """Uses C{svnlook} to pull data from svn repositories"""
 
     # A mapping from abbreviation to a better description.
-    actions = { 'A': 'added', 'D': 'removed', 'U': 'modified' }
+    actions = { 'A': 'added', 'D': 'removed', 'U': 'modified', '_': 'modified' }
 
     def _populateModel(self):
         """Fills out the model by invoking C{svnlook}"""
