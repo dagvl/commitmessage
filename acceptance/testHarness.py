@@ -4,21 +4,39 @@
 # Copyright 2002, 2003 Stephen Haberman
 #
 
-"""A harness to test each of the XML file workflows for each controller and each view."""
+"""
+A harness to test each of the XML file workflows for each controller and each
+view.
+"""
 
 import difflib
 import getopt
 import os
+import shutil
+import stat
 import sys
 from xml.dom import minidom
 
 sys.path.append('../')
 
+
 class ControllerFacade:
-    """Wraps the interface to add/remove/changes files and directories in terms of each concrete repository."""
+    """
+    Wraps the interface to add/remove/changes files and directories in terms of
+    each concrete repository.
+
+    See L{SvnFacade} and L{CvsFacade} for implementations.
+    """
 
 class Harness:
-    """A class to wrap the test execution context; creates repository, executes the views, and compares the results."""
+    """
+    A class to wrap the test context: creates a repository, executes the views,
+    and compares the results.
+
+    Given some L{Case}s, it uses the SCM controller facades to setup a context
+    (e.g. creating a repository, changing a file), commit the change, gather
+    the result, and compare the actual to what the L{Case} expected.
+    """
 
     def __init__(self, facades, args):
         self.wait = 0
@@ -37,30 +55,31 @@ class Harness:
                 self.donotdestroy = 1
 
     def run(self, cases):
-        """Runs XML test cases."""
+        """Runs a suite of L{Case}s."""
         for case in cases:
             self._runCase(case)
 
     def _runCase(self, case):
-        """Runs an XML test case."""
+        """Runs L{Case}."""
 
         for facade in self.facades:
-            """Each execution of the test case gets its own repository."""
+            # Each execution of the test case gets its own repository.
             facade.createRepository(case.config())
 
             for commit in case.commits():
-                """Let the case do its stuff."""
+                # Let the case do its stuff (e.g. modifying files)
                 commit.doChanges(facade)
 
-                """Tell the facade to commit, which will 'commit' and have the controller executed by the SCM system."""
+                # Tell the facade to commit, which will 'commit' and have the
+                # controller execute the SCM system.
                 facade.commit()
 
-                """Check the results."""
+                # Check the results.
                 for view in commit.views():
                     expected = view.expected.strip().split('\n')
                     actual = [x.replace('\r', '') for x in facade.actual(view.name).strip().split('\n')]
 
-                    if self.matchesIgnoringDates(expected, actual):
+                    if self._matchesIgnoringDates(expected, actual):
                         self.passes = self.passes + 1
                     else:
                         self.failures = self.failures + 1
@@ -75,7 +94,7 @@ class Harness:
                             raw_input('Waiting...')
 
 
-            """We're done with this test case, so remove the repository."""
+            # We're done with this test case, so remove the repository.
             if not hasattr(self, 'donotdestroy'):
                 facade.destroyRepository()
 
@@ -83,8 +102,11 @@ class Harness:
         print 'Passes: %s' % self.passes
         print 'Failures: %s' % self.failures
 
-    def matchesIgnoringDates(self, expected, actual):
-        """Takes two lists of lines."""
+    def _matchesIgnoringDates(self, expected, actual):
+        """
+        Takes two lists of lines and sees if they are the same, ignoring lines
+        that are marked as having dates by having '#####' within them.
+        """
         if len(expected) != len(actual):
             return 0
 
@@ -146,6 +168,7 @@ class Commit:
 
                 # Call the function
                 getattr(facade, e.tagName)(**args)
+
         # Set the message for the commit
         for e in self.commitElement.getElementsByTagName("message"):
             for node in e.childNodes:
@@ -191,11 +214,24 @@ class SvnFacade:
     def createRepository(self, config):
         _exec('svnadmin create temp-svn-repo')
 
-        newHook = file('%s/hooks/post-commit.bat' % self.repoDir, 'w')
-        newHook.write('..\\..\\commitmessage\\main.py -c "%s/commitmessage.conf" %%1 %%2 > commitmessage.out 2>&1' % self.repoDir)
+        if os.sep == '/':
+            newHook = file('%s/hooks/post-commit' % self.repoDir, 'w')
+            arg = '$'
+        else:
+            newHook = file('%s/hooks/post-commit.bat' % self.repoDir, 'w')
+            arg = '%'
+
+        newHook.write('#!/bin/sh%s%spython %s -c "%s/commitmessage.conf" %s1 %s2 > commitmessage.out 2>&1' %
+            (os.linesep, os.linesep, os.path.join('..', '..', 'commitmessage', 'main.py'), self.repoDir, arg, arg))
+
+        svnConfig = config.replace('CONTROLLER', 'commitmessage.controllers.svn.SvnController')
 
         newConfig = file('%s/commitmessage.conf' % self.repoDir, 'w')
-        newConfig.write(config)
+        newConfig.write(svnConfig)
+        newConfig.close()
+
+        if os.sep == '/':
+            os.chmod('%s/hooks/post-commit' % self.repoDir, stat.S_IXUSR | stat.S_IRUSR | stat.S_IWUSR)
 
         _exec('svn checkout file:///%s %s' % (self.repoDir, self.workingDir))
 
@@ -284,14 +320,22 @@ class Tracer:
     def __setattr__(self, name, value):
         setattr(self.wrapped, name, value)
 
-"""Okay, run the test harness."""
+def cleanup():
+    """Removes lingering temp files from old tests."""
+    if os.path.exists('commitmessage.out'):
+        os.remove('commitmessage.out')
+    for old in filter(lambda x: x.startswith('temp-'), os.listdir('.')):
+        shutil.rmtree(old)
 
-# Clean out all of the old repositories and working directories
-for old in filter(lambda x: x.startswith('temp-'), os.listdir('.')):
-    _exec('rmdir /S /Q %s' % old)
+if __name__ == '__main__':
+    cleanup()
 
-harness = Harness([SvnFacade()], sys.argv[1:])
+    # Create the harness for (currently, just) svn
+    harness = Harness([SvnFacade()], sys.argv[1:])
 
-cases = [Case(x) for x in os.listdir('.') if x.endswith('.xml')]
+    # Create a L{Case} for each xml test file in this directory
+    cases = [Case(x) for x in os.listdir('.') if x.endswith('.xml')]
 
-harness.run(cases)
+    # Run the cases through the harness
+    harness.run(cases)
+
