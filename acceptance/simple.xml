@@ -59,12 +59,14 @@ Directory: /
 
 File [added]: foo.txt
 Delta lines: +1 -0
+!cvs Index foo.txt
 ===================================================================
---- foo.txt	#####
-+++ foo.txt	#####
-@@ -0,0 +1 @@
-+This text for foo...
-\ No newline at end of file
+!svn --- foo.txt	#####
+!svn +++ foo.txt	#####
+!svn @@ -0,0 +1 @@
+!svn +This text for foo...
+!svn \ No newline at end of file
+!cvs This text for foo...
     </view>
   </commit>
   <commit>
@@ -160,7 +162,7 @@ Delta lines: +2 -0
     <changeFile name="foo3.txt" fromLine="1" toLine="2">
       see-more
     </changeFile>
-    <addReferencedFile name="sub1/binary.gif" location="../binary.gif" />
+    <!-- addReferencedFile name="sub1/binary.gif" location="../binary.gif" /-->
     <removeFile name="foo2.txt" />
     <view name="TigrisStyleEmailView">
 To: stephen@beachead.com
