@@ -62,8 +62,13 @@ class Controller:
 
     def _executeViews(self):
         """Executes the views for each module that matches the commit's base directory"""
-        modules = self.config.getModulesForPath(self.model.greatestCommonDirectory())
-        for module in modules:
+
+        gcd = self.model.greatestCommonDirectory()
+        # Handle adding on the file name if there is only one file involved
+        if len(self.model.files()) == 1:
+            gcd = gcd + self.model.files()[0].name
+
+        for module in self.config.getModulesForPath(gcd):
             views = self.config.getViewsForModule(module, self.model)
             for view in views:
                 view.execute()
