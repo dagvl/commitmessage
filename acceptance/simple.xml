@@ -163,6 +163,7 @@ Delta lines: +2 -0
       see-more
     </changeFile>
     <addReferencedFile name="sub1/binary.gif" location="../binary.gif" />
+    <removeFile name="foo2.txt" />
     <view name="TigrisStyleEmailView">
 To: stephen@beachead.com
 From: stephen@beachead.com
@@ -178,6 +179,10 @@ Added
  /sub1/
   binary.gif, foo1.txt, foo2.txt
 
+Removed
+ /
+  foo2.txt
+
 Modified
  /
   foo3.txt
@@ -189,6 +194,16 @@ File changes
 
 Directory: /
 ============
+
+File [removed]: foo2.txt
+Delta lines: +0 -1
+===================================================================
+--- foo2.txt	#####
++++ foo2.txt	#####
+@@ -1 +0,0 @@
+-one-liner
+\ No newline at end of file
+
 
 File [modified]: foo3.txt
 Delta lines: +2 -0

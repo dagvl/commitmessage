@@ -225,6 +225,9 @@ class SvnFacade:
         self._openFile(name, 'w').writelines(self._openFile(location, 'r').readlines())
         self._execsvn('svn add %s' % name)
 
+    def removeFile(self, name):
+        self._execsvn('svn remove %s' % name)
+
     def changeFile(self, name, fromLine, toLine, content):
         fromLine = int(fromLine)
         toLine = int(toLine)
