@@ -129,7 +129,7 @@ class SvnFacade:
         _exec('svnadmin create temp-svn-repo')
 
         newHook = file('%s/hooks/post-commit.bat' % self.repoDir, 'w')
-        newHook.write('../../commitmessage/main.py -c "%s/commitmessage.conf" %%1 %%2 > commitmessage.out' % self.repoDir)
+        newHook.write('..\\..\\commitmessage\\main.py -c "%s/commitmessage.conf" %%1 %%2 > commitmessage.out 2>&1' % self.repoDir)
 
         newConfig = file('%s/commitmessage.conf' % self.repoDir, 'w')
         newConfig.write(config)
