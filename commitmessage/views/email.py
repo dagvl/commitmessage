@@ -90,17 +90,24 @@ class TigrisStyleEmailView(BaseEmailView):
      - footer (optional) - text to put at the end of the email
     """
 
-    def printFiles(self, text, action):
-        directories = self.model.directoriesWithFiles(action)
-        if len(directories) > 0:
+    def printFilesAndDirectories(self, text, action):
+        # This needs to handle printing both directories with no files in them and directories with files in them
+        dirs1 = self.model.directories(action)
+        dirs2 = self.model.directoriesWithFiles(action)
+
+        # Merge the two
+        dirs = dirs1 + [dir for dir in dirs2 if dir not in dirs1]
+        dirs.sort()
+
+        if len(dirs) > 0:
             text.write('%s%s:\n' % (action[0].upper(), action[1:]))
-            for dir in directories:
+            for dir in dirs:
                 text.write(' %s\n' % dir.path)
+
                 files = dir.filesByAction(action)
-                text.write('  %s' % files[0].name)
-                for file in files[1:]:
-                    text.write(', %s' % file.name)
-                text.write('\n')
+                if len(files) > 0:
+                    text.write('  ' + ', '.join([file.name for file in files]) + '\n')
+
             text.write('\n')
 
     def generateBody(self, text):
@@ -109,25 +116,26 @@ class TigrisStyleEmailView(BaseEmailView):
         text.write('Date: %s\n' % time.strftime('%Y/%m/%d %I:%M %p'))
         text.write('\n')
 
-        self.printFiles(text, 'added')
-        self.printFiles(text, 'removed')
-        self.printFiles(text, 'modified')
+        self.printFilesAndDirectories(text, 'added')
+        self.printFilesAndDirectories(text, 'removed')
+        self.printFilesAndDirectories(text, 'modified')
 
         text.write('Log:\n')
         for line in self.model.log.split('\n'):
             text.write(' %s\n' % line)
         text.write('\n')
 
-        text.write('File Changes:\n\n')
-        for dir in self.model.directoriesWithFiles():
-            s = 'Directory: %s' % dir.path
-            line = ''.join(['='] * len(s))
-            text.write('%s\n%s\n\n' % (s, line))
+        if len(self.model.directoriesWithFiles()) > 0:
+            text.write('File Changes:\n\n')
+            for dir in self.model.directoriesWithFiles():
+                s = 'Directory: %s' % dir.path
+                line = ''.join(['='] * len(s))
+                text.write('%s\n%s\n\n' % (s, line))
 
-            for file in dir.files:
-                text.write('File [%s]: %s\n' % (file.action, file.name))
-                text.write('Delta lines: %s\n' % file.delta)
-                text.write('%s\n' % file.diff)
+                for file in dir.files:
+                    text.write('File [%s]: %s\n' % (file.action, file.name))
+                    text.write('Delta lines: %s\n' % file.delta)
+                    text.write('%s\n' % file.diff)
 
 class InlineAttachmentEmailView(BaseEmailView):
     """Sends out an email with the diff of the commit attached as a file
