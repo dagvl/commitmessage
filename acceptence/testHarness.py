@@ -38,9 +38,9 @@ class Harness:
 
         for facade in self.facades:
             """Each execution of the test case gets its own repository."""
-            facade.createRepository()
+            facade.createRepository(case.config())
 
-            for commit in case.commits:
+            for commit in case.commits():
                 """Let the case do its stuff."""
                 commit.doChanges(facade)
 
@@ -64,15 +64,18 @@ class Case:
 
     def __init__(self, fileName):
         """Init the test around an XML workflow file."""
-        self.commits = []
-
         self.xmldoc = minidom.parse(file(fileName)).documentElement
-        for commit in self.xmldoc.getElementsByTagName("commit"):
-            self.commits.append(Commit(commit))
+
+    def config(self):
+        """Returns the configuration text for this case."""
+        for config in self.xmldoc.getElementsByTagName("config"):
+            for node in filter(lambda x: x.nodeType == x.TEXT_NODE, config.childNodes):
+                return node.data
+        return ''
 
     def commits(self):
         """Returns the commits that this case wants to do."""
-        return self.commits
+        return map(lambda x: Commit(x), self.xmldoc.getElementsByTagName("commit"))
 
 class Commit:
     """A class to wrap a series of changes to a working directory."""
@@ -122,8 +125,15 @@ class SvnFacade:
         _exec(cmd)
         os.chdir('../')
 
-    def createRepository(self):
+    def createRepository(self, config):
         _exec('svnadmin create temp-svn-repo')
+
+        newHook = file('%s/hooks/post-commit.bat' % self.repoDir, 'w')
+        newHook.write('../../commitmessage/main.py -c "%s/commitmessage.conf" %%1 %%2 > commitmessage.out' % self.repoDir)
+
+        newConfig = file('%s/commitmessage.conf' % self.repoDir, 'w')
+        newConfig.write(config)
+
         _exec('svn checkout file:///%s %s' % (self.repoDir, self.workingDir))
 
     def destoryRepository(self):

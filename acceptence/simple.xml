@@ -1,6 +1,31 @@
 <?xml version="1.0"?>
 
 <test>
+  <config>
+[scm]
+interface = commitmessage.controllers.svn.SvnController
+
+[modules]
+all = ^/
+
+[views]
+bombsight = commitmessage.views.bugtracking.FogBugzView
+email = commitmessage.views.email.TigrisStyleEmailView
+
+[bombsight]
+server = bombsight.beachead.com
+port = 80
+url = /
+page = cvsSubmit.asp
+
+[email]
+server = mail.beachead.com
+from = stephen@beachead.com
+subject = cvs commit: $model.greatestCommonDirectory()
+
+[all]
+views = bombsight, email
+  </config>
   <!-- optional config? -->
   <commit>
     <addFile name="foo.txt">
