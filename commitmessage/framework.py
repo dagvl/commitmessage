@@ -87,8 +87,11 @@ class File(DomainObject):
 
     def __init__(self, name, directory, action):
         """Files must be owned by a parent directory; by virtue of being created, this file is added to its parent directory."""
-        self.name = name
-        self.directory = directory
+        if name.find('/') != -1:
+            raise CmException, "File names may not have foward slashes in them."
+
+        self.__dict__['name'] = name
+        self.__dict__['directory'] = directory
         self.action = action
         self.rev = None
         self.delta = None
@@ -101,9 +104,10 @@ class File(DomainObject):
         return '<File %s>' % self.path
 
     def setName(self, value):
-        if value.find('/') != -1:
-            raise CmException, "File names may not have foward slashes in them."
-        self.__dict__['name'] = value
+        raise CmException, 'The file''s name cannot be changed.'
+
+    def setDirectory(self, value):
+        raise CmException, 'The file''s directory cannot be changed.'
 
     def getPath(self):
         return self.directory.path + self.name
@@ -112,7 +116,10 @@ class Directory(DomainObject):
     """Represents a directory that has been affected by the commit."""
 
     def __init__(self, path, action='none'):
-        self.path = path
+        if path == '' or not path.startswith('/') or not path.endswith('/'):
+            raise CmException, 'Directory paths must start with a forward slash and end with a forward slash.'
+
+        self.__dict__['path'] = path
         self.action = action
         self.files = []
         self.subdirectories = []
@@ -125,10 +132,7 @@ class Directory(DomainObject):
         return self.__repr__()
 
     def setPath(self, value):
-        """The path relative to the repository root, e.g. CVSROOT/testdir."""
-        if value == '' or not value.startswith('/') or not value.endswith('/'):
-            raise CmException, 'Directory paths must start with a forward slash and end with a forward slash.'
-        self.__dict__['path'] = value
+        raise CmException, 'A directory''s path cannot be changed.'
 
     def getName(self):
         """Returns just the name of the directory, e.g. testdir with no slashes."""
