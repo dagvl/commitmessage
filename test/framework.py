@@ -15,6 +15,7 @@ if __name__ == '__main__':
     sys.path.append('../')
 
 from commitmessage.framework import Model, Directory, File
+from commitmessage.exceptions import CmException
 
 class TestDirectoryHierarchy(unittest.TestCase):
     """Tests added levels of directories."""
@@ -35,6 +36,66 @@ class TestDirectoryHierarchy(unittest.TestCase):
         self.assertEquals('/test1/', self.model.greatestCommonDirectory())
         # Test # of dirs
         self.assertEquals(2, len(self.model.directories()))
+
+    def testReadOnly(self):
+        d = Directory('/a/', 'added')
+
+        try:
+            d.path = 'foo'
+            self.fail('path was allowed to be changed.')
+        except CmException:
+            pass
+
+        try:
+            d.files = []
+            self.fail('files was allowed to be changed.')
+        except CmException:
+            pass
+
+        try:
+            d.subdirectories = []
+            self.fail('subdirectories was allowed to be changed.')
+        except CmException:
+            pass
+
+        f = File('y.txt', d, 'added')
+        try:
+            f.name = 'foo.txt'
+            self.fail('name was allowed to be changed.')
+        except CmException:
+            pass
+
+        try:
+            f.directory = 'foo'
+            self.fail('directory was allowed to be changed.')
+        except CmException:
+            pass
+
+    def testValidity(self):
+        try:
+            d = Directory('foo')
+            self.fail('directory was invalid.')
+        except CmException:
+            pass
+
+        try:
+            d = Directory('/foo')
+            self.fail('directory was invalid.')
+        except CmException:
+            pass
+
+        try:
+            d = Directory('foo/')
+            self.fail('directory was invalid.')
+        except CmException:
+            pass
+
+        try:
+            d = Directory('/')
+            f = File('/foo', d, 'added')
+            self.fail('file name was invalid.')
+        except CmException:
+            pass
 
     def testTwo(self):
         """Add two directories, one after the other."""
