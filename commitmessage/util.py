@@ -24,6 +24,11 @@ class CmConfigParser(ConfigParser):
         ConfigParser.__init__(self)
         ConfigParser.readfp(self, open(filePath))
 
+        self.userMap = {}
+        if self.has_section('userMap'):
+            for name in self.options('userMap'):
+                self.userMap[name] = self.get('userMap', name)
+
     def getModulesForPath(self, commitPath):
         """@return: the modules that match the given path (and should hence have their views executed)"""
         modules = []
@@ -43,6 +48,8 @@ class CmConfigParser(ConfigParser):
         viewLine = ConfigParser.get(self, module, 'views')
         p = re.compile(',\s?')
         viewNames = [name.strip() for name in p.split(viewLine) if len(name.strip()) > 0]
+
+        userMap = self.userMap
 
         views = []
         for viewName in viewNames:
