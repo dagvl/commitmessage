@@ -56,7 +56,7 @@ File Changes:
 
 File [added]: foo.txt
 Delta lines: +1 -0
-!cvs Index foo.txt
+!cvs Index: foo.txt
 ===================================================================
 !svn --- foo.txt	#####
 !svn +++ foo.txt	#####
