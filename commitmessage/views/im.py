@@ -4,7 +4,7 @@
 # Copyright 2002-2003 Stephen Haberman
 #
 
-"""Provides an AIM L{commitmessage.model.View}s"""
+"""Provides an IM-related L{commitmessage.model.View}s"""
 
 import time
 
@@ -46,7 +46,7 @@ class IMView(View):
         return text.read()
 
 class MSNView(IMView):
-    """Send out commit messages on MSN
+    """Sends out commit messages on MSN
 
     This view has three properties:
 
@@ -80,7 +80,7 @@ class MSNView(IMView):
                 time.sleep(1)
 
 class AIMView(IMView):
-    """Send out stuff on AIM
+    """Sends out commit messages on AIM
 
     This view has three properties:
 
