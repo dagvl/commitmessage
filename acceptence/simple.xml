@@ -36,21 +36,36 @@ views = bombsight, email
       This text for foo...
     </addFile>
     <view name="TigrisStyleEmailView">
-      ...Text goes here...
-    </view>
-    <view name="FooView">
-      ...Output goes here...
-    </view>
-  </commit>
-  <commit>
-    <appendToFile name="foo.txt">
-      More text for foo...
-    </appendToFile>
-    <view name="TigrisStyleEmailView">
-      ...Text goes here...
-    </view>
-    <view name="FooView">
-      ...Output goes here...
+To: stephen@beachead.com
+From: stephen@beachead.com
+Subject: cvs commit: /
+Date: #####
+
+User: stephen
+Date: #####
+
+Added
+ /
+  foo.txt
+
+Log
+ foo
+
+File changes
+
+Directory: /
+============
+
+File [added]: foo.txt
+Delta lines: +3 -0
+===================================================================
+--- foo.txt	#####
++++ foo.txt	#####
+@@ -0,0 +1,3 @@
++
++      This text for foo...
++    
+\ No newline at end of file
     </view>
   </commit>
 </test>
