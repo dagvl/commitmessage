@@ -1,18 +1,21 @@
 #!/usr/bin/env python
 #
-# commitmessage.py Version 2.0-alpha1
-# Copyright 2002 Stephen Haberman
+# commitmessage
+# Copyright 2002-2003 Stephen Haberman
 #
 
-"""Central place for places to avoid import viscous circles."""
+"""
+Contains the L{CmException} class.
+"""
 
 class CmException(Exception):
-    """Root exception for commitmessage exceptions."""
+    """The exception for all commitmessage-related exceptions."""
 
     def __init__(self, value):
-        """Initialize with a simple place holder value."""
+        """@param value: a simple value"""
         self.value = value
 
     def __str__(self):
-        """Return the place holder value."""
+        """@return: the value passed to the constructor"""
         return self.value
+
