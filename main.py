@@ -19,7 +19,7 @@ import sys
 # and setup sys.path to import the rest of the commitmessage package
 
 currentDir = os.path.dirname(sys.argv[0])
-rootCmPath = currentDir
+rootCmPath = os.path.realpath(currentDir)
 
 if __name__ == '__main__':
     sys.path.append(rootCmPath)
@@ -28,18 +28,31 @@ from commitmessage.exceptions import CmException
 from commitmessage.util import CmConfigParser, getNewInstance
 
 def main():
-    configFile = 'commitmessage.conf'
+    profiling, configFile = 0, 'commitmessage.conf'
 
-    options, args = getopt.getopt(sys.argv[1:], "c:")
+    options, args = getopt.getopt(sys.argv[1:], "c:p")
     for option, value in options:
-        if option == "-c":
+        if option == '-c':
             configFile = value
+        if option == '-p':
+            profiling = 1
+
+
+    if profiling:
+        import hotshot
+        i = 0
+        while 1:
+            f = currentDir + os.sep + 'commitmessage%s.profile' % i
+            if not os.path.exists(f): break
+            i += 1
+        profile = hotshot.Profile(f)
+        profile.start()
 
     # Handle loading the default conf from within the commitmessage module
     if configFile[0] != '/' and configFile[0] != '.' and configFile[1] != ':':
        configFile = rootCmPath + os.sep + configFile
 
-    config = CmConfigParser(os.path.realpath(configFile))
+    config = CmConfigParser(configFile)
 
     scm = config.get('scm', 'controller')
     controller = getNewInstance(scm)
@@ -57,6 +70,10 @@ def main():
             setattr(controller, name, value)
 
     controller.process()
+
+    if profiling:
+        profile.stop()
+        profile.close()
 
 if __name__ == '__main__':
     main()
