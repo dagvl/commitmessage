@@ -69,6 +69,10 @@ class File:
         self.__action = action
         directory.addFile(self)
 
+    def __str__(self):
+        """Returns the path of the file."""
+        return '<File %s>' % self.path()
+
     def name(self, name=None):
         """The file name, e.g. blah.txt."""
         if name is not None: self.__name = name
@@ -222,7 +226,9 @@ class Model:
     def greatestCommonDirectory(self):
         """The greatest commont directory of a commit to base the module matching on."""
         dir = self.rootDirectory()
-        while dir.action() == 'none' and len(dir.subdirectories()) == 1:
+        while dir.action() == 'none' \
+            and len(dir.subdirectories()) == 1 \
+            and len(dir.files()) == 0:
             dir = dir.subdirectories()[0]
         return dir.path()
 

@@ -51,6 +51,22 @@ class TestDirectoryHierarchy(unittest.TestCase):
         # Test gcd
         self.assertEquals('/a', self.model.greatestCommonDirectory())
 
+    def testGcdWithAction(self):
+        dir1 = Directory('/a/a/a', 'added')
+        dir2 = Directory('/a/a/b', 'removed')
+        self.model.addDirectory(dir1)
+        self.model.addDirectory(dir2)
+        self.model.directory('/a').action('modified')
+        self.assertEquals('/a', self.model.greatestCommonDirectory())
+
+    def testGcdWithFiles(self):
+        dir1 = Directory('/a/a/a', 'added')
+        dir2 = Directory('/a/a/b', 'removed')
+        self.model.addDirectory(dir1)
+        self.model.addDirectory(dir2)
+        File('x.txt', self.model.directory('/a'), 'added')
+        self.assertEquals('/a', self.model.greatestCommonDirectory())
+
     def testTwoDifferentDownThree(self):
         """Added two separate directories, a few levels down."""
         dir1 = Directory('/a/a/a', 'removed')
