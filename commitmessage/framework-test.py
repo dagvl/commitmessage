@@ -81,5 +81,11 @@ class TestDirectoryHierarchy(unittest.TestCase):
         self.assertEquals(1, len(dir.files('added')))
         self.assertEquals(1, len(dir.files('modified')))
 
+    def testModelWithRootFileChange(self):
+        m = Model()
+        f = File('x.txt', m.rootDirectory(), 'added')
+        self.assertEquals(1, len(m.files()))
+        self.assertEquals(1, len(m.directoriesWithFiles('added')))
+
 if __name__ == '__main__':
     unittest.main()

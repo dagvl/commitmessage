@@ -168,7 +168,7 @@ class Model:
 
     def __init__(self):
         self.user('')
-        self.__rootDirectory = Directory('')
+        self.__rootDirectory = Directory('/')
 
     def addDirectory(self, directory):
         """Adds a directory into the Model's directory tree along."""
@@ -177,11 +177,16 @@ class Model:
 
         currentDirectory = self.rootDirectory()
         # Skip the last one, as we don't auto-create it, it's a given param
-        for dir in dirs[:-1]:
+        for dir in dirs[0:-1]:
             if currentDirectory.hasSubdirectory(dir):
                 currentDirectory = currentDirectory.subdirectory(dir)
             else:
-                newdir = Directory('%s/%s' % (currentDirectory.path(), dir))
+                path = currentDirectory.path()
+                if path == '/':
+                    path = path + dir
+                else:
+                    path = path + '/' + dir
+                newdir = Directory(path)
                 currentDirectory.addSubdirectory(newdir)
                 currentDirectory = newdir
         if not currentDirectory.hasSubdirectory(directory.name()):
@@ -234,12 +239,12 @@ class Model:
     def _directories(self, directory, action):
         """Internal helper method to recursively build a flat list of directories."""
         dirs = []
+        if action is not None:
+            if directory.action() == action:
+                dirs.append(directory)
+        else:
+            dirs.append(directory)
         for subdir in directory.subdirectories():
-            if action is not None:
-                if subdir.action() == action:
-                    dirs.append(subdir)
-            else:
-                dirs.add(subdir)
             dirs.extend(self._directories(subdir, action))
         return dirs
 
@@ -252,9 +257,9 @@ class Model:
         """Internal helper method to recursively build a flat list of
         directories that contain changes to files in them."""
         dirs = []
+        if len(directory.files(action)) > 0:
+            dirs.append(directory)
         for subdir in directory.subdirectories():
-            if len(subdir.files(action)) > 0:
-                dirs.append(subdir)
             dirs.extend(self._directoriesWithFiles(subdir, action))
         return dirs
 
