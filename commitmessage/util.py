@@ -68,6 +68,17 @@ class CmConfigParser(ConfigParser):
             views.append(view)
         return views
 
+    """Patch by Juan F. Codagnone <juam@users.sourceforge.net> for Python 2.2.1 support."""
+    if sys.hexversion < 0x2030000:
+        def items(self, section):
+            """ there is an items() method since python 2.3.  """
+            ret = []
+            keys = self.options(section)
+            for i in keys:
+                ret.append( (i,self.get(section, i)) ) 
+
+            return ret
+
 def getNewInstance(fullClassName, searchPath=['./']):
     """@return: an instance of the fullClassName class WITHOUT the C{__init__} method having been called"""
 
