@@ -49,7 +49,7 @@ class Controller:
     def stopProcessForNow(self):
         """Gives CVS a chance to kill the current process and wait for the next
         one as it has to build up data between discrete per-directory executions."""
-        return false
+        return 0
 
     def executeViews(self):
         """Fires off the views for each module that matches the commits base directory."""
@@ -168,7 +168,6 @@ class Model:
 
     def __init__(self):
         self.__rootDirectory = Directory('')
-        self.user(os.getenv('USER') or os.getlogin())
 
     def addDirectory(self, directory):
         """Adds a directory into the Model's directory tree along."""

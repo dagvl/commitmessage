@@ -91,6 +91,7 @@ class CvsController(Controller):
         """Sets the 'done' attribute to false so we handle the multiple
         executions CVS does against main.py."""
         Controller.__init__(self, config, argv, stdin)
+        self.model.user(os.getenv('USER') or os.getlogin())
 
     def populateModel(self):
         """Read in the information."""
