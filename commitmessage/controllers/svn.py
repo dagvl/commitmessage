@@ -6,6 +6,9 @@
 
 """The controller and utils for the Subversion SCM (http://subversion.tigris.org)."""
 
+import os
+import sys
+
 if __name__ == '__main__':
     # Setup sys.path to correctly search for commitmessage.xxx[.yyy] modules
     currentDir = os.path.dirname(sys.argv[0])
