@@ -231,13 +231,11 @@ class CvsController(Controller):
         """Re-loads the directories into the Model."""
         allFiles = os.listdir(Controller.TMPDIR)
         for name in allFiles:
-            if name.startswith(CvsController.FILE_PREFIX) and not name.endswith('lastdir'):
-                fullPath = '%s/%s' % (Controller.TMPDIR, name)
-
-                f = file(fullPath)
-                directory = cPickle.load(f)
-                f.close()
-
-                self.model.addDirectory(directory)
-
+            if name.startswith(CvsController.FILE_PREFIX):
+                if not name.endswith('lastdir'):
+                    fullPath = '%s/%s' % (Controller.TMPDIR, name)
+                    f = file(fullPath)
+                    directory = cPickle.load(f)
+                    f.close()
+                    self.model.addDirectory(directory)
                 os.remove(fullPath)
