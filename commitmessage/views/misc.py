@@ -27,12 +27,19 @@ class DumpView(View):
 
         addedFiles = self.model.files('added')
         addedDirs = self.model.directories('added')
-        if len(addedFiles) > 0 or addedDirs > 0:
+        if len(addedFiles) > 0 or len(addedDirs) > 0:
             f.write('Added:\n')
             for file in addedFiles:
                 f.write('  %s\n' % file.path())
             for dir in addedDirs:
                 f.write('  %s\n' % dir.path())
+        modFiles = self.model.files()
+        if len(modFiles) > 0:
+            f.write('Modified:\n')
+            for file in modFiles:
+                f.write('  %s\n' % file.path())
+        f.write('Log:\n')
+        f.write('%s\n' % self.model.log())
         f.close()
 
     def file(self, file=None):
