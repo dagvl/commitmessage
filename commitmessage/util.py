@@ -52,9 +52,10 @@ class CmConfigParser(ConfigParser):
             view.__init__(viewName, model)
 
             # Setup default values
-            for name in ConfigParser.options(self, viewName):
-                value = ConfigParser.get(self, viewName, name, 1)
-                view.__dict__[name] = str(Itpl(value))
+            if ConfigParser.has_section(self, viewName):
+                for name in ConfigParser.options(self, viewName):
+                    value = ConfigParser.get(self, viewName, name, 1)
+                    view.__dict__[name] = str(Itpl(value))
 
             # Setup module-specific values
             forViewPrefix = re.compile('^%s.' % viewName)
