@@ -3,8 +3,8 @@
 <test>
   <config>
 [scm]
-interface = CONTROLLER
-removeCvsModulePrefix = no
+controller = CONTROLLER
+addRepoPrefix = yes
 
 [modules]
 all = ^/
@@ -33,7 +33,7 @@ views = email
 To: stephen@beachead.com
 From: stephen@beachead.com
 !cvs Subject: commit: /temp-cvs-wd/
-!svn Subject: commit: /
+!svn Subject: commit: /temp-svn-repo/
 Date: #####
 
 User: stephen
@@ -41,7 +41,7 @@ Date: #####
 
 Added:
 !cvs  /temp-cvs-wd/
-!svn  /
+!svn  /temp-svn-repo/
   foo.txt
 
 Log:
@@ -51,8 +51,8 @@ File Changes:
 
 !cvs Directory: /temp-cvs-wd/
 !cvs ========================
-!svn Directory: /
-!svn ============
+!svn Directory: /temp-svn-repo/
+!svn ==========================
 
 File [added]: foo.txt
 Delta lines: +1 -0

@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+
+<test>
+  <config>
+[scm]
+controller = CONTROLLER
+matchWithRepoPrefix = no
+
+[modules]
+all = ^/foo.txt
+
+[views]
+email = commitmessage.views.email.TigrisStyleEmailView
+
+[email]
+to = stephen@beachead.com
+server = mail.beachead.com
+from = stephen@beachead.com
+subject = commit: $model.greatestCommonDirectory()
+acceptance = ACCEPTANCE_DIRECTORY
+
+[all]
+views = email
+  </config>
+  <commit>
+    <message>foo</message>
+    <addFile name="foo.txt">
+      This text for foo...
+    </addFile>
+    <view name="TigrisStyleEmailView">
+To: stephen@beachead.com
+From: stephen@beachead.com
+Subject: commit: /
+Date: #####
+
+User: stephen
+Date: #####
+
+Added:
+ /
+  foo.txt
+
+Log:
+ foo
+
+File Changes:
+
+Directory: /
+============
+
+File [added]: foo.txt
+Delta lines: +1 -0
+!cvs Index: foo.txt
+===================================================================
+!svn --- foo.txt	#####
+!svn +++ foo.txt	#####
+!svn @@ -0,0 +1 @@
+!svn +This text for foo...
+!svn \ No newline at end of file
+!cvs This text for foo...
+    </view>
+  </commit>
+  <commit>
+    <message>foo</message>
+    <addFile name="foo2.txt">
+      This text for foo...
+    </addFile>
+    <view name="TigrisStyleEmailView" notexecuted="true"/>
+  </commit>
+</test>

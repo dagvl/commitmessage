@@ -59,6 +59,7 @@ class Harness:
     def run(self):
         """Runs a suite of L{Case}s."""
         for case in self.cases:
+            print 'Found case', case
             self._runCase(case)
         print ''
         print 'Passes: %s' % self.passes
@@ -68,10 +69,14 @@ class Harness:
         """Runs L{Case}."""
 
         for facade in self.facades:
+            print 'Running facade', facade
+
             # Each execution of the test case gets its own repository.
             facade.createRepository(case.config())
 
             for commit in case.commits()[:self.commits]:
+                print 'Running commit', commit
+
                 # Let the case do its stuff (e.g. modifying files)
                 commit.doChanges(facade)
 
@@ -81,11 +86,19 @@ class Harness:
 
                 # Check the results.
                 for view in commit.views():
+                    if view.notexecuted:
+                        if facade.doesViewActualExist(view.name):
+                            self.failures = self.failures + 1
+                            print 'Error, view %s was not supposed to execute' % view.name
+                        else:
+                            self.passes = self.passes + 1
+                        continue
+
                     expected = view.expected.strip().split('\n')
-                    actual = [x.replace('\r', '') for x in facade.actual(view.name).strip().split('\n')]
+                    actual = [x.replace('\r', '') for x in facade.getViewActual(view.name).strip().split('\n')]
 
                     # Clean on the !svn/!cvs lines
-                    expected = facade.clean(expected)
+                    expected = facade.cleanConditionals(expected)
 
                     if self._matchesIgnoringDates(expected, actual):
                         self.passes = self.passes + 1
@@ -189,6 +202,7 @@ class View:
 
     def __init__(self, viewElement):
         self.name = viewElement.attributes['name'].value
+        self.notexecuted = (viewElement.attributes.has_key('notexecuted') and True) or False
         for node in viewElement.childNodes:
             if node.nodeType == node.TEXT_NODE:
                 self.expected = node.data
@@ -202,16 +216,21 @@ class ControllerFacade:
     """
 
     def __init__(self):
-        self.mainPath = os.path.join(os.getcwd().replace('\\', '/'), '..', 'commitmessage', 'main.py')
+        self.mainPath = os.path.join(os.getcwd().replace('\\', '/'), '..', 'main.py')
 
-    def actual(self, viewName):
+    def getViewActual(self, viewName):
         """@return: the dumped results for the given view."""
         return file('%s/%s.txt' % (self.workingDir, viewName)).read()
 
     def deleteActual(self, viewName):
+        """Clears out the old text file for the given view."""
         os.remove('%s/%s.txt' % (self.workingDir, viewName))
 
-    def clean(self, expected):
+    def doesViewActualExist(self, viewName):
+        """@return: whether the view has dumped to text"""
+        return os.path.exists('%s/%s.txt' % (self.workingDir, viewName))
+
+    def cleanConditionals(self, expected):
         """Removes the !svn/!cvs conditional lines from the expected output."""
         new = []
 

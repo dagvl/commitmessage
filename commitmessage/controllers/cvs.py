@@ -108,14 +108,8 @@ class CvsController(Controller):
         Controller.__init__(self, config, argv, stdin)
 
         self.model.user = os.getenv('USER') or os.getlogin()
-        self.removecvsmoduleprefix = 'yes'
-
-    def removeCvsModulePrefix(self):
-        """@return: whether the name of the CVS module should be stripped from directory paths"""
-        if self.removecvsmoduleprefix == 'yes':
-            return True
-        else:
-            return False
+        # Set in _doLogInfo
+        # self.model.repo = ...
 
     def _populateModel(self):
         """Performs L{_doCommitInfo} (done first for each directory) or L{_doLogInfo} (done last for each directory)"""
@@ -166,7 +160,7 @@ class CvsController(Controller):
             leftOverModule = pathWithModule[:endAt] + '/'
 
         # If the cvs module was in the currentDirectory.path and nothing was left, we're good
-        if self.removeCvsModulePrefix() and leftOverModule == '/':
+        if not self.addRepoPrefix() and leftOverModule == '/':
             return True
 
         # Else we want only the module to be left: a starting /, ending /, and no other /
@@ -204,8 +198,10 @@ class CvsController(Controller):
         directoryFiles = temp[1:]
 
         # Handle removing the module prefix from the directory name
-        if self.removeCvsModulePrefix():
-            secondSlash = directoryPath.find('/', 1)
+        secondSlash = directoryPath.find('/', 1)
+        # Go ahead and set self.model.repo now
+        self.model.repo = directoryPath[1:secondSlash]
+        if not self.addRepoPrefix():
             directoryPath = directoryPath[secondSlash:]
 
         self.currentDirectory = Directory(directoryPath)

@@ -34,6 +34,23 @@ class Controller:
         self.stdin = stdin
         self.model = Model()
 
+        self.addrepoprefix = 'no'
+        self.matchwithrepoprefix = 'yes'
+
+    def addRepoPrefix(self):
+        """@return: whether the name of the CVS module/SVN repo should prefix all of the directory paths"""
+        if self.addrepoprefix == 'yes':
+            return True
+        else:
+            return False
+
+    def matchWithRepoPrefix(self):
+        """@return: whether the name of the CVS module/SVN repo should be used in matching the greatest common directory to modules"""
+        if self.matchwithrepoprefix == 'yes':
+            return True
+        else:
+            return False
+
     def process(self):
         """Starts the SCM-agnostic process of building the model and executing the views"""
         self._populateModel()
@@ -67,6 +84,9 @@ class Controller:
         # Handle adding on the file name if there is only one file involved
         if len(self.model.files()) == 1:
             gcd = gcd + self.model.files()[0].name
+        # Handle wanting to match against the repo
+        if self.matchWithRepoPrefix():
+            gcd = '/' + self.model.repo + gcd
 
         for module in self.config.getModulesForPath(gcd):
             views = self.config.getViewsForModule(module, self.model)
@@ -195,6 +215,7 @@ class Model:
     rootDirectory = attribute('_rootDirectory', permit='r', doc="""The root directory within the SCM""")
     user = attribute('_user', doc="""The user performing the commit""")
     log = attribute('_log', doc="""The comment the user entered for this commit""")
+    repo = attribute('_repo', doc="""The CVS module/SVn repo for this commit""")
 
     def directory(self, path):
         """@return: the model's L{Directory} for C{path}; creates new directories and sub directories if needed

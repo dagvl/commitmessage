@@ -3,32 +3,28 @@
 <test>
   <config>
 [scm]
-interface = CONTROLLER
+controller = CONTROLLER
 
 [modules]
-all = ^/
+cvs = ^/temp-cvs-wd/*
+svn = ^/temp-svn-repo/*
 
 [views]
-bombsight = commitmessage.views.post.PostView
 email = commitmessage.views.email.TigrisStyleEmailView
 
-[bombsight]
-server = bombsight.beachead.com
-port = 80
-url = /
-page = cvsSubmit.asp
-
 [email]
-to = stephen@beachead.com
 server = mail.beachead.com
 from = stephen@beachead.com
 subject = commit: $model.greatestCommonDirectory()
-header =
-footer =
 acceptance = ACCEPTANCE_DIRECTORY
 
-[all]
-views = bombsight, email
+[cvs]
+views = email
+email.to = stephen-cvs@beachead.com
+
+[svn]
+views = email
+email.to = stephen-svn@beachead.com
   </config>
   <!-- optional config? -->
   <commit>
@@ -37,7 +33,8 @@ views = bombsight, email
       This text for foo...
     </addFile>
     <view name="TigrisStyleEmailView">
-To: stephen@beachead.com
+!cvs To: stephen-cvs@beachead.com
+!svn To: stephen-svn@beachead.com
 From: stephen@beachead.com
 Subject: commit: /
 Date: #####
@@ -87,7 +84,8 @@ two-liner
 see
     </addFile>
     <view name="TigrisStyleEmailView">
-To: stephen@beachead.com
+!cvs To: stephen-cvs@beachead.com
+!svn To: stephen-svn@beachead.com
 From: stephen@beachead.com
 Subject: commit: /
 Date: #####
@@ -175,7 +173,8 @@ Delta lines: +2 -0
     <addBinaryFile name="sub1/binary.gif" location="../binary.gif" />
     <removeFile name="foo2.txt" />
     <view name="TigrisStyleEmailView">
-To: stephen@beachead.com
+!cvs To: stephen-cvs@beachead.com
+!svn To: stephen-svn@beachead.com
 From: stephen@beachead.com
 Subject: commit: /
 Date: #####
@@ -289,7 +288,8 @@ Delta lines: +1 -0
     </changeFile>
     <moveFile fromPath="sub1/foo1.txt" toPath="sub1/foo1a.txt" />
     <view name="TigrisStyleEmailView">
-To: stephen@beachead.com
+!cvs To: stephen-cvs@beachead.com
+!svn To: stephen-svn@beachead.com
 From: stephen@beachead.com
 Subject: commit: /sub1/
 Date: #####

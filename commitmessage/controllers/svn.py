@@ -24,6 +24,8 @@ class SvnController(Controller):
         self.repoPath = self.argv[1]
         self.rev = self.argv[2]
         self.model.rev = self.rev
+        self.model.repo = os.path.split(self.repoPath)[-1]
+        self.prefix = (self.addRepoPrefix() and ('/' + self.model.repo)) or ''
 
         # First, get the user and log message
         lines = self._svnlook('info')
@@ -36,14 +38,14 @@ class SvnController(Controller):
             target = '/' + line[4:-1]
 
             if target.endswith('/'):
-                directory = self.model.directory(target)
+                directory = self.model.directory(self.prefix + target)
                 directory.action = action
             else:
                 parts = target.split('/')
                 name = parts[-1]
                 directoryPath = '/' + '/'.join(parts[0:-1]) + '/'
 
-                file = File(name, self.model.directory(directoryPath), action)
+                file = File(name, self.model.directory(self.prefix + directoryPath), action)
 
         # And finally parse through the diffs and save them into our tree of changes
         diffs = []
@@ -60,7 +62,7 @@ class SvnController(Controller):
             filePath = '/' + diff[0][:-1].split(' ')[1]
             delta, text = self._parse_diff(diff)
 
-            file = self.model.file(filePath)
+            file = self.model.file(self.prefix + filePath)
             file.diff = text
             file.delta = delta
 
