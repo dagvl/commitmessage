@@ -33,8 +33,9 @@ if __name__ == '__main__':
             configFile = value
 
     # Handle relative paths.
-    if configFile[0] != '/' and configFile[0] != '.':
+    if configFile[0] != '/' and configFile[0] != '.' and configFile[1] != ':':
        configFile = rootCmPath + os.sep + configFile
+
     config = CmConfigParser(os.path.realpath(configFile))
 
     scm = config.get('scm', 'interface')
