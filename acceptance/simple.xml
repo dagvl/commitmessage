@@ -257,6 +257,7 @@ Delta lines: +1 -0
     </view>
   </commit>
   <commit>
+    <message>doing several things</message>
     <moveFile fromPath="sub1/foo2.txt" toPath="sub1/foo2a.txt" />
     <changeFile name="sub1/foo2a.txt" fromLine="0" toLine="1">
       this is in a sub directory
@@ -280,7 +281,7 @@ Removed:
   foo1.txt, foo2.txt
 
 Log:
- a subdirectory
+ doing several things
 
 File Changes:
 

@@ -18,7 +18,7 @@ class SvnController(Controller):
     actions = { 'A': 'added', 'D': 'removed', 'U': 'modified' }
     """A mapping from abbreviation to a better description."""
 
-    def populateModel(self):
+    def _populateModel(self):
         """Fills out the model by invoking svnlook."""
 
         self.repoPath = self.argv[1]
@@ -26,18 +26,18 @@ class SvnController(Controller):
         self.model.rev = self.rev
 
         # First, get the user and log message
-        lines = self.svnlook('info')
-        self.model.user(lines[0][:-1])
-        self.model.log(''.join(lines[3:]).strip())
+        lines = self._svnlook('info')
+        self.model.user = lines[0][:-1]
+        self.model.log = ''.join(lines[3:]).strip()
 
         # Now build an initial tree of file and tree changes
-        for line in self.svnlook('changed'):
+        for line in self._svnlook('changed'):
             action = self.actions[line[0]]
             target = '/' + line[4:-1]
 
             if target.endswith('/'):
                 directory = self.model.directory(target)
-                directory.action(action)
+                directory.action = action
             else:
                 parts = target.split('/')
                 name = parts[-1]
@@ -47,7 +47,7 @@ class SvnController(Controller):
 
         # And finally parse through the diffs and save them into our tree of changes
         diffs = []
-        for line in self.svnlook('diff'):
+        for line in self._svnlook('diff'):
             if line.startswith('Modified: ') or line.startswith('Added: ') or line.startswith('Copied: ') or line.startswith('Deleted: '):
                 # Handle starting a new diff
                 partialDiff = [line]
@@ -58,13 +58,13 @@ class SvnController(Controller):
         for diff in diffs:
             # Use [:-1] to leave of the trailing \n
             filePath = '/' + diff[0][:-1].split(' ')[1]
-            delta, text = self.parse_diff(diff)
+            delta, text = self._parse_diff(diff)
 
             file = self.model.file(filePath)
-            file.diff(text)
-            file.delta(delta)
+            file.diff = text
+            file.delta = delta
 
-    def parse_diff(self, diff):
+    def _parse_diff(self, diff):
         text = ''
         added = 0
         removed = 0
@@ -82,7 +82,8 @@ class SvnController(Controller):
 
         return ('+%s -%s' % (added, removed), text)
 
-    def svnlook(self, command):
+    def _svnlook(self, command):
         """Returns the lines ouput by the svnlook command against the current
         repo and rev."""
         return execute('svnlook %s %s -r %s' % (command, self.repoPath, self.rev))
+

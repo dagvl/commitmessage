@@ -70,17 +70,17 @@ class TigrisStyleEmailView(BaseEmailView):
         if len(directories) > 0:
             text.write('%s%s:\n' % (action[0].upper(), action[1:]))
             for dir in directories:
-                text.write(' %s\n' % dir.path())
-                files = dir.files(action)
-                text.write('  %s' % files[0].name())
+                text.write(' %s\n' % dir.path)
+                files = dir.filesByAction(action)
+                text.write('  %s' % files[0].name)
                 for file in files[1:]:
-                    text.write(', %s' % file.name())
+                    text.write(', %s' % file.name)
                 text.write('\n')
             text.write('\n')
 
     def generateBody(self, text):
         """Returns a string for the body of the email."""
-        text.write('User: %s\n' % self.model.user())
+        text.write('User: %s\n' % self.model.user)
         text.write('Date: %s\n' % time.strftime('%Y/%m/%d %I:%M %p'))
         text.write('\n')
 
@@ -89,23 +89,23 @@ class TigrisStyleEmailView(BaseEmailView):
         self.printFiles(text, 'modified')
 
         text.write('Log:\n')
-        lines = self.model.log().split('\n')
+        lines = self.model.log.split('\n')
         for line in lines:
             text.write(' %s\n' % line)
         text.write('\n')
 
         text.write('File Changes:\n\n')
         for dir in self.model.directoriesWithFiles():
-            s = 'Directory: %s' % dir.path()
+            s = 'Directory: %s' % dir.path
             line = ''
             for i in range(0, len(s)):
                 line = line + '='
             text.write('%s\n%s\n\n' % (s, line))
 
-            for file in dir.files():
-                text.write('File [%s]: %s\n' % (file.action(), file.name()))
-                text.write('Delta lines: %s\n' % file.delta())
-                text.write('%s\n' % file.diff())
+            for file in dir.files:
+                text.write('File [%s]: %s\n' % (file.action, file.name))
+                text.write('Delta lines: %s\n' % file.delta)
+                text.write('%s\n' % file.diff)
 
 class HtmlEmailView(BaseEmailView):
     """Sends out a HTML formatted email with the commit info in tables."""
