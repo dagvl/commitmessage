@@ -37,7 +37,6 @@ def main():
         if option == '-p':
             profiling = 1
 
-
     if profiling:
         import hotshot
         i = 0
@@ -62,7 +61,6 @@ def main():
     cleanArgs.extend(args)
 
     # getNewInstance does not call the __init__ constructor, so we do
-
     controller.__init__(config, cleanArgs, sys.stdin)
 
     controller.process()
