@@ -7,7 +7,6 @@
 """Provides the core classes for the commitmessage framework."""
 
 import os
-import pickle
 import string
 import sys
 
@@ -54,11 +53,10 @@ class Controller:
 
     def executeViews(self):
         """Fires off the views for each module that matches the commits base directory."""
-        modules = self.config.getModulesForPath(this.model.baseDirectory())
+        modules = self.config.getModulesForPath(self.model.greatestCommonDirectory())
         for module in modules:
             views = self.config.getViewsForModule(module, self.model)
             for view in views:
-                print('Firing view %s' % view.name)
                 view.execute()
 
 class File:
