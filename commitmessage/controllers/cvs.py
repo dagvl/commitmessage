@@ -69,15 +69,26 @@ def cvs_diff(file, rev):
 class CvsController(Controller):
     """Translates CVS loginfo/commitinfo information into the Model."""
 
-    FILE_PREFIX = '#cvs.%s.' % os.getpgrp()
-    """A unique prefix to avoid multiple processes stepping on each other's toes."""
+    FILE_PREFIX = ''
+    """A unique prefix to avoid multiple processes stepping on each other's toes.
 
-    LAST_DIRECTORY_FILE = '%s/%slastdir' % (Controller.TMPDIR, FILE_PREFIX)
-    """The file to store the last directory that commitinfo was executed in."""
+    The Unix getpgrp command is used as Cvs will invoke multiple process
+    instances of main.py for each directory's loginfo and commitinfo, but the
+    pgrp will remain the same for each spawned process."""
+
+    LAST_DIRECTORY_FILE = ''
+    """The file to store the last directory that commitinfo was executed in.
+    Must be assigned to after the FILE_PREFIX has been set in __init__."""
 
     def __init__(self, config, argv, stdin):
         """Sets the 'done' attribute to false so we handle the multiple
         executions CVS does against main.py."""
+        try:
+            CvsController.FILE_PREFIX = '#cvs.%s.' % os.getpgrp()
+        except AttributeError:
+            sys.stderr.write('WARNING, the CvsController is designed only to run on Unix.')
+            CvsController.FILE_PREFIX = '#cvs.'
+        CvsController.LAST_DIRECTORY_FILE = '%s/%slastdir' % (Controller.TMPDIR, CvsController.FILE_PREFIX)
         Controller.__init__(self, config, argv, stdin)
         self.model.user(os.getenv('USER') or os.getlogin())
 
