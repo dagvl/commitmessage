@@ -61,7 +61,10 @@ Translates CVS loginfo/commitinfo information into the Model.
           <span class=summary-sig-arg>stdin</span>)</span></code>
 <br />
 Sets the 'done' attribute to false so we handle the multiple 
-executions CVS does against main.py.</td></tr>
+executions CVS does of main.py (one per directory in the commit).</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><a name="removeCvsModulePrefix"></a><span class="summary-sig"><span class="summary-sig-name">removeCvsModulePrefix</span>(<span class=summary-sig-arg>self</span>)</span></code>
+</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doCommitInfo" class="summary-sig-name"><code>_doCommitInfo</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
 <br />
@@ -78,7 +81,7 @@ information.</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_executeViews" class="summary-sig-name"><code>_executeViews</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
 <br />
-Over-ride the parent executeViews to re-build the model from the 
+Override the parent executeViews to re-build the model from the 
 temporary files.</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_fillInValues" class="summary-sig-name"><code>_fillInValues</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
@@ -88,15 +91,13 @@ information.</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_isLastDirectoryOfCommit" class="summary-sig-name"><code>_isLastDirectoryOfCommit</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
 <br />
-Return whether the current directory is the last directory of the 
-commit.</td></tr>
+Return whether the current directory is the last directory of the commit</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_loadSavedDirectoriesIntoModel" class="summary-sig-name"><code>_loadSavedDirectoriesIntoModel</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
 <br />
-Re-loads the directories into the Model.</td></tr>
+Reloads the directories into the Model.</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_parseLoginfoStdin" class="summary-sig-name"><code>_parseLoginfoStdin</code></a>(<span class=summary-sig-arg>self</span>,
-          <span class=summary-sig-arg>directoryName</span>)</span></code>
+  <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_parseLoginfoStdinIntoFiles" class="summary-sig-name"><code>_parseLoginfoStdinIntoFiles</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
 <br />
 Reads in the loginfo text from self.stdin and retreives the 
 corresponding diff/delta information for each file.</td></tr>
@@ -111,12 +112,12 @@ Read in the information.</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_saveDirectory" class="summary-sig-name"><code>_saveDirectory</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
 <br />
-Pickles the given directory off to TMPDIR/FILE_PREFIXdir-path.</td></tr>
+Pickles the given directory off to TMPDIR/FILE_PREFIX directory.</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_stopProcessForNow" class="summary-sig-name"><code>_stopProcessForNow</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
 <br />
-Return whether we should stop and wait for CVS to re-execute main.py 
-on the next directory of the commit.</td></tr>
+Return whether we should stop and wait for CVS to re-execute main.py on the 
+next directory of the commit.</td></tr>
 <tr bgcolor="#e8f0f8" class="group">
   <th colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;Inherited from Controller</th></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
@@ -160,7 +161,7 @@ the views.</td></tr>
     <br /><i>(Constructor)</i>
   </h3>
   Sets the 'done' attribute to false so we handle the multiple 
-  executions CVS does against main.py.
+  executions CVS does of main.py (one per directory in the commit).
   <dl><dt></dt><dd>
     <dl><dt><b>Overrides:</b></dt>
       <dd><a href="commitmessage.model.Controller-class.html#__init__"><code>commitmessage.model.Controller.__init__</code></a></dd>
@@ -195,7 +196,7 @@ the views.</td></tr>
 <table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
   <h3><span class="sig"><span class="sig-name">_executeViews</span>(<span class=sig-arg>self</span>)</span>
   </h3>
-  Over-ride the parent executeViews to re-build the model from the 
+  Override the parent executeViews to re-build the model from the 
   temporary files.
   <dl><dt></dt><dd>
     <dl><dt><b>Overrides:</b></dt>
@@ -218,9 +219,13 @@ the views.</td></tr>
 <table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
   <h3><span class="sig"><span class="sig-name">_isLastDirectoryOfCommit</span>(<span class=sig-arg>self</span>)</span>
   </h3>
-  Return whether the current directory is the last directory of the 
-  commit.
   <dl><dt></dt><dd>
+    <dl><dt><b>Returns:</b></dt>
+      <dd>
+        whether the current directory is the last directory of the 
+        commit
+      </dd>
+    </dl>
   </dd></dl>
 </td></tr></table>
 
@@ -228,15 +233,14 @@ the views.</td></tr>
 <table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
   <h3><span class="sig"><span class="sig-name">_loadSavedDirectoriesIntoModel</span>(<span class=sig-arg>self</span>)</span>
   </h3>
-  Re-loads the directories into the Model.
+  Reloads the directories into the Model.
   <dl><dt></dt><dd>
   </dd></dl>
 </td></tr></table>
 
-<a name="_parseLoginfoStdin"></a>
+<a name="_parseLoginfoStdinIntoFiles"></a>
 <table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
-  <h3><span class="sig"><span class="sig-name">_parseLoginfoStdin</span>(<span class=sig-arg>self</span>,
-          <span class=sig-arg>directoryName</span>)</span>
+  <h3><span class="sig"><span class="sig-name">_parseLoginfoStdinIntoFiles</span>(<span class=sig-arg>self</span>)</span>
   </h3>
   Reads in the loginfo text from self.stdin and retreives the 
   corresponding diff/delta information for each file.
@@ -269,7 +273,7 @@ the views.</td></tr>
 <table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
   <h3><span class="sig"><span class="sig-name">_saveDirectory</span>(<span class=sig-arg>self</span>)</span>
   </h3>
-  Pickles the given directory off to TMPDIR/FILE_PREFIXdir-path.
+  Pickles the given directory off to TMPDIR/FILE_PREFIX directory.
   <dl><dt></dt><dd>
   </dd></dl>
 </td></tr></table>
@@ -278,9 +282,13 @@ the views.</td></tr>
 <table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
   <h3><span class="sig"><span class="sig-name">_stopProcessForNow</span>(<span class=sig-arg>self</span>)</span>
   </h3>
-  Return whether we should stop and wait for CVS to re-execute main.py 
-  on the next directory of the commit.
   <dl><dt></dt><dd>
+    <dl><dt><b>Returns:</b></dt>
+      <dd>
+        whether we should stop and wait for CVS to re-execute main.py 
+        on the next directory of the commit.
+      </dd>
+    </dl>
     <dl><dt><b>Overrides:</b></dt>
       <dd><a href="..\private\commitmessage.model.Controller-class.html#_stopProcessForNow"><code>commitmessage.model.Controller._stopProcessForNow</code></a></dd>
     </dl>
@@ -350,7 +358,7 @@ the views.</td></tr>
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
   <tr>
-    <td align="left"><font size="-2">Generated by Epydoc 2.0 on Tue Dec 16 10:35:37 2003</font></td>
+    <td align="left"><font size="-2">Generated by Epydoc 2.0 on Fri Dec 19 03:33:28 2003</font></td>
     <td align="right"><a href="http://epydoc.sourceforge.net"
                       ><font size="-2">http://epydoc.sf.net</font></a></td>
   </tr>
