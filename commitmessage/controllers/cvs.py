@@ -7,7 +7,7 @@
 """The controller and utils for the CVS SCM (http://www.cvshome.org)."""
 
 import os
-import pickle
+import cPickle
 import re
 import sys
 
@@ -92,7 +92,7 @@ class CvsController(Controller):
         executions CVS does against main.py."""
         Controller.__init__(self, config, argv, stdin)
 
-    def process(self):
+    def populateModel(self):
         """Read in the information."""
         if len(self.argv) > 2:
             self.doCommitInfo()
@@ -102,10 +102,16 @@ class CvsController(Controller):
     def stopProcessForNow(self):
         """Return whether doLogInfo has said it's okay to stop (e.g. it has
         reached the last directory recorded by doCommitInfo)."""
-        path = '%s/%s' % (CvsController.CVSROOT, self.currentDirectory)
+        # Just stop if currentDirectory doesn't exist
+        if not self.__dict__.has_key('currentDirectory'):
+            return 1
+
+        pathToMatch = '%s%s' % (os.environ['CVSROOT'], self.currentDirectory.path())
         matched = 0
         f = file(CvsController.LAST_DIRECTORY_FILE, 'r')
         for line in f.readlines():
+            print 'lastdir: %s' % line
+            print 'pathtom: %s' % pathToMatch
             if line == pathToMatch:
                 matched = 1
         f.close()
@@ -157,7 +163,7 @@ class CvsController(Controller):
             CvsController.FILE_PREFIX,
             self.currentDirectory.path().replace('/', '-'))
         f = file(path, 'w')
-        pickle.dump(self.currentDirectory, f, 1)
+        cPickle.dump(self.currentDirectory, f)
         f.close()
 
     def fillInValues(self):
@@ -214,20 +220,24 @@ class CvsController(Controller):
             if (state == STATE_LOG):
                 self.logLines.append(line)
 
-    def executeViews():
+    def executeViews(self):
         """Over-ride the parent executeViews to re-build the model from the
         temporary files."""
         self.loadSavedDirectoriesIntoModel()
         # Carry on with executing the views
         Controller.executeViews(self)
 
-    def loadSavedDirectoriesIntoModel():
+    def loadSavedDirectoriesIntoModel(self):
         """Re-loads the directories into the Model."""
         allFiles = os.listdir(Controller.TMPDIR)
-        for file in allFiles:
-            if file.startsWith(FILE_PREFIX):
-                directory = pickle.load('%s/%s' % (Controller.TMPDIR, file))
-                self.model.merge(directory)
+        for name in allFiles:
+            if name.startswith(CvsController.FILE_PREFIX) and not name.endswith('lastdir'):
+                fullPath = '%s/%s' % (Controller.TMPDIR, name)
 
-if __name__ == '__name__':
-    print('hello kitty')
+                f = file(fullPath)
+                directory = cPickle.load(f)
+                f.close()
+
+                self.model.addDirectory(directory)
+
+                os.remove(fullPath)
