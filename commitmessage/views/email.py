@@ -25,6 +25,7 @@ class BaseEmailView(View):
         self.username = None
         self.header = ''
         self.footer = ''
+        self.cc = ''
         self.rfc_header = ''
 
     def __getitem__(self, name):
@@ -35,6 +36,10 @@ class BaseEmailView(View):
         """Sends the email with commit information"""
         text = StringIO('')
         text.write('To: %s\n' % self.to)
+
+        if len(self.cc) > 0:
+            text.write('Cc: %s\n' % self.cc)
+
         text.write('From: %s\n' % self['from'])
         text.write('Subject: %s\n' % self.subject.split('\n')[0])
         text.write('Date: %s -0000 (GMT)\n' % time.strftime('%A %d %B %Y %H:%M:%S', time.gmtime()))
@@ -63,7 +68,7 @@ class BaseEmailView(View):
                 smtp.login(self.username, self.password)
             smtp.sendmail(
                 self['from'],
-                [addr.strip() for addr in self.to.split(',')],
+                filter(lambda x: x != '', [addr.strip() for addr in self.to.split(',')] + [addr.strip() for addr in self.cc.split(',')]),
                 body)
             smtp.quit()
         else:
@@ -86,6 +91,7 @@ class TigrisStyleEmailView(BaseEmailView):
      - subject (required) - the subject line (e.g. "commit: $model.greatestCommonDirectory()")
      - from (required) - the from email address (e.g. "$model.user@yourdomain.com")
      - to (required) - a comma-separated list of email addresses to send to
+     - cc (optional) - a comma-separated list of email addresses to cc to
      - header (optional) - text to put at the beginning of the email
      - footer (optional) - text to put at the end of the email
     """

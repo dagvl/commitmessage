@@ -7,6 +7,7 @@
     (SvnController._populateModel): Handle directories having 'Property changes on:' diffs
  * commitmessage/views/email.py
     (TigrisStyleEmailView.execute): Handle printing out directory property changes as well
+    (BaseEmailView.execute): Handle cc'ing as a header and then passing it to the smtp library
  * msnp/*
     : Removed due to GPL vs. ASL incompatibilities
  * toc.py
