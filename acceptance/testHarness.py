@@ -305,7 +305,7 @@ class CvsFacade(ControllerFacade):
         self._execCvs('checkout temp-cvs-wd')
 
     def destroyRepository(self):
-        _exec('rm -fr %s %s' % (self.repoDir, self.workingDir))
+        _exec('rm -fr CVSROOT %s %s' % (self.repoDir, self.workingDir))
 
     def commit(self):
         self._writeFile('temp-message.txt', self.message)
