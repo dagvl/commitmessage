@@ -1,13 +1,7 @@
 
 readme
-commitmessage Version 2.0-alpha1
-Copyright 2002 Stephen Haberman
-
-Note: Please keep this INSTALL.txt file with the other commitmessage Perl
-scripts in your CVSROOT/commitmessage directory to provide a convenient source
-for future reference, both for you and future admins.
-
-Please refer to http://commitmessage.tigris.org for more information.
+commitmessage Version 2.0
+Copyright 2003 Stephen Haberman
 
 #####################################################################
 #
@@ -15,6 +9,7 @@ Please refer to http://commitmessage.tigris.org for more information.
 #
 #####################################################################
 
+Downloaq 
 You can install commitmessage in several ways:
 
 1. You can install the commitmessage files in a variety of places:
