@@ -71,7 +71,17 @@ class HtmlEmailView(BaseEmailView):
     pass
 
 class TigrisStyleEmailView(BaseEmailView):
-    """Sends out an email in a style mimicking U{Tigris<http://www.tigris.org>} commit email format"""
+    """Sends out an email in a style mimicking U{Tigris<http://www.tigris.org>} commit email format
+
+    This view has several properties:
+
+     - server (required) - the mail server to relay through
+     - subject (required) - the subject line (e.g. "commit: $model.greatestCommonDirectory()")
+     - from (required) - the from email address (e.g. "$model.user@yourdomain.com")
+     - to (required) - a comma-separated list of email addresses to send to
+     - header (optional) - text to put at the beginning of the email
+     - footer (optional) - text to put at the end of the email
+    """
 
     def printFiles(self, text, action):
         directories = self.model.directoriesWithFiles(action)
