@@ -229,6 +229,16 @@ class ControllerFacade:
 
         return new
 
+    def _readFile(self, name):
+        f = file('%s/%s' % (self.workingDir, name), 'r')
+        lines = f.readlines()
+        f.close()
+
+    def _writeFile(self, name, lines):
+        f = file('%s/%s' % (self.workingDir, name), 'w')
+        f.writelines(lines)
+        f.close()
+
 class CvsFacade(ControllerFacade):
     """
     A facade for executing the test cases against a CVS installation (Unix only).
@@ -297,22 +307,19 @@ class CvsFacade(ControllerFacade):
         _exec('rm -fr %s %s' % (self.repoDir, self.workingDir))
 
     def commit(self):
-        self._openFile('temp-message.txt', 'w').write(self.message)
+        self._writeFile('temp-message.txt', self.message)
         self._execInWorkingDir('cvs commit -F temp-message.txt')
-
-    def _openFile(self, name, flags):
-        return file('%s/%s' % (self.workingDir, name), flags)
 
     def addDirectory(self, name=''):
         os.mkdir('%s/%s' % (self.workingDir, name))
         self._execInWorkingDir('cvs add %s' % name)
 
     def addFile(self, name='', content=''):
-        self._openFile(name, 'w').write(content)
+        self._writeFile(name, content)
         self._execInWorkingDir('cvs add %s' % name)
 
     def addReferencedFile(self, name='', location=''):
-        self._openFile(name, 'w').writelines(self._openFile(location, 'r').readlines())
+        self._writeFile(name, self._readFile(location))
         self._execInWorkingDir('cvs add -kb %s' % name)
 
     def moveFile(self, fromPath='', toPath=''):
@@ -328,7 +335,7 @@ class CvsFacade(ControllerFacade):
         fromLine = int(fromLine)
         toLine = int(toLine)
 
-        oldLines = self._openFile(name, 'r').readlines()
+        oldLines = self._readFile(name)
         newLines = []
 
         for i in range(0, fromLine):
@@ -339,7 +346,7 @@ class CvsFacade(ControllerFacade):
         for i in range(fromLine, toLine):
             newLines.append(oldLines[i])
 
-        self._openFile(name, 'w').write('\n'.join(newLines))
+        self._writeFile(name, '\n'.join(newLines))
 
 class SvnFacade(ControllerFacade):
     """
@@ -394,22 +401,19 @@ class SvnFacade(ControllerFacade):
         _exec('rm -fr %s %s' % (self.repoDir, self.workingDir))
 
     def commit(self):
-        self._openFile('temp-message.txt', 'w').write(self.message)
+        self._writeFile('temp-message.txt', self.message)
         self._execInWorkingDir('svn commit -F temp-message.txt')
-
-    def _openFile(self, name, flags):
-        return file('%s/%s' % (self.workingDir, name), flags)
 
     def addDirectory(self, name=''):
         os.mkdir('%s/%s' % (self.workingDir, name))
         self._execInWorkingDir('svn add %s' % name)
 
     def addFile(self, name='', content=''):
-        self._openFile(name, 'w').write(content)
+        self._writeFile(name, content)
         self._execInWorkingDir('svn add %s' % name)
 
     def addReferencedFile(self, name='', location=''):
-        self._openFile(name, 'w').writelines(self._openFile(location, 'r').readlines())
+        self._writeFile(name, self._readFile(location))
         self._execInWorkingDir('svn add %s' % name)
 
     def moveFile(self, fromPath='', toPath=''):
@@ -422,7 +426,7 @@ class SvnFacade(ControllerFacade):
         fromLine = int(fromLine)
         toLine = int(toLine)
 
-        oldLines = self._openFile(name, 'r').readlines()
+        oldLines = self._readFile(name)
         newLines = []
 
         for i in range(0, fromLine):
@@ -433,7 +437,7 @@ class SvnFacade(ControllerFacade):
         for i in range(fromLine, toLine):
             newLines.append(oldLines[i])
 
-        self._openFile(name, 'w').write('\n'.join(newLines))
+        self._writeFile(name, '\n'.join(newLines))
 
 def _exec(cmd):
     """Executes C{cmd} and returns the lines of C{stdout}."""
