@@ -89,6 +89,7 @@ class SvnController(Controller):
             currentDiff = None
             for line in lines:
                 if line.startswith('Modified: ') \
+                    or line.startswith('Added: ') \
                     or line.startswith('Copied: ') \
                     or line.startswith('Deleted: '):
                     if currentDiff is not None:
