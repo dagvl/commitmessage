@@ -3,7 +3,7 @@
           "DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>commitmessage.views.email.TigrisStyleEmailView</title>
+  <title>commitmessage.views.email.EtherealStyleEmailView</title>
   <link rel="stylesheet" href="epydoc.css" type="text/css"></link>
 </head>
 <body bgcolor="white" text="black" link="blue" vlink="#204080"
@@ -26,30 +26,32 @@
         <a href="commitmessage-module.html">Package&nbsp;commitmessage</a> ::
         <a href="commitmessage.views-module.html">Package&nbsp;views</a> ::
         <a href="commitmessage.views.email-module.html">Module&nbsp;email</a> ::
-        Class&nbsp;TigrisStyleEmailView
+        Class&nbsp;EtherealStyleEmailView
       </b></font></br>
     </td>
     <td><table cellpadding="0" cellspacing="0">
-      <tr><td align="right"><font size="-2">[show&nbsp;private&nbsp;|&nbsp;<a href="../public/commitmessage.views.email.TigrisStyleEmailView-class.html">hide&nbsp;private</a>]</font></td></tr>
-      <tr><td align="right"><font size="-2">[<a href="frames.html"target="_top">frames</a>&nbsp;|&nbsp;<a href="commitmessage.views.email.TigrisStyleEmailView-class.html" target="_top">no&nbsp;frames</a>]</font></td></tr>
+      <tr><td align="right"><font size="-2">[<a href="../private/commitmessage.views.email.EtherealStyleEmailView-class.html">show&nbsp;private</a>&nbsp;|&nbsp;hide&nbsp;private]</font></td></tr>
+      <tr><td align="right"><font size="-2">[<a href="frames.html"target="_top">frames</a>&nbsp;|&nbsp;<a href="commitmessage.views.email.EtherealStyleEmailView-class.html" target="_top">no&nbsp;frames</a>]</font></td></tr>
     </table></td>
 </tr></table>
 
 <!-- =========== START OF CLASS DESCRIPTION =========== -->
-<h2 class="class">Class TigrisStyleEmailView</h2>
+<h2 class="class">Class EtherealStyleEmailView</h2>
 
 <pre class="base-tree">
      <a href="commitmessage.model.View-class.html"><code>View</code></a> --+    
             |    
 <a href="commitmessage.views.email.BaseEmailView-class.html"><code>BaseEmailView</code></a> --+
                 |
-               <b>TigrisStyleEmailView</b>
+               <b>EtherealStyleEmailView</b>
 </pre><br />
 
 <hr/>
 
-<p>Sends out an email in a style mimicking the <a 
-href="http://www.tigris.org">Tigris</a> commit email format</p>
+<p>Sends out an email in the Ethereal commit message style.</p>
+<p>The log message is followed by a list of file deltas. This provides 
+useful change information without blasting the recipient(s) with 
+multimegabyte diffs.</p>
 This view has several properties:
 <ul>
   <li>
@@ -57,7 +59,8 @@ This view has several properties:
   </li>
   <li>
     subject (required) - the subject line (e.g. &quot;commit: 
-    $model.greatestCommonDirectory()&quot;)
+    $model.greatestCommonDirectory()&quot;). A list of directories/files 
+    will be appended.
   </li>
   <li>
     from (required) - the from email address (e.g. 
@@ -68,16 +71,16 @@ This view has several properties:
     to
   </li>
   <li>
-    cc (optional) - a comma-separated list of email addresses to cc 
-    to
-  </li>
-  <li>
     header (optional) - text to put at the beginning of the email
   </li>
   <li>
     footer (optional) - text to put at the end of the email
   </li>
+  <li>
+    maxfiles (optional) - the maximum number of files to list
+  </li>
 </ul>
+Contributed by Gerald Combs &lt;gerald [AT] ethereal.com&gt;
 <hr/>
 
 
@@ -86,24 +89,24 @@ This view has several properties:
 <tr bgcolor="#70b0f0" class="summary">
   <th colspan="2">Method Summary</th></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><span class="summary-sig"><a href="commitmessage.views.email.TigrisStyleEmailView-class.html#generateBody" class="summary-sig-name"><code>generateBody</code></a>(<span class=summary-sig-arg>self</span>,
+  <td><code><span class="summary-sig"><a href="commitmessage.views.email.EtherealStyleEmailView-class.html#__init__" class="summary-sig-name"><code>__init__</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>name</span>,
+          <span class=summary-sig-arg>model</span>)</span></code>
+<br />
+Initializes the the username to None, header, footer, and 
+rfc_header</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="commitmessage.views.email.EtherealStyleEmailView-class.html#generateBody" class="summary-sig-name"><code>generateBody</code></a>(<span class=summary-sig-arg>self</span>,
           <span class=summary-sig-arg>text</span>)</span></code>
 <br />
 Return a string for the body of the email</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><a name="printFilesAndDirectories"></a><span class="summary-sig"><span class="summary-sig-name">printFilesAndDirectories</span>(<span class=summary-sig-arg>self</span>,
-          <span class=summary-sig-arg>text</span>,
-          <span class=summary-sig-arg>action</span>)</span></code>
-</td></tr>
+  <td><code><span class="summary-sig"><a href="commitmessage.views.email.EtherealStyleEmailView-class.html#generateSubject" class="summary-sig-name"><code>generateSubject</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>text</span>)</span></code>
+<br />
+Wrap the subject at 75 characters, and cap it at three lines.</td></tr>
 <tr bgcolor="#e8f0f8" class="group">
   <th colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;Inherited from BaseEmailView</th></tr>
-<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><span class="summary-sig"><a href="commitmessage.views.email.BaseEmailView-class.html#__init__" class="summary-sig-name"><code>__init__</code></a>(<span class=summary-sig-arg>self</span>,
-          <span class=summary-sig-arg>name</span>,
-          <span class=summary-sig-arg>model</span>)</span></code>
-<br />
-Initializes the the SMTP username to None, header to '', and footer to 
-''</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="commitmessage.views.email.BaseEmailView-class.html#__getitem__" class="summary-sig-name"><code>__getitem__</code></a>(<span class=summary-sig-arg>self</span>,
           <span class=summary-sig-arg>name</span>)</span></code>
@@ -113,10 +116,6 @@ Used to get the 'from' attribute (as it is a keyword)</td></tr>
   <td><code><span class="summary-sig"><a href="commitmessage.views.email.BaseEmailView-class.html#execute" class="summary-sig-name"><code>execute</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
 <br />
 Sends the email with commit information</td></tr>
-<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><span class="summary-sig"><a href="commitmessage.views.email.BaseEmailView-class.html#generateSubject" class="summary-sig-name"><code>generateSubject</code></a>(<span class=summary-sig-arg>self</span>,
-          <span class=summary-sig-arg>text</span>)</span></code>
-</td></tr>
 <tr bgcolor="#e8f0f8" class="group">
   <th colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;Inherited from View</th></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
@@ -141,6 +140,25 @@ Return the path of the test dump file</td></tr>
   <th colspan="2">Method Details</th></tr>
 </table>
 
+<a name="__init__"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">__init__</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>name</span>,
+          <span class=sig-arg>model</span>)</span>
+    <br /><i>(Constructor)</i>
+  </h3>
+  <p>Initializes the the username to None, header, footer, and 
+  rfc_header</p>
+  The username is default to None, header to 'This is a multi-part 
+  message in MIME format.', footer to '' and rfc_header to the MIME 
+  boundary.
+  <dl><dt></dt><dd>
+    <dl><dt><b>Overrides:</b></dt>
+      <dd><a href="commitmessage.views.email.BaseEmailView-class.html#__init__"><code>commitmessage.views.email.BaseEmailView.__init__</code></a></dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+
 <a name="generateBody"></a>
 <table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
   <h3><span class="sig"><span class="sig-name">generateBody</span>(<span class=sig-arg>self</span>,
@@ -151,6 +169,20 @@ Return the path of the test dump file</td></tr>
       <dd>
         a string for the body of the email
       </dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+
+<a name="generateSubject"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">generateSubject</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>text</span>)</span>
+  </h3>
+  Wrap the subject at 75 characters, and cap it at three lines. Append 
+  &quot;...&quot; if the subject is truncated.
+  <dl><dt></dt><dd>
+    <dl><dt><b>Overrides:</b></dt>
+      <dd><a href="commitmessage.views.email.BaseEmailView-class.html#generateSubject"><code>commitmessage.views.email.BaseEmailView.generateSubject</code></a></dd>
     </dl>
   </dd></dl>
 </td></tr></table>

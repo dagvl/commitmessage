@@ -3,7 +3,7 @@
           "DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>ConfigParser.ConfigParser</title>
+  <title>ConfigParser.RawConfigParser</title>
   <link rel="stylesheet" href="epydoc.css" type="text/css"></link>
 </head>
 <body bgcolor="white" text="black" link="blue" vlink="#204080"
@@ -24,27 +24,21 @@
     <td width="100%">
       <font size="-1"><b class="breadcrumbs">
         Module&nbsp;ConfigParser ::
-        Class&nbsp;ConfigParser
+        Class&nbsp;RawConfigParser
       </b></font></br>
     </td>
     <td><table cellpadding="0" cellspacing="0">
-      <tr><td align="right"><font size="-2">[show&nbsp;private&nbsp;|&nbsp;<a href="../public/ConfigParser.ConfigParser-class.html">hide&nbsp;private</a>]</font></td></tr>
-      <tr><td align="right"><font size="-2">[<a href="frames.html"target="_top">frames</a>&nbsp;|&nbsp;<a href="ConfigParser.ConfigParser-class.html" target="_top">no&nbsp;frames</a>]</font></td></tr>
+      <tr><td align="right"><font size="-2">[<a href="../private/ConfigParser.RawConfigParser-class.html">show&nbsp;private</a>&nbsp;|&nbsp;hide&nbsp;private]</font></td></tr>
+      <tr><td align="right"><font size="-2">[<a href="frames.html"target="_top">frames</a>&nbsp;|&nbsp;<a href="ConfigParser.RawConfigParser-class.html" target="_top">no&nbsp;frames</a>]</font></td></tr>
     </table></td>
 </tr></table>
 
 <!-- =========== START OF CLASS DESCRIPTION =========== -->
-<h2 class="class">Class ConfigParser</h2>
-
-<pre class="base-tree">
-<a href="ConfigParser.RawConfigParser-class.html"><code>RawConfigParser</code></a> --+
-                  |
-                 <b>ConfigParser</b>
-</pre><br />
+<h2 class="class">Class RawConfigParser</h2>
 
 <dl><dt><b>Known Subclasses:</b></dt>
 <dd>
-    <a href="commitmessage.util.CmConfigParser-class.html"><code>CmConfigParser</code></a></dd></dl>
+    <a href="ConfigParser.ConfigParser-class.html"><code>ConfigParser</code></a></dd></dl>
 
 <hr/>
 
@@ -54,36 +48,7 @@
 <tr bgcolor="#70b0f0" class="summary">
   <th colspan="2">Method Summary</th></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><span class="summary-sig"><a href="ConfigParser.ConfigParser-class.html#get" class="summary-sig-name"><code>get</code></a>(<span class=summary-sig-arg>self</span>,
-          <span class=summary-sig-arg>section</span>,
-          <span class=summary-sig-arg>option</span>,
-          <span class=summary-sig-arg>raw</span>,
-          <span class=summary-sig-arg>vars</span>)</span></code>
-<br />
-Get an option value for a given section.</td></tr>
-<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><span class="summary-sig"><a href="ConfigParser.ConfigParser-class.html#items" class="summary-sig-name"><code>items</code></a>(<span class=summary-sig-arg>self</span>,
-          <span class=summary-sig-arg>section</span>,
-          <span class=summary-sig-arg>raw</span>,
-          <span class=summary-sig-arg>vars</span>)</span></code>
-<br />
-Return a list of tuples with (name, value) for each option in the 
-section.</td></tr>
-<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><a name="_interpolate"></a><span class="summary-sig"><span class="summary-sig-name">_interpolate</span>(<span class=summary-sig-arg>self</span>,
-          <span class=summary-sig-arg>section</span>,
-          <span class=summary-sig-arg>option</span>,
-          <span class=summary-sig-arg>rawval</span>,
-          <span class=summary-sig-arg>vars</span>)</span></code>
-</td></tr>
-<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><a name="_interpolation_replace"></a><span class="summary-sig"><span class="summary-sig-name">_interpolation_replace</span>(<span class=summary-sig-arg>self</span>,
-          <span class=summary-sig-arg>match</span>)</span></code>
-</td></tr>
-<tr bgcolor="#e8f0f8" class="group">
-  <th colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;Inherited from RawConfigParser</th></tr>
-<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><span class="summary-sig"><a href="ConfigParser.RawConfigParser-class.html#__init__" class="summary-sig-name"><code>__init__</code></a>(<span class=summary-sig-arg>self</span>,
+  <td><code><a name="__init__"></a><span class="summary-sig"><span class="summary-sig-name">__init__</span>(<span class=summary-sig-arg>self</span>,
           <span class=summary-sig-arg>defaults</span>)</span></code>
 </td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
@@ -92,20 +57,25 @@ section.</td></tr>
 <br />
 Create a new section in the configuration.</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><span class="summary-sig"><a href="ConfigParser.RawConfigParser-class.html#defaults" class="summary-sig-name"><code>defaults</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+  <td><code><a name="defaults"></a><span class="summary-sig"><span class="summary-sig-name">defaults</span>(<span class=summary-sig-arg>self</span>)</span></code>
 </td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><span class="summary-sig"><a href="ConfigParser.RawConfigParser-class.html#getboolean" class="summary-sig-name"><code>getboolean</code></a>(<span class=summary-sig-arg>self</span>,
+  <td><code><a name="get"></a><span class="summary-sig"><span class="summary-sig-name">get</span>(<span class=summary-sig-arg>self</span>,
           <span class=summary-sig-arg>section</span>,
           <span class=summary-sig-arg>option</span>)</span></code>
 </td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><span class="summary-sig"><a href="ConfigParser.RawConfigParser-class.html#getfloat" class="summary-sig-name"><code>getfloat</code></a>(<span class=summary-sig-arg>self</span>,
+  <td><code><a name="getboolean"></a><span class="summary-sig"><span class="summary-sig-name">getboolean</span>(<span class=summary-sig-arg>self</span>,
           <span class=summary-sig-arg>section</span>,
           <span class=summary-sig-arg>option</span>)</span></code>
 </td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><span class="summary-sig"><a href="ConfigParser.RawConfigParser-class.html#getint" class="summary-sig-name"><code>getint</code></a>(<span class=summary-sig-arg>self</span>,
+  <td><code><a name="getfloat"></a><span class="summary-sig"><span class="summary-sig-name">getfloat</span>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>section</span>,
+          <span class=summary-sig-arg>option</span>)</span></code>
+</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><a name="getint"></a><span class="summary-sig"><span class="summary-sig-name">getint</span>(<span class=summary-sig-arg>self</span>,
           <span class=summary-sig-arg>section</span>,
           <span class=summary-sig-arg>option</span>)</span></code>
 </td></tr>
@@ -122,12 +92,16 @@ Check for the existence of a given option in a given section.</td></tr>
 Indicate whether the named section is present in the 
 configuration.</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><a name="items"></a><span class="summary-sig"><span class="summary-sig-name">items</span>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>section</span>)</span></code>
+</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="ConfigParser.RawConfigParser-class.html#options" class="summary-sig-name"><code>options</code></a>(<span class=summary-sig-arg>self</span>,
           <span class=summary-sig-arg>section</span>)</span></code>
 <br />
 Return a list of option names for the given section name.</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><span class="summary-sig"><a href="ConfigParser.RawConfigParser-class.html#optionxform" class="summary-sig-name"><code>optionxform</code></a>(<span class=summary-sig-arg>self</span>,
+  <td><code><a name="optionxform"></a><span class="summary-sig"><span class="summary-sig-name">optionxform</span>(<span class=summary-sig-arg>self</span>,
           <span class=summary-sig-arg>optionstr</span>)</span></code>
 </td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
@@ -168,18 +142,6 @@ Set an option.</td></tr>
           <span class=summary-sig-arg>fp</span>)</span></code>
 <br />
 Write an .ini-format representation of the configuration state.</td></tr>
-<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><span class="summary-sig"><a href="..\private\ConfigParser.RawConfigParser-class.html#_get" class="summary-sig-name"><code>_get</code></a>(<span class=summary-sig-arg>self</span>,
-          <span class=summary-sig-arg>section</span>,
-          <span class=summary-sig-arg>conv</span>,
-          <span class=summary-sig-arg>option</span>)</span></code>
-</td></tr>
-<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><span class="summary-sig"><a href="..\private\ConfigParser.RawConfigParser-class.html#_read" class="summary-sig-name"><code>_read</code></a>(<span class=summary-sig-arg>self</span>,
-          <span class=summary-sig-arg>fp</span>,
-          <span class=summary-sig-arg>fpname</span>)</span></code>
-<br />
-Parse a sectioned setup file.</td></tr>
 </table><br />
 
 
@@ -188,18 +150,10 @@ Parse a sectioned setup file.</td></tr>
 <tr bgcolor="#70b0f0" class="summary">
   <th colspan="2">Class Variable Summary</th></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1"><code>SRE_Pattern</code></font></td>
-<td><b><a href="..\private\ConfigParser.ConfigParser-class.html#_KEYCRE"><code>_KEYCRE</code></a></b> = <span title="&lt;_sre.SRE_Pattern object at 0x00C0B4F0&gt;"><code><span class="re">%<span class="re-char">\(</span><span class="re-group">(</span><span class="re-group">[^</span><span class="re-char">\)</span><span class="re-group">]</span><span class="re-op">*</span><span class="re-group">)</span><span class="re-char">\)</span>s<span class="re-op">|</span><span class="re-char">.</span></span>                               </code>
-</span></td></tr>
-<tr bgcolor="#e8f0f8" class="group">
-  <th colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;Inherited from RawConfigParser</th></tr>
-<tr><td align="right" valign="top" width="15%"><font size="-1"><code>SRE_Pattern</code></font></td>
 <td><b><a href="ConfigParser.RawConfigParser-class.html#OPTCRE"><code>OPTCRE</code></a></b> = <span title="&lt;_sre.SRE_Pattern object at 0x00A88CA0&gt;"><code><span class="re"><span class="re-group">(</span><span class="re-group">[</span><span class="re-group">^</span>:=<span class="re-char">\s</span><span class="re-group">]</span><span class="re-group">[</span><span class="re-group">^</span>:=<span class="re-group">]</span><span class="re-op">*</span><span class="re-group">)</span><span class="re-char">\s</span><span class="re-op">*</span><span class="re-group">(</span><span class="re-group">[</span>:=<span class="re-group">]</span><span class="re-group">)</span><span class="re-char">\s</span><span class="re-op">*</span><span class="re-group">(</span><span class="re-char">.</span><span class="re-op">*</span><span class="re-group">)</span><span class="re-char">$</span></span>                </code>
 </span></td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1"><code>SRE_Pattern</code></font></td>
 <td><b><a href="ConfigParser.RawConfigParser-class.html#SECTCRE"><code>SECTCRE</code></a></b> = <span title="&lt;_sre.SRE_Pattern object at 0x00B94C20&gt;"><code><span class="re"><span class="re-char">\[</span><span class="re-group">(</span><span class="re-group">[^</span><span class="re-char">\]</span><span class="re-group">]</span><span class="re-op">+</span><span class="re-group">)</span><span class="re-char">\]</span></span>                                   </code>
-</span></td></tr>
-<tr><td align="right" valign="top" width="15%"><font size="-1"><code>dict</code></font></td>
-<td><b><a href="..\private\ConfigParser.RawConfigParser-class.html#_boolean_states"><code>_boolean_states</code></a></b> = <span title="{'on': True, 'false': False, 'no': False, '1': True, '0': False, 'off': False, 'yes': True, 'true': True}"><code>{'on':&nbsp;True,&nbsp;'false':&nbsp;False,&nbsp;'no':&nbsp;Fal<span class="variable-ellipsis">...</span></code>
 </span></td></tr>
 </table><br />
 
@@ -210,47 +164,130 @@ Parse a sectioned setup file.</td></tr>
   <th colspan="2">Method Details</th></tr>
 </table>
 
-<a name="get"></a>
+<a name="add_section"></a>
 <table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
-  <h3><span class="sig"><span class="sig-name">get</span>(<span class=sig-arg>self</span>,
-          <span class=sig-arg>section</span>,
-          <span class=sig-arg>option</span>,
-          <span class=sig-arg>raw</span>=<span class=sig-default>False</span>,
-          <span class=sig-arg>vars</span>=<span class=sig-default>None</span>)</span>
+  <h3><span class="sig"><span class="sig-name">add_section</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>section</span>)</span>
   </h3>
-  <p>Get an option value for a given section.</p>
-  <p>All % interpolations are expanded in the return values, based on the 
-  defaults passed into the constructor, unless the optional argument 
-  `raw' is true. Additional substitutions may be provided using the 
-  `vars' argument, which must be a dictionary whose contents overrides 
-  any pre-existing defaults.</p>
-  The section DEFAULT is special.
+  <p>Create a new section in the configuration.</p>
+  Raise DuplicateSectionError if a section by the specified name 
+  already exists.
   <dl><dt></dt><dd>
-    <dl><dt><b>Overrides:</b></dt>
-      <dd><a href="ConfigParser.RawConfigParser-class.html#get"><code>ConfigParser.RawConfigParser.get</code></a></dd>
-    </dl>
   </dd></dl>
 </td></tr></table>
 
-<a name="items"></a>
+<a name="has_option"></a>
 <table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
-  <h3><span class="sig"><span class="sig-name">items</span>(<span class=sig-arg>self</span>,
+  <h3><span class="sig"><span class="sig-name">has_option</span>(<span class=sig-arg>self</span>,
           <span class=sig-arg>section</span>,
-          <span class=sig-arg>raw</span>=<span class=sig-default>False</span>,
-          <span class=sig-arg>vars</span>=<span class=sig-default>None</span>)</span>
+          <span class=sig-arg>option</span>)</span>
   </h3>
-  <p>Return a list of tuples with (name, value) for each option in the 
-  section.</p>
-  <p>All % interpolations are expanded in the return values, based on the 
-  defaults passed into the constructor, unless the optional argument 
-  `raw' is true. Additional substitutions may be provided using the 
-  `vars' argument, which must be a dictionary whose contents overrides 
-  any pre-existing defaults.</p>
-  The section DEFAULT is special.
+  Check for the existence of a given option in a given section.
   <dl><dt></dt><dd>
-    <dl><dt><b>Overrides:</b></dt>
-      <dd><a href="ConfigParser.RawConfigParser-class.html#items"><code>ConfigParser.RawConfigParser.items</code></a></dd>
-    </dl>
+  </dd></dl>
+</td></tr></table>
+
+<a name="has_section"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">has_section</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>section</span>)</span>
+  </h3>
+  <p>Indicate whether the named section is present in the 
+  configuration.</p>
+  The DEFAULT section is not acknowledged.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="options"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">options</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>section</span>)</span>
+  </h3>
+  Return a list of option names for the given section name.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="read"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">read</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>filenames</span>)</span>
+  </h3>
+  <p>Read and parse a filename or a list of filenames.</p>
+  <p>Files that cannot be opened are silently ignored; this is designed 
+  so that you can specify a list of potential configuration file 
+  locations (e.g. current directory, user's home directory, systemwide 
+  directory), and all existing configuration files in the list will be 
+  read. A single filename may also be given.</p>
+  Return list of successfully read files.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="readfp"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">readfp</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>fp</span>,
+          <span class=sig-arg>filename</span>=<span class=sig-default>None</span>)</span>
+  </h3>
+  <p>Like read() but the argument must be a file-like object.</p>
+  The `fp' argument must have a `readline' method. Optional second 
+  argument is the `filename', which if not given, is taken from fp.name. 
+  If fp has no `name' attribute, `&lt;???&gt;' is used.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="remove_option"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">remove_option</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>section</span>,
+          <span class=sig-arg>option</span>)</span>
+  </h3>
+  Remove an option.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="remove_section"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">remove_section</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>section</span>)</span>
+  </h3>
+  Remove a file section.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="sections"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">sections</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  Return a list of section names, excluding [DEFAULT]
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="set"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">set</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>section</span>,
+          <span class=sig-arg>option</span>,
+          <span class=sig-arg>value</span>)</span>
+  </h3>
+  Set an option.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="write"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">write</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>fp</span>)</span>
+  </h3>
+  Write an .ini-format representation of the configuration state.
+  <dl><dt></dt><dd>
   </dd></dl>
 </td></tr></table>
 <br />
@@ -262,8 +299,8 @@ Parse a sectioned setup file.</td></tr>
   <th colspan="2">Class Variable Details</th></tr>
 </table>
 <table width="100%" class="var-details" bgcolor="#e0e0e0"><tr><td>
-<a name="_KEYCRE"></a>
-<h3>_KEYCRE</h3>
+<a name="OPTCRE"></a>
+<h3>OPTCRE</h3>
 <dl>
   <dt></dt>
   <dd>
@@ -273,10 +310,30 @@ Parse a sectioned setup file.</td></tr>
           <code>SRE_Pattern</code>
 
       </dd>
-<span title="&lt;_sre.SRE_Pattern object at 0x00C0B4F0&gt;">      <dt><b>Value:</b></dt>
+<span title="&lt;_sre.SRE_Pattern object at 0x00A88CA0&gt;">      <dt><b>Value:</b></dt>
       <dd><table><tr><td>
 <pre class="variable">
-<span class="re">%<span class="re-char">\(</span><span class="re-group">(</span><span class="re-group">[^</span><span class="re-char">\)</span><span class="re-group">]</span><span class="re-op">*</span><span class="re-group">)</span><span class="re-char">\)</span>s<span class="re-op">|</span><span class="re-char">.</span></span>                                                       </pre>
+<span class="re"><span class="re-group">(</span><span class="re-group">[</span><span class="re-group">^</span>:=<span class="re-char">\s</span><span class="re-group">]</span><span class="re-group">[</span><span class="re-group">^</span>:=<span class="re-group">]</span><span class="re-op">*</span><span class="re-group">)</span><span class="re-char">\s</span><span class="re-op">*</span><span class="re-group">(</span><span class="re-group">[</span>:=<span class="re-group">]</span><span class="re-group">)</span><span class="re-char">\s</span><span class="re-op">*</span><span class="re-group">(</span><span class="re-char">.</span><span class="re-op">*</span><span class="re-group">)</span><span class="re-char">$</span></span>                                       </pre>
+        </td></tr></table></dd>
+</span>    </dl>
+  </dd>
+</dl></td></tr></table>
+<table width="100%" class="var-details" bgcolor="#e0e0e0"><tr><td>
+<a name="SECTCRE"></a>
+<h3>SECTCRE</h3>
+<dl>
+  <dt></dt>
+  <dd>
+    <dl>
+      <dt><b>Type:</b></dt>
+      <dd>
+          <code>SRE_Pattern</code>
+
+      </dd>
+<span title="&lt;_sre.SRE_Pattern object at 0x00B94C20&gt;">      <dt><b>Value:</b></dt>
+      <dd><table><tr><td>
+<pre class="variable">
+<span class="re"><span class="re-char">\[</span><span class="re-group">(</span><span class="re-group">[^</span><span class="re-char">\]</span><span class="re-group">]</span><span class="re-op">+</span><span class="re-group">)</span><span class="re-char">\]</span></span>                                                           </pre>
         </td></tr></table></dd>
 </span>    </dl>
   </dd>
