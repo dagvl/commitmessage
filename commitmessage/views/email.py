@@ -15,16 +15,18 @@ from smtplib import SMTP
 from commitmessage.framework import View
 
 class BaseEmailView(View):
-    """Provides a basic implementation of sending an email for other style-specific email views to extend."""
+    """
+    Provides a basic implementation of sending an email for other style-specific
+    email views to extend.
+    """
 
     def __init__(self, name, model):
-        """Initialize all the username to None."""
+        """Initializes the the SMTP username to None, header to '', and footer to ''."""
         View.__init__(self, name, model)
 
-        self.acceptance = 0
         self.username = None
-        self.header = 0
-        self.footer = 0
+        self.header = ''
+        self.footer = ''
 
     def __getitem__(self, name):
         """Used to get the 'from' attribute."""
