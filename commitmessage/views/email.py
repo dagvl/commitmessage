@@ -89,7 +89,7 @@ class ApacheStyleEmailView(BaseEmailView):
 class TigrisStyleEmailView(BaseEmailView):
     """Sends out an email formatted in a style mimicking Tigris commit emails."""
 
-    def printFiles(self, text, action)
+    def printFiles(self, text, action):
         directories = self.model.directoriesWithFiles(action)
         if len(directories) > 0:
             text.write('%s%s\n' % (action[0].upper(), action[1:]))
