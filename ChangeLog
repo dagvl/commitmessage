@@ -1,4 +1,33 @@
 
+2004-09-08 2.0-beta-4 Stephen Haberman <stephenh@chase3000.com>
+
+ * commitmessage.conf
+    (): Added examples of the new addRepoPrefix/matchAgainstRepoPrefix
+ * commitmessage/main.py
+    (main): Moved config logic to the Controller.__init__ function
+ * commitmessage/model.py
+    (Controller.__init__): Added default addrepoprefix/matchagainstrepoprefix settings
+    (Controller.addRepoPrefix): Added
+    (Controller.matchAgainstRepoPrefix): Added
+    (Controller.process): Handle the matchAgainstRepoPrefix case
+    (Model.repo): Added as CVS module/SVN repo name
+ * commitmessage/util.py
+    (CmConfigParser.__init__): Initialize userMap based on [userMap] config
+    (CmConfigParser.getViewsForModule): Expose userMap to the view config Itpl interpolation
+ * commitmessage/controllers/cvs.py
+    (CvsController._isLastDirectoryOfCommit): Handle addRepoPrefix case for matching against the last directory
+    (CvsController._doLogInfo): Handle addRepoPrefix case for making new directories
+    (CvsController._doLogInfo): Set model.repo based on the loginfo command line argument
+ * commitmessage/controllers/svn.py
+    (SvnController.__init__): Set model.repo and self.prefix for the addRepoPrefix case
+    (SvnController._populateModel): Handle self.prefix
+    (SvnController._populateModel): Handle svn property changes on non-modified files
+    (SvnController._populateModel): Changed diff parsing code to support spaces in directory and file names
+ * commitmessage/views/email.py
+    (TigrisStyleEmailView.generateBody): Cleaner way of doing '=...' lines
+    (TigrisStyleEmailView.printFiles): Renamed to printFilesAndDirectories
+    (TigrisStyleEmailView.printFilesAndDirectories): Also print out added/modified directories with no files in them
+
 2004-03-14 2.0-beta-3 Stephen Haberman <stephenh@chase3000.com>
 
  * ChangeLog
