@@ -24,6 +24,12 @@ class BaseEmailView(View):
     """Provides a basic implementation of sending an email for other
     style-specific email Views to extend."""
 
+    def __init__(self, name, model):
+        """Initialize all the username to None."""
+        View.__init__(self, name, model)
+        self._username = None
+
+
     def execute(self):
         to = self.to().split(',')
         to = map(lambda t: t.strip(), to)
@@ -45,6 +51,8 @@ class BaseEmailView(View):
         body = text.read()
 
         smtp = SMTP(self.server())
+        if self.username() is not None:
+            smtp.login(self.username(), self.password())
         smtp.sendmail(self.keyword_from(), to, body)
         smtp.quit()
 
@@ -81,6 +89,16 @@ class BaseEmailView(View):
         e.g. 'foo@bar.com, test@test.com'."""
         if to != None: self._to = to
         return self._to
+
+    def username(self, username=None):
+        """The username to authenticate with, if required."""
+        if username != None: self._username = username
+        return self._username
+
+    def password(self, password=None):
+        """The password to authenticate with, if required."""
+        if password != None: self._password = password
+        return self._password
 
 class ApacheStyleEmailView(BaseEmailView):
     """Sends out an email formatted in a style mimicking Apace commit emails."""
