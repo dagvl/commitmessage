@@ -65,7 +65,7 @@ class SvnController(Controller):
         # Remove the name of the file from the path
         parts = path.split('/')
         name = parts[-1]
-        dirPath = '/' + '/'.join(parts[1:-1])
+        dirPath = '/' + '/'.join(parts[0:-1]) + '/'
 
         dir = self.model.directory(dirPath)
         f = File(name, dir, action)
