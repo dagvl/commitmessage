@@ -34,6 +34,7 @@
 <ul>
 <li> <b><a href="commitmessage-module.html"><code>commitmessage</code></a></b>: <i>A MVC framework for capturing information from scm systems.</i>
   <ul>
+    <li> <b><a href="commitmessage.attribute-module.html"><code>attribute</code></a></b>
     <li> <b><a href="commitmessage.controllers-module.html"><code>controllers</code></a></b>: <i>Controllers parse information from a scm into the Model and then 
 execute the Views.</i>
       <ul>
@@ -41,11 +42,12 @@ execute the Views.</i>
         <li> <b><a href="commitmessage.controllers.svn-module.html"><code>svn</code></a></b>: <i>The controller and utils for the Subversion SCM 
 (http://subversion.tigris.org).</i>
       </ul>
-    <li> <b><a href="commitmessage.exceptions-module.html"><code>exceptions</code></a></b>: <i>Central place for places to avoid import viscous circles.</i>
-    <li> <b><a href="commitmessage.framework-module.html"><code>framework</code></a></b>: <i>Provides the core classes for the commitmessage framework.</i>
+    <li> <b><a href="commitmessage.exceptions-module.html"><code>exceptions</code></a></b>: <i>Contains the <a href="commitmessage.exceptions.CmException-class.html" 
+class="link"><code>CmException</code></a> class.</i>
     <li> <b><a href="commitmessage.Itpl-module.html"><code>Itpl</code></a></b>: <i>String interpolation for Python (by Ka-Ping Yee, 14 Feb 2000).</i>
     <li> <b><a href="commitmessage.main-module.html"><code>main</code></a></b>: <i>Bootstraps the commitmessage framework by reading in the configuration 
 file and initializing the controller.</i>
+    <li> <b><a href="commitmessage.model-module.html"><code>model</code></a></b>: <i>Provides the model classes for the commitmessage framework.</i>
     <li> <b><a href="commitmessage.util-module.html"><code>util</code></a></b>: <i>Provides some basic utility classes, such as wrapping the ConfigParser 
 to add commitmessage-specific logic to the view/module lookups.</i>
     <li> <b><a href="commitmessage.views-module.html"><code>views</code></a></b>: <i>Views work against the object model to send out information to outside 
@@ -67,7 +69,7 @@ systems.</i>
 Class representing a string with interpolation abilities.</i>
   <li> <b><a href="commitmessage.Itpl.ItplFile-class.html"><code>commitmessage.Itpl.ItplFile</code></a></b>: <i>
 A file object that filters each write() through an interpolator.</i>
-  <li> <b><a href="commitmessage.framework.Controller-class.html"><code>commitmessage.framework.Controller</code></a></b>: <i>
+  <li> <b><a href="commitmessage.model.Controller-class.html"><code>commitmessage.model.Controller</code></a></b>: <i>
 A base implementation for SCM-specific controllers to extend; mostly 
 does the generic Views handling.</i>
     <ul>
@@ -76,17 +78,17 @@ Translates CVS loginfo/commitinfo information into the Model.</i>
   <li> <b><a href="commitmessage.controllers.svn.SvnController-class.html"><code>commitmessage.controllers.svn.SvnController</code></a></b>: <i>
 Uses 'svnlook' to pull data from svn repositories.</i>
     </ul>
-  <li> <b><a href="commitmessage.framework.DomainObject-class.html"><code>commitmessage.framework.DomainObject</code></a></b>: <i>
-Puts in some getter/setter infrastructure.</i>
-    <ul>
-  <li> <b><a href="commitmessage.framework.Directory-class.html"><code>commitmessage.framework.Directory</code></a></b>: <i>
+  <li> <b><a href="commitmessage.model.Directory-class.html"><code>commitmessage.model.Directory</code></a></b>: <i>
 Represents a directory that has been affected by the commit.</i>
-  <li> <b><a href="commitmessage.framework.File-class.html"><code>commitmessage.framework.File</code></a></b>: <i>
+  <li> <b><a href="commitmessage.model.File-class.html"><code>commitmessage.model.File</code></a></b>: <i>
 Represents a file that has been affected by the commit.</i>
-  <li> <b><a href="commitmessage.framework.Model-class.html"><code>commitmessage.framework.Model</code></a></b>: <i>
-Wraps the model that gets sent between the Controller and Views.</i>
-    </ul>
-  <li> <b><a href="commitmessage.framework.View-class.html"><code>commitmessage.framework.View</code></a></b>: <i>
+  <li> <b><a href="commitmessage.model.Model-class.html"><code>commitmessage.model.Model</code></a></b>: <i>
+Wraps the <a href="commitmessage.model.File-class.html" 
+class="link"><code>File</code></a>s and <a 
+href="commitmessage.model.Directory-class.html" 
+class="link"><code>Directory</code></a>s that get sent between the 
+Controller and Views.</i>
+  <li> <b><a href="commitmessage.model.View-class.html"><code>commitmessage.model.View</code></a></b>: <i>
 Provides a base View for specific implementations to extend.</i>
     <ul>
   <li> <b><a href="commitmessage.views.email.BaseEmailView-class.html"><code>commitmessage.views.email.BaseEmailView</code></a></b>: <i>
@@ -111,7 +113,7 @@ to a text file.</i>
 Common base class for all exceptions.</i>
     <ul>
   <li> <b><a href="commitmessage.exceptions.CmException-class.html"><code>commitmessage.exceptions.CmException</code></a></b>: <i>
-Root exception for commitmessage exceptions.</i>
+The exception for all commitmessage-related exceptions.</i>
   <li> <b><a href="exceptions.StandardError-class.html"><code>exceptions.StandardError</code></a></b>: <i>
 Base class for all standard Python exceptions.</i>
     <ul>
@@ -137,7 +139,7 @@ Inappropriate argument value (of correct type).</i>
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
   <tr>
-    <td align="left"><font size="-2">Generated by Epydoc 2.0 on Sun Dec 14 21:38:31 2003</font></td>
+    <td align="left"><font size="-2">Generated by Epydoc 2.0 on Tue Dec 16 10:35:37 2003</font></td>
     <td align="right"><a href="http://epydoc.sourceforge.net"
                       ><font size="-2">http://epydoc.sf.net</font></a></td>
   </tr>

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>commitmessage.model.Controller</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css"></link>
+</head>
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+
+<!-- =========== START OF NAVBAR =========== -->
+<table class="navbar" border="0" width="100%" cellpadding="0" bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="center">
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="commitmessage-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="trees.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="indices.html">Index</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <font size="-1"><b class="breadcrumbs">
+        <a href="commitmessage-module.html">Package&nbsp;commitmessage</a> ::
+        <a href="commitmessage.model-module.html">Module&nbsp;model</a> ::
+        Class&nbsp;Controller
+      </b></font></br>
+    </td>
+    <td><table cellpadding="0" cellspacing="0">
+      <tr><td align="right"><font size="-2">[show&nbsp;private&nbsp;|&nbsp;<a href="../public/commitmessage.model.Controller-class.html">hide&nbsp;private</a>]</font></td></tr>
+      <tr><td align="right"><font size="-2">[<a href="frames.html"target="_top">frames</a>&nbsp;|&nbsp;<a href="commitmessage.model.Controller-class.html" target="_top">no&nbsp;frames</a>]</font></td></tr>
+    </table></td>
+</tr></table>
+
+<!-- =========== START OF CLASS DESCRIPTION =========== -->
+<h2 class="class">Class Controller</h2>
+
+<dl><dt><b>Known Subclasses:</b></dt>
+<dd>
+    <a href="commitmessage.controllers.cvs.CvsController-class.html"><code>CvsController</code></a>,
+    <a href="commitmessage.controllers.svn.SvnController-class.html"><code>SvnController</code></a></dd></dl>
+
+<hr/>
+
+A base implementation for SCM-specific controllers to extend; mostly 
+does the generic Views handling.
+<hr/>
+
+
+<!-- =========== START OF METHOD SUMMARY =========== -->
+<table class="summary" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="summary">
+  <th colspan="2">Method Summary</th></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="commitmessage.model.Controller-class.html#__init__" class="summary-sig-name"><code>__init__</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>config</span>,
+          <span class=summary-sig-arg>argv</span>,
+          <span class=summary-sig-arg>stdin</span>)</span></code>
+<br />
+Initializes the controller's model and saves the references to argv 
+and stdin.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="commitmessage.model.Controller-class.html#process" class="summary-sig-name"><code>process</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Starts the SCM-agnostic process of building the model and executing 
+the views.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="..\private\commitmessage.model.Controller-class.html#_executeViews" class="summary-sig-name"><code>_executeViews</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Executes the views for each module that matches the commit's base 
+directory.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="..\private\commitmessage.model.Controller-class.html#_populateModel" class="summary-sig-name"><code>_populateModel</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+This should be overridden by concrete controllers with their 
+implementation-specific logic for populating the model.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="..\private\commitmessage.model.Controller-class.html#_stopProcessForNow" class="summary-sig-name"><code>_stopProcessForNow</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Gives CVS a chance to kill the current process and wait for the next 
+one as it has to build up data between discrete per-directory 
+executions.</td></tr>
+</table><br />
+
+
+<!-- =========== START OF CLASS VARIABLE SUMMARY =========== -->
+<table class="summary" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="summary">
+  <th colspan="2">Class Variable Summary</th></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1"><code>str</code></font></td>
+<td><b><a href="commitmessage.model.Controller-class.html#TMPDIR"><code>TMPDIR</code></a></b> = <span title="'C:\\DOCUME~1\\stephen\\LOCALS~1\\Temp'"><code><span class="variable-quote">'</span>C:\\DOCUME~1\\stephen\\LOCALS~1\\Temp<span class="variable-quote">'</span>         </code>
+</span></td></tr>
+</table><br />
+
+
+<!-- =========== START OF METHOD DETAILS =========== -->
+<table class="details" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="details">
+  <th colspan="2">Method Details</th></tr>
+</table>
+
+<a name="__init__"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">__init__</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>config</span>,
+          <span class=sig-arg>argv</span>,
+          <span class=sig-arg>stdin</span>)</span>
+    <br /><i>(Constructor)</i>
+  </h3>
+  Initializes the controller's model and saves the references to argv 
+  and stdin.
+  <dl><dt></dt><dd>
+    <dl><dt><b>Parameters:</b></dt>
+      <dd><code><b>config</b></code> -
+         a <a href="commitmessage.util.CmConfigParser-class.html" 
+        class="link"><code>commitmessage.util.CmConfigParser</code></a> 
+        created by <a href="commitmessage.main-module.html" 
+        class="link"><code>commitmessage.main</code></a>
+      <dd><code><b>argv</b></code> -
+         the command line arguments, as gathered by <a 
+        href="commitmessage.main-module.html" 
+        class="link"><code>commitmessage.main</code></a>
+      <dd><code><b>stdin</b></code> -
+         where to stream responses to
+      </dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+
+<a name="process"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">process</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  Starts the SCM-agnostic process of building the model and executing 
+  the views.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="_executeViews"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">_executeViews</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  Executes the views for each module that matches the commit's base 
+  directory.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="_populateModel"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">_populateModel</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  This should be overridden by concrete controllers with their 
+  implementation-specific logic for populating the model.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="_stopProcessForNow"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">_stopProcessForNow</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  Gives CVS a chance to kill the current process and wait for the next 
+  one as it has to build up data between discrete per-directory 
+  executions.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+<br />
+
+
+<!-- =========== START OF CLASS VARIABLE DETAILS =========== -->
+<table class="details" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="details">
+  <th colspan="2">Class Variable Details</th></tr>
+</table>
+<table width="100%" class="var-details" bgcolor="#e0e0e0"><tr><td>
+<a name="TMPDIR"></a>
+<h3>TMPDIR</h3>
+<dl>
+  <dt></dt>
+  <dd>
+    <dl>
+      <dt><b>Type:</b></dt>
+      <dd>
+          <code>str</code>
+
+      </dd>
+<span title="'C:\\DOCUME~1\\stephen\\LOCALS~1\\Temp'">      <dt><b>Value:</b></dt>
+      <dd><table><tr><td>
+<pre class="variable">
+<span class="variable-quote">'</span>C:\\DOCUME~1\\stephen\\LOCALS~1\\Temp<span class="variable-quote">'</span>                                </pre>
+        </td></tr></table></dd>
+</span>    </dl>
+  </dd>
+</dl></td></tr></table>
+<br />
+
+
+<!-- =========== START OF NAVBAR =========== -->
+<table class="navbar" border="0" width="100%" cellpadding="0" bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="center">
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="commitmessage-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="trees.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="indices.html">Index</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td align="left"><font size="-2">Generated by Epydoc 2.0 on Tue Dec 16 10:35:37 2003</font></td>
+    <td align="right"><a href="http://epydoc.sourceforge.net"
+                      ><font size="-2">http://epydoc.sf.net</font></a></td>
+  </tr>
+</table>
+</body>
+</html>

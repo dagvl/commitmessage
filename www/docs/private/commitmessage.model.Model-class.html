@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>commitmessage.model.Model</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css"></link>
+</head>
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+
+<!-- =========== START OF NAVBAR =========== -->
+<table class="navbar" border="0" width="100%" cellpadding="0" bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="center">
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="commitmessage-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="trees.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="indices.html">Index</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <font size="-1"><b class="breadcrumbs">
+        <a href="commitmessage-module.html">Package&nbsp;commitmessage</a> ::
+        <a href="commitmessage.model-module.html">Module&nbsp;model</a> ::
+        Class&nbsp;Model
+      </b></font></br>
+    </td>
+    <td><table cellpadding="0" cellspacing="0">
+      <tr><td align="right"><font size="-2">[show&nbsp;private&nbsp;|&nbsp;<a href="../public/commitmessage.model.Model-class.html">hide&nbsp;private</a>]</font></td></tr>
+      <tr><td align="right"><font size="-2">[<a href="frames.html"target="_top">frames</a>&nbsp;|&nbsp;<a href="commitmessage.model.Model-class.html" target="_top">no&nbsp;frames</a>]</font></td></tr>
+    </table></td>
+</tr></table>
+
+<!-- =========== START OF CLASS DESCRIPTION =========== -->
+<h2 class="class">Class Model</h2>
+
+<hr/>
+
+Wraps the <a href="commitmessage.model.File-class.html" 
+class="link"><code>File</code></a>s and <a 
+href="commitmessage.model.Directory-class.html" 
+class="link"><code>Directory</code></a>s that get sent between the 
+Controller and Views.
+<hr/>
+
+
+<!-- =========== START OF METHOD SUMMARY =========== -->
+<table class="summary" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="summary">
+  <th colspan="2">Method Summary</th></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><a name="__init__"></a><span class="summary-sig"><span class="summary-sig-name">__init__</span>(<span class=summary-sig-arg>self</span>)</span></code>
+</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="commitmessage.model.Model-class.html#addDirectory" class="summary-sig-name"><code>addDirectory</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>directory</span>)</span></code>
+<br />
+Adds <code>directory</code> into the model's directory tree.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="commitmessage.model.Model-class.html#directories" class="summary-sig-name"><code>directories</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>action</span>)</span></code>
+<br />
+Return a flat list of <a href="commitmessage.model.Directory-class.html" 
+class="link"><code>Directory</code></a>s, optionally those that match 
+<code>action</code>.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="commitmessage.model.Model-class.html#directoriesWithFiles" class="summary-sig-name"><code>directoriesWithFiles</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>action</span>)</span></code>
+<br />
+Return a flat list of <a href="commitmessage.model.Directory-class.html" 
+class="link"><code>Directory</code></a>s that have changes to files</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="commitmessage.model.Model-class.html#directory" class="summary-sig-name"><code>directory</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>path</span>)</span></code>
+<br />
+Return the model's <a href="commitmessage.model.Directory-class.html" 
+class="link"><code>Directory</code></a> for <code>path</code>; creates 
+new directories and sub directories if needed</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="commitmessage.model.Model-class.html#file" class="summary-sig-name"><code>file</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>path</span>)</span></code>
+<br />
+Return the <a href="commitmessage.model.File-class.html" 
+class="link"><code>File</code></a> for the <code>path</code></td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="commitmessage.model.Model-class.html#files" class="summary-sig-name"><code>files</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>action</span>)</span></code>
+<br />
+Return a flat list of <a href="commitmessage.model.File-class.html" 
+class="link"><code>File</code></a>s, optionally those that match 
+<code>action</code></td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="commitmessage.model.Model-class.html#greatestCommonDirectory" class="summary-sig-name"><code>greatestCommonDirectory</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Return the greatest common directory of the commit to base the module 
+matching on</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="..\private\commitmessage.model.Model-class.html#_directories" class="summary-sig-name"><code>_directories</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>directory</span>,
+          <span class=summary-sig-arg>action</span>)</span></code>
+<br />
+Internal helper method to recursively build a flat list of 
+directories.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="..\private\commitmessage.model.Model-class.html#_directoriesWithFiles" class="summary-sig-name"><code>_directoriesWithFiles</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>directory</span>,
+          <span class=summary-sig-arg>action</span>)</span></code>
+<br />
+Internal helper method to recursively build a flat list of directories 
+that contain changes to files in them.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="..\private\commitmessage.model.Model-class.html#_files" class="summary-sig-name"><code>_files</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>directory</span>,
+          <span class=summary-sig-arg>action</span>)</span></code>
+<br />
+Internal helper method to recursively build a flat list of files.</td></tr>
+</table><br />
+
+
+<!-- =========== START OF PROPERTY SUMMARY =========== -->
+<table class="summary" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="summary">
+  <th colspan="2">Property Summary</th></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><b><a href="commitmessage.model.Model-class.html#rootDirectory"><code>rootDirectory</code></a></b>: The root directory within the SCM</td></tr><tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><b><a href="commitmessage.model.Model-class.html#user"><code>user</code></a></b>: The user performing the commit</td></tr></table><br />
+
+
+<!-- =========== START OF METHOD DETAILS =========== -->
+<table class="details" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="details">
+  <th colspan="2">Method Details</th></tr>
+</table>
+
+<a name="addDirectory"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">addDirectory</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>directory</span>)</span>
+  </h3>
+  <p>Adds <code>directory</code> into the model's directory tree.</p>
+  Uses <code>self.directory(path)</code>, except it takes a default 
+  value for the new directory to add at the bottom of the hierarchy.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="directories"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">directories</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>action</span>=<span class=sig-default>None</span>)</span>
+  </h3>
+  <dl><dt></dt><dd>
+    <dl><dt><b>Returns:</b></dt>
+      <dd>
+        a flat list of <a 
+        href="commitmessage.model.Directory-class.html" 
+        class="link"><code>Directory</code></a>s, optionally those that 
+        match <code>action</code>.
+      </dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+
+<a name="directoriesWithFiles"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">directoriesWithFiles</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>action</span>=<span class=sig-default>None</span>)</span>
+  </h3>
+  <dl><dt></dt><dd>
+    <dl><dt><b>Returns:</b></dt>
+      <dd>
+        a flat list of <a 
+        href="commitmessage.model.Directory-class.html" 
+        class="link"><code>Directory</code></a>s that have changes to 
+        files
+      </dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+
+<a name="directory"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">directory</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>path</span>)</span>
+  </h3>
+  <dl><dt></dt><dd>
+    <dl><dt><b>Returns:</b></dt>
+      <dd>
+        the model's <a href="commitmessage.model.Directory-class.html" 
+        class="link"><code>Directory</code></a> for <code>path</code>; 
+        creates new directories and sub directories if needed
+      </dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+
+<a name="file"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">file</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>path</span>)</span>
+  </h3>
+  <dl><dt></dt><dd>
+    <dl><dt><b>Returns:</b></dt>
+      <dd>
+        the <a href="commitmessage.model.File-class.html" 
+        class="link"><code>File</code></a> for the <code>path</code>
+      </dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+
+<a name="files"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">files</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>action</span>=<span class=sig-default>None</span>)</span>
+  </h3>
+  <dl><dt></dt><dd>
+    <dl><dt><b>Returns:</b></dt>
+      <dd>
+        a flat list of <a href="commitmessage.model.File-class.html" 
+        class="link"><code>File</code></a>s, optionally those that match 
+        <code>action</code>
+      </dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+
+<a name="greatestCommonDirectory"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">greatestCommonDirectory</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  <dl><dt></dt><dd>
+    <dl><dt><b>Returns:</b></dt>
+      <dd>
+        the greatest common directory of the commit to base the module 
+        matching on
+      </dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+
+<a name="_directories"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">_directories</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>directory</span>,
+          <span class=sig-arg>action</span>)</span>
+  </h3>
+  Internal helper method to recursively build a flat list of 
+  directories.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="_directoriesWithFiles"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">_directoriesWithFiles</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>directory</span>,
+          <span class=sig-arg>action</span>)</span>
+  </h3>
+  Internal helper method to recursively build a flat list of 
+  directories that contain changes to files in them.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="_files"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">_files</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>directory</span>,
+          <span class=sig-arg>action</span>)</span>
+  </h3>
+  Internal helper method to recursively build a flat list of 
+  files.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+<br />
+
+
+<!-- =========== START OF PROPERTY DETAILS =========== -->
+<table class="details" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="details">
+  <th colspan="2">Property Details</th></tr>
+</table>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+
+<a name="rootDirectory"></a>
+<h3>rootDirectory</h3>
+The root directory within the SCM
+<dl>
+  <dt></dt>
+  <dd>
+    <dl>
+      <dt><b>Get Method:</b></dt>
+      <dd><span class="summary-sig"><span class="summary-sig-name">unknown-10137456</span>(...)</span>
+      </dd>
+    </dl>
+  </dd>
+</dl></td></tr></table><table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+
+<a name="user"></a>
+<h3>user</h3>
+The user performing the commit
+<dl>
+  <dt></dt>
+  <dd>
+    <dl>
+      <dt><b>Get Method:</b></dt>
+      <dd><span class="summary-sig"><span class="summary-sig-name">unknown-10137520</span>(...)</span>
+      </dd>
+      <dt><b>Set Method:</b></dt>
+      <dd><span class="summary-sig"><span class="summary-sig-name">unknown-10145840</span>(...)</span>
+      </dd>
+      <dt><b>Delete Method:</b></dt>
+      <dd><span class="summary-sig"><span class="summary-sig-name">unknown-10145904</span>(...)</span>
+      </dd>
+    </dl>
+  </dd>
+</dl></td></tr></table><br />
+
+
+<!-- =========== START OF NAVBAR =========== -->
+<table class="navbar" border="0" width="100%" cellpadding="0" bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="center">
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="commitmessage-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="trees.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="indices.html">Index</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td align="left"><font size="-2">Generated by Epydoc 2.0 on Tue Dec 16 10:35:37 2003</font></td>
+    <td align="right"><a href="http://epydoc.sourceforge.net"
+                      ><font size="-2">http://epydoc.sf.net</font></a></td>
+  </tr>
+</table>
+</body>
+</html>

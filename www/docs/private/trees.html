@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Module and Class Hierarchies</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css"></link>
+</head>
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+
+<!-- =========== START OF NAVBAR =========== -->
+<table class="navbar" border="0" width="100%" cellpadding="0" bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="center">
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="commitmessage-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <th bgcolor="#70b0f0" class="navselect">&nbsp;&nbsp;&nbsp;Trees&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="indices.html">Index</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+    </td>
+    <td><table cellpadding="0" cellspacing="0">
+      <tr><td align="right"><font size="-2">[show&nbsp;private&nbsp;|&nbsp;<a href="../public/trees.html">hide&nbsp;private</a>]</font></td></tr>
+      <tr><td align="right"><font size="-2">[<a href="frames.html"target="_top">frames</a>&nbsp;|&nbsp;<a href="trees.html" target="_top">no&nbsp;frames</a>]</font></td></tr>
+    </table></td>
+</tr></table>
+
+<!-- =========== START OF MODULE HIERARCHY =========== -->
+<h2>Module Hierarchy</h2>
+<ul>
+<li> <b><a href="commitmessage-module.html"><code>commitmessage</code></a></b>: <i>A MVC framework for capturing information from scm systems.</i>
+  <ul>
+    <li> <b><a href="commitmessage.attribute-module.html"><code>attribute</code></a></b>
+    <li> <b><a href="commitmessage.controllers-module.html"><code>controllers</code></a></b>: <i>Controllers parse information from a scm into the Model and then 
+execute the Views.</i>
+      <ul>
+        <li> <b><a href="commitmessage.controllers.cvs-module.html"><code>cvs</code></a></b>: <i>The controller and utils for the CVS SCM (http://www.cvshome.org).</i>
+        <li> <b><a href="commitmessage.controllers.svn-module.html"><code>svn</code></a></b>: <i>The controller and utils for the Subversion SCM 
+(http://subversion.tigris.org).</i>
+      </ul>
+    <li> <b><a href="commitmessage.exceptions-module.html"><code>exceptions</code></a></b>: <i>Contains the <a href="commitmessage.exceptions.CmException-class.html" 
+class="link"><code>CmException</code></a> class.</i>
+    <li> <b><a href="commitmessage.Itpl-module.html"><code>Itpl</code></a></b>: <i>String interpolation for Python (by Ka-Ping Yee, 14 Feb 2000).</i>
+    <li> <b><a href="commitmessage.main-module.html"><code>main</code></a></b>: <i>Bootstraps the commitmessage framework by reading in the configuration 
+file and initializing the controller.</i>
+    <li> <b><a href="commitmessage.model-module.html"><code>model</code></a></b>: <i>Provides the model classes for the commitmessage framework.</i>
+    <li> <b><a href="commitmessage.util-module.html"><code>util</code></a></b>: <i>Provides some basic utility classes, such as wrapping the ConfigParser 
+to add commitmessage-specific logic to the view/module lookups.</i>
+    <li> <b><a href="commitmessage.views-module.html"><code>views</code></a></b>: <i>Views work against the object model to send out information to outside 
+systems.</i>
+      <ul>
+        <li> <b><a href="commitmessage.views.email-module.html"><code>email</code></a></b>: <i>Provides several email Views for the commitmessage framework.</i>
+        <li> <b><a href="commitmessage.views.misc-module.html"><code>misc</code></a></b>: <i>Provides several email Views for the commitmessage framework.</i>
+        <li> <b><a href="commitmessage.views.post-module.html"><code>post</code></a></b>: <i>Provides hooks into various systems via HTTP post.</i>
+      </ul>
+  </ul>
+</ul>
+
+<!-- =========== START OF CLASS HIERARCHY =========== -->
+<h2>Class Hierarchy</h2>
+<ul>
+  <li> <b><a href="..\private\ConfigParser.RawConfigParser-class.html"><code>ConfigParser.RawConfigParser</code></a></b>
+    <ul>
+  <li> <b><a href="ConfigParser.ConfigParser-class.html"><code>ConfigParser.ConfigParser</code></a></b>
+    <ul>
+  <li> <b><a href="commitmessage.util.CmConfigParser-class.html"><code>commitmessage.util.CmConfigParser</code></a></b>: <i>
+Provides cm-specific logic, such as getting view settings from both 
+the view definition and the module-specific settings.</i>
+    </ul>
+    </ul>
+  <li> <b><a href="commitmessage.Itpl.Itpl-class.html"><code>commitmessage.Itpl.Itpl</code></a></b>: <i>
+Class representing a string with interpolation abilities.</i>
+  <li> <b><a href="commitmessage.Itpl.ItplFile-class.html"><code>commitmessage.Itpl.ItplFile</code></a></b>: <i>
+A file object that filters each write() through an interpolator.</i>
+  <li> <b><a href="commitmessage.model.Controller-class.html"><code>commitmessage.model.Controller</code></a></b>: <i>
+A base implementation for SCM-specific controllers to extend; mostly 
+does the generic Views handling.</i>
+    <ul>
+  <li> <b><a href="commitmessage.controllers.cvs.CvsController-class.html"><code>commitmessage.controllers.cvs.CvsController</code></a></b>: <i>
+Translates CVS loginfo/commitinfo information into the Model.</i>
+  <li> <b><a href="commitmessage.controllers.svn.SvnController-class.html"><code>commitmessage.controllers.svn.SvnController</code></a></b>: <i>
+Uses 'svnlook' to pull data from svn repositories.</i>
+    </ul>
+  <li> <b><a href="commitmessage.model.Directory-class.html"><code>commitmessage.model.Directory</code></a></b>: <i>
+Represents a directory that has been affected by the commit.</i>
+  <li> <b><a href="commitmessage.model.File-class.html"><code>commitmessage.model.File</code></a></b>: <i>
+Represents a file that has been affected by the commit.</i>
+  <li> <b><a href="commitmessage.model.Model-class.html"><code>commitmessage.model.Model</code></a></b>: <i>
+Wraps the <a href="commitmessage.model.File-class.html" 
+class="link"><code>File</code></a>s and <a 
+href="commitmessage.model.Directory-class.html" 
+class="link"><code>Directory</code></a>s that get sent between the 
+Controller and Views.</i>
+  <li> <b><a href="commitmessage.model.View-class.html"><code>commitmessage.model.View</code></a></b>: <i>
+Provides a base View for specific implementations to extend.</i>
+    <ul>
+  <li> <b><a href="commitmessage.views.email.BaseEmailView-class.html"><code>commitmessage.views.email.BaseEmailView</code></a></b>: <i>
+Provides a basic implementation of sending an email for other 
+style-specific email views to extend.</i>
+    <ul>
+  <li> <b><a href="commitmessage.views.email.ApacheStyleEmailView-class.html"><code>commitmessage.views.email.ApacheStyleEmailView</code></a></b>: <i>
+Sends out an email formatted in a style mimicking Apace commit 
+emails.</i>
+  <li> <b><a href="commitmessage.views.email.HtmlEmailView-class.html"><code>commitmessage.views.email.HtmlEmailView</code></a></b>: <i>
+Sends out a HTML formatted email with the commit info in tables.</i>
+  <li> <b><a href="commitmessage.views.email.TigrisStyleEmailView-class.html"><code>commitmessage.views.email.TigrisStyleEmailView</code></a></b>: <i>
+Sends out an email formatted in a style mimicking Tigris commit 
+emails.</i>
+    </ul>
+  <li> <b><a href="commitmessage.views.misc.DumpView-class.html"><code>commitmessage.views.misc.DumpView</code></a></b>: <i>
+Provides unit testing capabilities by doing a simple dump of the Model 
+to a text file.</i>
+  <li> <b><a href="commitmessage.views.post.PostView-class.html"><code>commitmessage.views.post.PostView</code></a></b>
+    </ul>
+  <li> <b><a href="exceptions.Exception-class.html"><code>exceptions.Exception</code></a></b>: <i>
+Common base class for all exceptions.</i>
+    <ul>
+  <li> <b><a href="commitmessage.exceptions.CmException-class.html"><code>commitmessage.exceptions.CmException</code></a></b>: <i>
+The exception for all commitmessage-related exceptions.</i>
+  <li> <b><a href="exceptions.StandardError-class.html"><code>exceptions.StandardError</code></a></b>: <i>
+Base class for all standard Python exceptions.</i>
+    <ul>
+  <li> <b><a href="exceptions.ValueError-class.html"><code>exceptions.ValueError</code></a></b>: <i>
+Inappropriate argument value (of correct type).</i>
+    <ul>
+  <li> <b><a href="commitmessage.Itpl.ItplError-class.html"><code>commitmessage.Itpl.ItplError</code></a></b>
+    </ul>
+    </ul>
+    </ul>
+</ul>
+
+<!-- =========== START OF NAVBAR =========== -->
+<table class="navbar" border="0" width="100%" cellpadding="0" bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="center">
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="commitmessage-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="trees.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="indices.html">Index</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td align="left"><font size="-2">Generated by Epydoc 2.0 on Tue Dec 16 10:35:37 2003</font></td>
+    <td align="right"><a href="http://epydoc.sourceforge.net"
+                      ><font size="-2">http://epydoc.sf.net</font></a></td>
+  </tr>
+</table>
+</body>
+</html>

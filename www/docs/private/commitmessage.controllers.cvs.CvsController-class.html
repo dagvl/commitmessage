@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>commitmessage.controllers.cvs.CvsController</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css"></link>
+</head>
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+
+<!-- =========== START OF NAVBAR =========== -->
+<table class="navbar" border="0" width="100%" cellpadding="0" bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="center">
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="commitmessage-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="trees.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="indices.html">Index</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <font size="-1"><b class="breadcrumbs">
+        <a href="commitmessage-module.html">Package&nbsp;commitmessage</a> ::
+        <a href="commitmessage.controllers-module.html">Package&nbsp;controllers</a> ::
+        <a href="commitmessage.controllers.cvs-module.html">Module&nbsp;cvs</a> ::
+        Class&nbsp;CvsController
+      </b></font></br>
+    </td>
+    <td><table cellpadding="0" cellspacing="0">
+      <tr><td align="right"><font size="-2">[show&nbsp;private&nbsp;|&nbsp;<a href="../public/commitmessage.controllers.cvs.CvsController-class.html">hide&nbsp;private</a>]</font></td></tr>
+      <tr><td align="right"><font size="-2">[<a href="frames.html"target="_top">frames</a>&nbsp;|&nbsp;<a href="commitmessage.controllers.cvs.CvsController-class.html" target="_top">no&nbsp;frames</a>]</font></td></tr>
+    </table></td>
+</tr></table>
+
+<!-- =========== START OF CLASS DESCRIPTION =========== -->
+<h2 class="class">Class CvsController</h2>
+
+<pre class="base-tree">
+<a href="commitmessage.model.Controller-class.html"><code>Controller</code></a> --+
+             |
+            <b>CvsController</b>
+</pre><br />
+
+<hr/>
+
+Translates CVS loginfo/commitinfo information into the Model.
+<hr/>
+
+
+<!-- =========== START OF METHOD SUMMARY =========== -->
+<table class="summary" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="summary">
+  <th colspan="2">Method Summary</th></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="commitmessage.controllers.cvs.CvsController-class.html#__init__" class="summary-sig-name"><code>__init__</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>config</span>,
+          <span class=summary-sig-arg>argv</span>,
+          <span class=summary-sig-arg>stdin</span>)</span></code>
+<br />
+Sets the 'done' attribute to false so we handle the multiple 
+executions CVS does against main.py.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doCommitInfo" class="summary-sig-name"><code>_doCommitInfo</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Executed first and saves the current directory name to 
+LAST_DIRECTORY_FILE so that doLogInfo will know when it is done (it will 
+be done with it's on the same directory as the last one that doCommitInfo 
+saved).</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doLogInfo" class="summary-sig-name"><code>_doLogInfo</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Executed after all of the directories' commitinfos have ran, so we 
+know the last directory and can start to build the Model of commit 
+information.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_executeViews" class="summary-sig-name"><code>_executeViews</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Over-ride the parent executeViews to re-build the model from the 
+temporary files.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_fillInValues" class="summary-sig-name"><code>_fillInValues</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Goes through each file and fills in the missing rev/delta/diff 
+information.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_isLastDirectoryOfCommit" class="summary-sig-name"><code>_isLastDirectoryOfCommit</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Return whether the current directory is the last directory of the 
+commit.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_loadSavedDirectoriesIntoModel" class="summary-sig-name"><code>_loadSavedDirectoriesIntoModel</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Re-loads the directories into the Model.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_parseLoginfoStdin" class="summary-sig-name"><code>_parseLoginfoStdin</code></a>(<span class=summary-sig-arg>self</span>,
+          <span class=summary-sig-arg>directoryName</span>)</span></code>
+<br />
+Reads in the loginfo text from self.stdin and retreives the 
+corresponding diff/delta information for each file.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_parseLogLinesIntoModel" class="summary-sig-name"><code>_parseLogLinesIntoModel</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Saves the logLines found on stdin into the model.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_populateModel" class="summary-sig-name"><code>_populateModel</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Read in the information.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_saveDirectory" class="summary-sig-name"><code>_saveDirectory</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Pickles the given directory off to TMPDIR/FILE_PREFIXdir-path.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_stopProcessForNow" class="summary-sig-name"><code>_stopProcessForNow</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Return whether we should stop and wait for CVS to re-execute main.py 
+on the next directory of the commit.</td></tr>
+<tr bgcolor="#e8f0f8" class="group">
+  <th colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;Inherited from Controller</th></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="commitmessage.model.Controller-class.html#process" class="summary-sig-name"><code>process</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Starts the SCM-agnostic process of building the model and executing 
+the views.</td></tr>
+</table><br />
+
+
+<!-- =========== START OF CLASS VARIABLE SUMMARY =========== -->
+<table class="summary" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="summary">
+  <th colspan="2">Class Variable Summary</th></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1"><code>str</code></font></td>
+<td><b><a href="commitmessage.controllers.cvs.CvsController-class.html#FILE_PREFIX"><code>FILE_PREFIX</code></a></b> = <span title="''"><code><span class="variable-quote">'</span><span class="variable-quote">'</span>                                         </code>
+</span></td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1"><code>str</code></font></td>
+<td><b><a href="commitmessage.controllers.cvs.CvsController-class.html#LAST_DIRECTORY_FILE"><code>LAST_DIRECTORY_FILE</code></a></b> = <span title="''"><code><span class="variable-quote">'</span><span class="variable-quote">'</span>                                 </code>
+</span></td></tr>
+<tr bgcolor="#e8f0f8" class="group">
+  <th colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;Inherited from Controller</th></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1"><code>str</code></font></td>
+<td><b><a href="commitmessage.model.Controller-class.html#TMPDIR"><code>TMPDIR</code></a></b> = <span title="'C:\\DOCUME~1\\stephen\\LOCALS~1\\Temp'"><code><span class="variable-quote">'</span>C:\\DOCUME~1\\stephen\\LOCALS~1\\Temp<span class="variable-quote">'</span>         </code>
+</span></td></tr>
+</table><br />
+
+
+<!-- =========== START OF METHOD DETAILS =========== -->
+<table class="details" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="details">
+  <th colspan="2">Method Details</th></tr>
+</table>
+
+<a name="__init__"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">__init__</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>config</span>,
+          <span class=sig-arg>argv</span>,
+          <span class=sig-arg>stdin</span>)</span>
+    <br /><i>(Constructor)</i>
+  </h3>
+  Sets the 'done' attribute to false so we handle the multiple 
+  executions CVS does against main.py.
+  <dl><dt></dt><dd>
+    <dl><dt><b>Overrides:</b></dt>
+      <dd><a href="commitmessage.model.Controller-class.html#__init__"><code>commitmessage.model.Controller.__init__</code></a></dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+
+<a name="_doCommitInfo"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">_doCommitInfo</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  Executed first and saves the current directory name to 
+  LAST_DIRECTORY_FILE so that doLogInfo will know when it is done (it 
+  will be done with it's on the same directory as the last one that 
+  doCommitInfo saved).
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="_doLogInfo"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">_doLogInfo</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  Executed after all of the directories' commitinfos have ran, so we 
+  know the last directory and can start to build the Model of commit 
+  information.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="_executeViews"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">_executeViews</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  Over-ride the parent executeViews to re-build the model from the 
+  temporary files.
+  <dl><dt></dt><dd>
+    <dl><dt><b>Overrides:</b></dt>
+      <dd><a href="..\private\commitmessage.model.Controller-class.html#_executeViews"><code>commitmessage.model.Controller._executeViews</code></a></dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+
+<a name="_fillInValues"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">_fillInValues</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  Goes through each file and fills in the missing rev/delta/diff 
+  information.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="_isLastDirectoryOfCommit"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">_isLastDirectoryOfCommit</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  Return whether the current directory is the last directory of the 
+  commit.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="_loadSavedDirectoriesIntoModel"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">_loadSavedDirectoriesIntoModel</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  Re-loads the directories into the Model.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="_parseLoginfoStdin"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">_parseLoginfoStdin</span>(<span class=sig-arg>self</span>,
+          <span class=sig-arg>directoryName</span>)</span>
+  </h3>
+  Reads in the loginfo text from self.stdin and retreives the 
+  corresponding diff/delta information for each file.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="_parseLogLinesIntoModel"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">_parseLogLinesIntoModel</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  Saves the logLines found on stdin into the model.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="_populateModel"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">_populateModel</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  Read in the information.
+  <dl><dt></dt><dd>
+    <dl><dt><b>Overrides:</b></dt>
+      <dd><a href="..\private\commitmessage.model.Controller-class.html#_populateModel"><code>commitmessage.model.Controller._populateModel</code></a></dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+
+<a name="_saveDirectory"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">_saveDirectory</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  Pickles the given directory off to TMPDIR/FILE_PREFIXdir-path.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="_stopProcessForNow"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">_stopProcessForNow</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  Return whether we should stop and wait for CVS to re-execute main.py 
+  on the next directory of the commit.
+  <dl><dt></dt><dd>
+    <dl><dt><b>Overrides:</b></dt>
+      <dd><a href="..\private\commitmessage.model.Controller-class.html#_stopProcessForNow"><code>commitmessage.model.Controller._stopProcessForNow</code></a></dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+<br />
+
+
+<!-- =========== START OF CLASS VARIABLE DETAILS =========== -->
+<table class="details" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="details">
+  <th colspan="2">Class Variable Details</th></tr>
+</table>
+<table width="100%" class="var-details" bgcolor="#e0e0e0"><tr><td>
+<a name="FILE_PREFIX"></a>
+<h3>FILE_PREFIX</h3>
+<dl>
+  <dt></dt>
+  <dd>
+    <dl>
+      <dt><b>Type:</b></dt>
+      <dd>
+          <code>str</code>
+
+      </dd>
+<span title="''">      <dt><b>Value:</b></dt>
+      <dd><table><tr><td>
+<pre class="variable">
+<span class="variable-quote">'</span><span class="variable-quote">'</span>                                                                     </pre>
+        </td></tr></table></dd>
+</span>    </dl>
+  </dd>
+</dl></td></tr></table>
+<table width="100%" class="var-details" bgcolor="#e0e0e0"><tr><td>
+<a name="LAST_DIRECTORY_FILE"></a>
+<h3>LAST_DIRECTORY_FILE</h3>
+<dl>
+  <dt></dt>
+  <dd>
+    <dl>
+      <dt><b>Type:</b></dt>
+      <dd>
+          <code>str</code>
+
+      </dd>
+<span title="''">      <dt><b>Value:</b></dt>
+      <dd><table><tr><td>
+<pre class="variable">
+<span class="variable-quote">'</span><span class="variable-quote">'</span>                                                                     </pre>
+        </td></tr></table></dd>
+</span>    </dl>
+  </dd>
+</dl></td></tr></table>
+<br />
+
+
+<!-- =========== START OF NAVBAR =========== -->
+<table class="navbar" border="0" width="100%" cellpadding="0" bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="center">
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="commitmessage-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="trees.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="indices.html">Index</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td align="left"><font size="-2">Generated by Epydoc 2.0 on Tue Dec 16 10:35:37 2003</font></td>
+    <td align="right"><a href="http://epydoc.sourceforge.net"
+                      ><font size="-2">http://epydoc.sf.net</font></a></td>
+  </tr>
+</table>
+</body>
+</html>
