@@ -50,22 +50,25 @@ class CmConfigParser(ConfigParser):
         viewNames = p.split(viewLine)
 
         views = []
-        for name in viewNames:
-            fullClassName = ConfigParser.get(self, 'views', name)
+        for viewName in viewNames:
+            fullClassName = ConfigParser.get(self, 'views', viewName)
             view = getNewInstance(fullClassName)
-            view.__init__(name, model)
+            view.__init__(viewName, model)
+
             # Setup default values
-            for option in ConfigParser.options(self, name):
-                value = ConfigParser.get(self, name, option, 1)
-                view.__dict__['_%s' % option] = str(Itpl(value))
+            for name in ConfigParser.options(self, viewName):
+                value = ConfigParser.get(self, viewName, name, 1)
+                view.__dict__[name] = str(Itpl(value))
+
             # Setup module-specific values
-            forViewPrefix = re.compile('^%s.' % name)
+            forViewPrefix = re.compile('^%s.' % viewName)
             for option in ConfigParser.options(self, module):
                 if forViewPrefix.search(option):
-                    # Take off the 'name.'
-                    realName = option[len(name)+1:]
+                    # Take off the 'viewName.'
+                    name = option[len(viewName)+1:]
                     value = ConfigParser.get(self, module, option, 1)
-                    view.__dict__['_%s' % realName] = str(Itpl(value))
+                    view.__dict__[name] = str(Itpl(value))
+
             views.append(view)
         return views
 
