@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<test>
+  <config>
+[scm]
+controller = CONTROLLER
+
+[modules]
+all = ^/
+
+[views]
+email = commitmessage.views.email.TigrisStyleEmailView
+
+[email]
+to = stephen@beachead.com
+server = mail.beachead.com
+from = stephen@beachead.com
+subject = commit: $model.greatestCommonDirectory()
+acceptance = ACCEPTANCE_DIRECTORY
+
+[all]
+views = email
+  </config>
+  <commit>
+    <message>a subdirectory</message>
+    <addDirectory name="sub1" />
+    <view name="TigrisStyleEmailView">
+To: stephen@beachead.com
+From: stephen@beachead.com
+Subject: commit: /sub1/
+Date: #####
+
+User: stephen
+Date: #####
+
+Added:
+ /sub1/
+
+Log:
+ a subdirectory
+    </view>
+  </commit>
+</test>
