@@ -57,14 +57,15 @@
 # Note: ViewEmail will not send unless the to property is set
 # 
 
-ALL.email = ViewEmail
+ALL.email = ViewHtmlEmail
 ALL.email.sendmail = /usr/sbin/sendmail -oem -t
 ALL.email.cvsweb = http://cvs.beachead.com/viewcvs.cgi
-ALL.email.bombsight = http://bombsight.beachead.com
-ALL.email.from = cvs\@beachead.com
-ALL.email.subject = cvs commit: $om->{module}
+ALL.email.from = cvs@beachead.com
+ALL.email.subject => cvs commit: $model->{module}
 ALL.email.header = <style> body, td { font-family: Verdana; font-size: 8pt; } </style>
 ALL.email.footer =
+ALL.email.logReplacePattern = b(0|o)mb((site)|(sight)):\\s*([0-9]*)
+ALL.email.logReplaceResult = <a href=\"http:\/\/bombsight.beachead.com\/editbug.asp?command=view&ixBug=$5\">Fixed for bug $5<\/a>
 
 ALL.bombsight = ViewBombsight
 ALL.bombsight.server = bombsight.beachead.com
@@ -72,6 +73,6 @@ ALL.bombsight.port = 80
 ALL.bombsight.url = /
 ALL.bombsight.page = cvsSubmit.asp
 
-stephen.email.to = stephenh\@chase3000.com
-ibm2.email.to = stephenh\@chase3000.com, geoff\@beachead.com
-crawler.email.to = stephenh\@chase3000.com
+stephen.email.to = stephenh@chase3000.com
+ibm2.email.to = stephenh@chase3000.com, geoff@beachead.com
+crawler.email.to = stephenh@chase3000.com

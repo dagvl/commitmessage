@@ -12,14 +12,13 @@
 #
 ############################################################
 
+# MUST match loginfo.pl
 $id = getpgrp();
 $TMPDIR = $ENV{'TMPDIR'} || '/tmp';
 $FILE_PREFIX = "#cvs.$id.";
-
-# MUST match log_accum.pl
 $LAST_FILE = "$TMPDIR/${FILE_PREFIX}lastdir";
 
-sub write_line {
+sub writeLine {
     local($filename, $line) = @_;
 
     open(FILE, ">$filename") || die("Cannot open $filename: $!\n");
@@ -33,6 +32,6 @@ sub write_line {
 # the final directory of a multi-directory commit.
 #
 
-&write_line("$LAST_FILE", $ARGV[0]);
+&writeLine("$LAST_FILE", $ARGV[0]);
 
 exit(0);

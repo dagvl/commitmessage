@@ -12,6 +12,8 @@
 #
 
 package ViewEmail;
+use ViewBase;
+@ISA = qw(ViewBase);
 use strict;
 
 my @DAYS = ( 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' );
@@ -21,29 +23,20 @@ my @MONTHS = ( 'January', 'Febuary', 'March', 'April', 'May', 'June', 'July',
 #
 # Creates a new view object.
 #
-sub new {
-    my($type, $props, $om) = @_;
-    my $self = {};
-    bless($self, $type);
-
-    # Copy over props, and eval them
-    foreach my $key (keys %$props) {
-        eval("\$self->{$key} = \"$props->{$key}\"");
-    }
+sub init {
+    my($self, $model) = @_;
 
     my @time = gmtime();
     $self->{shortdatetime} = sprintf("%s %s %s %s %s:%s:%s", 
         $DAYS[$time[6]], $time[3], $MONTHS[$time[4]],
         $time[5] + 1900, $time[2], $time[1], $time[0]);
     $self->{datetime} = "$self->{shortdatetime} -0000 (GMT)";
-
-    return $self;
 }
 
 #
 # Send a simple email on newdir creation
 #
-sub newdir {
+sub newDirectory {
     my($self, $om) = @_;
 
     $self->sendmail($om, "$om->{user} created $om->{newdir}");
@@ -94,28 +87,13 @@ sub commit {
 sub formatlog {
     my($self, $log) = @_;
 
-    $log = $self->toHtml($log);
-
     if (defined($self->{logReplacePattern})) {
-        print "pattern: $self->{logReplacePattern}\n";
-        print "result: $self->{logReplaceResult}\n";
+##        print "pattern: $self->{logReplacePattern}\n";
+##        print "result: $self->{logReplaceResult}\n";
         $log =~ s/$self->{logReplacePattern}/$self->{logReplaceResult}/i;
     }
 
     return $log;
-}
-
-#
-# Convert <, >, \n to HTML
-#
-sub toHtml {
-    my($self, $text) = @_;
-
-    $text =~ s/</&lt;/g;
-    $text =~ s/>/&gt;/g;
-    $text =~ s,\n,&nbsp;<br />,g;
-
-    return $text;
 }
 
 #

@@ -11,43 +11,20 @@
 #
 
 package ViewBombsight;
+use ViewBase;
 use Socket;
+@ISA = qw(ViewBase);
 use strict;
-
-#
-# Creates a new view object.
-#
-sub new {
-    my($type, $props, $om) = @_;
-    my $self = {};
-    bless($self, $type);
-
-    # Copy over props, and eval them
-    foreach my $key (keys %$props) {
-        eval("\$self->{$key} = \"$props->{$key}\"");
-    }
-
-    return $self;
-}
-
-#
-# Do nothing on a newdir
-#
-sub newdir {
-    my($self, $om) = @_;
-
-    return;
-}
 
 #
 # Post the details of each affected files to Bombsight
 #
 sub commit {
-    my($self, $om) = @_;
+    my($self, $model) = @_;
 
     # Get the bug id
     my $bugId = 0;
-    my $log = $om->{log};
+    my $log = $model->{log};
 
     if ($log =~ /b(0|o)mb((site)|(sight)):\s*([0-9]*)/i) {
         $bugId = int($5);
@@ -59,15 +36,15 @@ sub commit {
     }
 
     if ($bugId > 0) {
-        foreach my $file (keys %{$om->{files}}) {
-            my $action = $om->{files}{$file}{action};
+        foreach my $file (keys %{$model->{files}}) {
+            my $action = $model->{files}{$file}{action};
 
             my $get = "";
             $get .= "GET $self->{url}$self->{page}";
             $get .= "?ixBug=$bugId";
-            $get .= "&sFile=/$om->{module}/$file";
-            $get .= "&sPrev=$om->{files}{$file}{prev_rev}";
-            $get .= "&sNew=$om->{files}{$file}{rev}";
+            $get .= "&sFile=/$model->{module}/$file";
+            $get .= "&sPrev=$model->{files}{$file}{prev}";
+            $get .= "&sNew=$model->{files}{$file}{rev}";
             $get .= " HTTP/1.1\n";
 
             $get .= "Host: $self->{server}:$self->{port}\n\n";
