@@ -314,36 +314,45 @@ Directory: /sub1/
 =================
 
 File [removed]: foo1.txt
-Delta lines: +0 -1
+!svn Delta lines: +0 -1
+!cvs Delta lines: +0 -0
 ===================================================================
---- sub1/foo1.txt	#####
-+++ sub1/foo1.txt	#####
-@@ -1 +0,0 @@
--this is a sub directory
-\ No newline at end of file
+!svn --- sub1/foo1.txt	#####
+!svn +++ sub1/foo1.txt	#####
+!svn @@ -1 +0,0 @@
+!svn -this is a sub directory
+!svn \ No newline at end of file
 
 File [added]: foo1a.txt
-Delta lines: +0 -0
-Copied: sub1/foo1a.txt (from rev 3, sub1/foo1.txt)
+!svn Delta lines: +0 -0
+!svn Copied: sub1/foo1a.txt (from rev 3, sub1/foo1.txt)
+!cvs Delta lines: +1 -0
+!cvs Index: foo1a.txt
+!cvs ===================================================================
+!cvs this is a sub directory
 
 File [removed]: foo2.txt
-Delta lines: +0 -1
+!svn Delta lines: +0 -1
+!cvs Delta lines: +0 -0
 ===================================================================
---- sub1/foo2.txt	#####
-+++ sub1/foo2.txt	#####
-@@ -1 +0,0 @@
--this is also a sub directory
-\ No newline at end of file
+!svn --- sub1/foo2.txt	#####
+!svn +++ sub1/foo2.txt	#####
+!svn @@ -1 +0,0 @@
+!svn -this is also a sub directory
+!svn \ No newline at end of file
 
 File [added]: foo2a.txt
 Delta lines: +2 -0
+!cvs Index: foo2a.txt
 ===================================================================
---- sub1/foo2.txt	#####
-+++ sub1/foo2a.txt	#####
-@@ -0,0 +1,2 @@
-+this is in a sub directory
-+this is also a sub directory
-\ No newline at end of file
+!svn --- sub1/foo2.txt	#####
+!svn +++ sub1/foo2a.txt	#####
+!svn @@ -0,0 +1,2 @@
+!svn +this is in a sub directory
+!svn +this is also a sub directory
+!svn \ No newline at end of file
+!cvs this is in a sub directory
+!cvs this is also a sub directory
     </view>
   </commit>
 </test>
