@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 #
-# ViewEmail.pm
+# ViewHtmlEmail.pm
 # commitmessage version 0.9
 #
 # Simple email script that acts as a view for the MVC-based
@@ -11,7 +11,7 @@
 # - Move the bug id replacement stuff to the config file
 #
 
-package ViewEmail;
+package ViewHtmlEmail;
 use strict;
 
 my @DAYS = ( 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' );
@@ -28,7 +28,13 @@ sub new {
 
     # Copy over props, and eval them
     foreach my $key (keys %$props) {
-        eval("\$self->{$key} = \"$props->{$key}\"");
+        # Delay evaling the logReplaceResult
+        if ($key eq "logReplaceResult") {
+            $self->{$key} = $props->{$key};
+        }
+        else {
+            eval("\$self->{$key} = \"$props->{$key}\"");
+        }
     }
 
     my @time = gmtime();
@@ -46,7 +52,7 @@ sub new {
 sub newdir {
     my($self, $om) = @_;
 
-    $self->sendmail($om, "$om->{user} created $om->{newdir}");
+    $self->sendmail($om, "<p>$om->{user} created $om->{newdir}</p>");
 }
 
 #
@@ -59,27 +65,51 @@ sub commit {
     my $log = $self->formatlog($om->{log});
 
     # Basic header    
-    my $text = "$om->{user} committed the following changes on $self->{shortdatetime}.\n\n";
+    my $text = "<p>$om->{user} committed the following changes on $self->{shortdatetime}.</p>";
 
     # Create the the table header
-    $text .= "$log\n\n";
-    
+    $text .= "<p>\n";
+    $text .= "<table border=1 cellspacing=0>\n";
+    $text .= "   <tr>\n";
+    $text .= "      <td colspan=5>&nbsp;<br>$log<br>&nbsp;<br></td>\n";
+    $text .= "   </tr>\n";
+    $text .= "   <tr>\n";
+    $text .= "      <td><center>File</center></td>\n";
+    $text .= "      <td><center>Rev</center></td>\n";
+    $text .= "      <td><center>Lines</center></td>\n";
+    $text .= "      <td><center>State</center></td>\n";
+    $text .= "   </tr>\n";
+
     # Give a one-line description for each file
     foreach my $file (sort keys %{$om->{files}}) {
         my $action = $om->{files}{$file}{action};
 
-        $text .= "$file\n";
-        $text .= "$om->{files}{$file}{rev}\n";
-        $text .= "$om->{files}{$file}{delta}\n";
-        $text .= "$action\n\n";
+        $text .= "   <tr>\n";
+
+        if (defined($self->{cvsweb})) {
+            $text .= "      <td><nobr><a href=\"$self->{cvsweb}/$om->{module}/$file\">$file</a>&nbsp;</nobr></td>\n";
+        }
+        else {
+            $text .= "      <td><nobr>$file&nbsp;</nobr></td>\n";
+        }
+
+        $text .= "      <td><center>$om->{files}{$file}{rev}</center></td>\n";
+        $text .= "      <td><nobr><center>$om->{files}{$file}{delta}</center></nobr></td>\n";
+        $text .= "      <td><center>$action</center></td>\n";
+        $text .= "   </tr>\n";
     }
 
+    $text .= "</table></p>\n\n";
+
     # Go through the diffs of the added/modified files
-    $text .= "Diffs:</p>\n\n";
+    $text .= "<p>Diffs:</p>\n";
     foreach my $file (sort keys %{$om->{files}}) {
         my $action = $om->{files}{$file}{action};
         if ($action eq "added" || $action eq "modified") {
-            $text .= "$om->{files}{$file}{diff}\n\n";
+            my $diff = $om->{files}{$file}{diff};
+            $diff = $self->toHtml($diff);
+
+            $text .= "<p><pre>$diff</pre></p>&nbsp<br />\n";
         }
     }
 
@@ -89,7 +119,7 @@ sub commit {
 }
 
 #
-# Format the log to HTML and handle bombsight links
+# Format the log to HTML and handle bug links
 #
 sub formatlog {
     my($self, $log) = @_;
@@ -97,9 +127,10 @@ sub formatlog {
     $log = $self->toHtml($log);
 
     if (defined($self->{logReplacePattern})) {
-        print "pattern: $self->{logReplacePattern}\n";
-        print "result: $self->{logReplaceResult}\n";
-        $log =~ s/$self->{logReplacePattern}/$self->{logReplaceResult}/i;
+        $log =~ /$self->{logReplacePattern}/i;
+        my $replace = "";
+        eval("\$replace = \"$self->{logReplaceResult}\";");
+        $log =~ s/$self->{logReplacePattern}/$replace/i;
     }
 
     return $log;
