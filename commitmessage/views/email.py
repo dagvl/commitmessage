@@ -49,15 +49,13 @@ class BaseEmailView(View):
         text.seek(0)
         body = text.read()
 
-        if self.acceptance == '1':
-            # Write out in a file called 'SubClassName.txt'
-            f = file('%s.txt' % str(self).split(' ')[0].split('.')[-1], 'w')
-            f.write(body)
+        if self.isTesting():
+            self.dumpToTestFile(body)
         else:
-            smtp = SMTP(self.server())
-            if self.username() is not None:
-                smtp.login(self.username(), self.password())
-            smtp.sendmail(self.keyword_from(), to, body)
+            smtp = SMTP(self.server)
+            if self.username is not None:
+                smtp.login(self.username, self.password)
+            smtp.sendmail(self['from'], to, body)
             smtp.quit()
 
 class ApacheStyleEmailView(BaseEmailView):

@@ -322,9 +322,17 @@ class View:
         self.model = model
 
     def execute(self):
-        """Provides child Views with a method they should override to provide
-        their specific behavior."""
+        """Provides child Views with a method they should override to provide their specific behavior."""
         pass
+
+    def isTesting(self):
+        return self.acceptance == '1'
+
+    def dumpToTestFile(self, text):
+        """Writes out text to a file called 'SubClassName.txt'."""
+        f = file('%s.txt' % str(self).split(' ')[0].split('.')[-1], 'w')
+        f.write(text)
+        f.close()
 
 def _test():
     """Executes doctest on this module."""
