@@ -24,7 +24,7 @@ class Controller:
     """A temp directory to dump the diff files to."""
 
     def __init__(self, config, argv, stdin):
-        """ Initializes the controller's Model and saves the references to argv and stdin."""
+        """Initializes the controller's Model and saves the references to argv and stdin."""
         self.config = config
         self.model = Model()
         self.argv = argv
@@ -60,77 +60,82 @@ class Controller:
 class File:
     """Represents a file that has been affected by the commit."""
 
-    def __init__(self, file, action, rev, delta, diff):
-        """Files must be initialized correctly with all the given fields."""
-        self.file(file)
-        self.action(action)
-        self.rev(rev)
-        self.delta(delta)
-        self.diff(diff)
+    def __init__(self, directory, action):
+        """Files must be owned by a parent directory."""
+        self.__directory = directory;
+        self.__action = action;
+        directory.addFile(self)
 
-    def file(self, file=None):
-        """The file anem, e.g. blah.txt."""
-        if file != None: self._file = file
-        return self._file
+    def name(self, name=None):
+        """The file name, e.g. blah.txt."""
+        if name is not None: self.__name = name
+        return self.__name
 
     def path(self, path=None):
         """The path relative to the repository root, e.g. CVSROOT/commitmessage.py."""
-        if path != None: self._path = path
-        return self._path
+        return self.directory().path() + '/' + self.name()
 
     def action(self, action=None):
-        """the action that was performed: added, removed, modified, moved, branch"""
-        if action != None: self._action = action
-        return self._action
+        """The action that was performed: added, removed, modified, moved, branch."""
+        if action is not None: self.__action = action
+        return self.__action
 
     def rev(self, rev=None):
         """The new revision number for the file."""
-        if rev != None: self._rev = rev
-        return self._rev
+        if rev is not None: self.__rev = rev
+        return self.__rev
 
     def delta(self, delta=None):
         """The number of lines that changed, e.g. +1/-5"""
-        if delta != None: self._delta = delta
-        return self._delta
+        if delta is not None: self.__delta = delta
+        return self.__delta
 
     def diff(self, diff=None):
         """The unified diff of the changes."""
-        if diff != None: self._diff = diff
-        return self._diff
-
-    def movedToPath(self, movedToPath=None):
-        """If the action=moved, then the new path. Otherwise None."""
-        if movedToPath != None: self.movedToPath = movedToPath
-        return self._movedToPath
+        if diff is not None: self.__diff = diff
+        return self.__diff
 
     def directory(self):
-        """Return the path without the file name, e.g. CVSROOT.
-
-        >>> f = File('/dir/file.txt', 'added', 1.1, '+', '<<>>')
-        >>> f.path('/dir/file.txt')
-        '/dir/file.txt'
-        >>> f.directory()
-        '/dir'
-        """
-        return os.path.dirname(self.path())
+        """Returns the parent directory object."""
+        return self.__directory
 
 class Directory:
     """Represents a directory that has been affected by the commit."""
 
+    def __init__(self, path):
+        self.path(path)
+        self.__files = []
+        self.__subdirectories = []
+
     def path(self, path=None):
         """The path relative to the repository root, e.g. CVSROOT/testdir."""
-        if path != None: self._path = path
-        return self._path
+        if path is not None: self.__path = path
+        return self.__path
+
+    def name(self):
+        """Returns just the name of the directory, e.g. testdir."""
+        return self.path().split('/')[-1]
 
     def action(self, action=None):
         """The action that was performed: added, removed, modified, moved, branch"""
-        if action != none: self._action = action
-        return self._action
+        if action is not None: self.__action = action
+        return self.__action
 
-    def movedToPath(self, movedToPath=None):
-        """If the action=moved, then the new path. Otherwise None."""
-        if movedToPath != None: self.movedToPath = movedToPath
-        return self._movedToPath
+    def files(self):
+        """Returns all of the files in this directory affected by the commit."""
+        return self.__files
+
+    def subdirectories(self):
+        """Returns all of hte subdirectories in this directory with files affected by the commit."""
+        return self.__subdirectories
+
+    def addFile(file):
+        """Saves a file object into this directory."""
+        self.__files.append(file)
+
+    def addSubdirectory(subdir):
+        """Saves a subdirectory object into this directory."""
+        this.__subdirectories.append(subdir)
 
 class Model:
     """Wraps the model that gets sent between the Controller and Views.
@@ -139,7 +144,6 @@ class Model:
 
     def __init__(self):
         self.user(os.getenv('USER') or os.getlogin())
-        self.files = []
         self.directories = []
         self.indirectlyAffectedDirectories = []
 
@@ -147,18 +151,19 @@ class Model:
         """Adds a directory to the Model with its action."""
         self.directories.append(Directory(directory, action))
 
-    def addFile(self, file, action, rev, delta, diff):
-        """Adds a file to the Model with its action, rev, delta, and diff."""
-        self.files.append(File(file, action, rev, delta, diff))
-
     def baseDirectory(self, baseDirectory=None):
         """The lowest commont directory of a commit to base the module matching on."""
-        if baseDirectory != None: self._baseDirectory = baseDirectory
+        if baseDirectory is not None: self._baseDirectory = baseDirectory
         return self._baseDirectory
+
+    def rootDirectory(self, rootDirectory=None):
+        """The common root directory for the commit."""
+        if rootDirectory is not None: self._rootDirectory = rootDirectory
+        return self._rootDirectory
 
     def user(self, user=None):
         """The user who made the commit."""
-        if user != None: self._user = user
+        if user is not None: self._user = user
         return self._user
 
 class View:
@@ -178,5 +183,5 @@ def _test():
     import doctest, framework
     return doctest.testmod(framework)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     _test()

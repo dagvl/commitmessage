@@ -30,5 +30,5 @@ if __name__ == '__main__':
     scm = conf.get('scm', 'interface')
     controller = getNewInstance(scm)
 
-    controller.__init__(conf)
-    controller.process(sys.argv, sys.stdin)
+    controller.__init__(conf, sys.argv, sys.stdin)
+    controller.process()
