@@ -37,7 +37,8 @@ Added:
  /sub1/
 
 Log:
- a subdirectory
+!svn  a subdirectory
+!cvs  Directory /home/stephen/cvs/commitmessage/acceptance/temp-cvs-repo/temp-cvs-wd/sub1 added to the repository
     </view>
   </commit>
 </test>
