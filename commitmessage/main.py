@@ -21,8 +21,6 @@ from commitmessage.util import CmConfigParser, getNewInstance
 
 if __name__ == '__main__':
     confFile = '/commitmessage.conf'
-    if len(sys.argv) == 2:
-        confFile = sys.argv[1]
 
     mainModulePath = os.path.abspath(os.path.dirname(sys.argv[0]))
     conf = CmConfigParser(mainModulePath + confFile)

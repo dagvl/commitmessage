@@ -17,7 +17,7 @@ if __name__ == '__main__':
     rootCmPath = os.path.abspath(currentDir + '/../')
     sys.path.append(rootCmPath)
 
-from commitmessage.framework import Model, Directory
+from commitmessage.framework import Model, Directory, File
 
 class TestDirectoryHierarchy(unittest.TestCase):
     """Tests added levels of directories."""
@@ -49,8 +49,13 @@ class TestDirectoryHierarchy(unittest.TestCase):
 
     def testTwoDifferentDownThree(self):
         """Added two separate directories, a few levels down."""
-        dir1 = self.model.addDirectory(Directory('/a/a/a', 'removed'))
-        dir2 = self.model.addDirectory(Directory('/a/a/b', 'removed'))
+        dir1 = Directory('/a/a/a', 'removed')
+        dir2 = Directory('/a/a/b', 'removed')
+        File('x.txt', dir1, 'added')
+        File('y.txt', dir2, 'added')
+
+        self.model.addDirectory(dir1)
+        self.model.addDirectory(dir2)
 
         root = self.model.rootDirectory()
         self.assertEquals(1, len(root.subdirectories()))
@@ -65,6 +70,9 @@ class TestDirectoryHierarchy(unittest.TestCase):
         self.assertEquals('removed', b3.action())
 
         self.assertEquals('/a/a', self.model.greatestCommonDirectory())
+
+        self.assertEquals(2, len(self.model.files('added')))
+        self.assertEquals('x.txt', self.model.files('added')[0].name())
 
 if __name__ == '__main__':
     unittest.main()

@@ -66,7 +66,7 @@ class TestCvsController(unittest.TestCase):
             f.close()
 
             # Assure the dummy view dumped the correct data
-            self.assertEquals(dump, test['dumpText'])
+            self.assertEquals(test['dumpText'], dump)
 
     def parseTestFile(self):
         """Parses and runs the test/cvs.txt file."""

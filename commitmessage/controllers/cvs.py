@@ -81,7 +81,7 @@ def cvs_diff(file, rev):
 class CvsController(Controller):
     """Translates CVS loginfo/commitinfo information into the Model."""
 
-    FILE_PREFIX = '#cvs.%s.' % os.getpid()
+    FILE_PREFIX = '#cvs.%s.' % os.getpgrp()
     """A unique prefix to avoid multiple processes stepping on each other's toes."""
 
     LAST_DIRECTORY_FILE = '%s/%slastdir' % (Controller.TMPDIR, FILE_PREFIX)
@@ -94,32 +94,41 @@ class CvsController(Controller):
 
     def populateModel(self):
         """Read in the information."""
+        print('==== populating model ===')
         if len(self.argv) > 2:
             self.doCommitInfo()
         else:
             self.doLogInfo()
 
     def stopProcessForNow(self):
-        """Return whether doLogInfo has said it's okay to stop (e.g. it has
-        reached the last directory recorded by doCommitInfo)."""
-        # Just stop if currentDirectory doesn't exist
-        if not self.__dict__.has_key('currentDirectory'):
+        """Return whether we should stop and wait for CVS to re-execute main.py
+        on the next directory of the commit."""
+        if self.isLastDirectoryOfCommit():
+            return 0
+        else:
             return 1
 
+    def isLastDirectoryOfCommit(self):
+        """Return whether the current directory is the last directory of the commit."""
+        # Just stop if currentDirectory doesn't exist (this is commitinfo)
+        if not self.__dict__.has_key('currentDirectory'):
+            return 0
+        # Also last dir if this is a new directory exec of loginfo
+        if len(self.currentDirectory.files()) == 0:
+            return 1
+        # Simple cache to avoid re-parsing the file
+        if self.__dict__.has_key('_done'):
+            return self._done
         pathToMatch = '%s%s' % (os.environ['CVSROOT'], self.currentDirectory.path())
         matched = 0
         f = file(CvsController.LAST_DIRECTORY_FILE, 'r')
         for line in f.readlines():
-            print 'lastdir: %s' % line
-            print 'pathtom: %s' % pathToMatch
             if line == pathToMatch:
                 matched = 1
         f.close()
-
-        if matched:
-            return 0
-        else:
-            return 1
+        # Cache the value
+        self._done = matched
+        return matched
 
     def doCommitInfo(self):
         """Executed first and saves the current directory name to
@@ -134,12 +143,7 @@ class CvsController(Controller):
         """Executed after all of the directories' commitinfos have ran, so we
         know the last directory and can start to build the Model of commit
         information."""
-
-        self.saveCurrentDirectoryChangesToFile(self.argv[1])
-
-    def saveCurrentDirectoryChangesToFile(self, arg):
-        """Parses in the current input to loginfo."""
-        temp = arg.split(' ')
+        temp = self.argv[1].split(' ')
         currentDirectoryName = '/' + temp[0]
         directoryFiles = temp[1:]
 
@@ -154,7 +158,24 @@ class CvsController(Controller):
             self.currentDirectory.action('added')
 
         self.fillInValues()
-        self.saveDirectory()
+
+        if self.isLastDirectoryOfCommit():
+            self.parseLogLinesIntoModel()
+            self.model.addDirectory(self.currentDirectory)
+        else:
+            self.saveDirectory()
+
+    def parseLogLinesIntoModel(self):
+        """Saves the logLines found on stdin into the model."""
+        while len(self.logLines) > 0 and self.logLines[0] == '':
+            del self.logLines[0]
+        while len(self.logLines) > 0 and self.logLines[-1] == '':
+            del self.logLines[-1]
+        # If a new directory commit, only 1 line is given
+        if len(self.currentDirectory.files()) == 0:
+            self.model.log(self.logLines[0])
+        else:
+            self.model.log('\n'.join(self.logLines))
 
     def saveDirectory(self):
         """Pickles the given directory off to TMPDIR/FILE_PREFIXdir-path."""
@@ -209,6 +230,7 @@ class CvsController(Controller):
                 continue
             if l.search(line):
                 state = STATE_LOG
+                continue
 
             files = line.split(' ')
             if (state == STATE_MODIFIED):
@@ -232,8 +254,8 @@ class CvsController(Controller):
         allFiles = os.listdir(Controller.TMPDIR)
         for name in allFiles:
             if name.startswith(CvsController.FILE_PREFIX):
+                fullPath = '%s/%s' % (Controller.TMPDIR, name)
                 if not name.endswith('lastdir'):
-                    fullPath = '%s/%s' % (Controller.TMPDIR, name)
                     f = file(fullPath)
                     directory = cPickle.load(f)
                     f.close()

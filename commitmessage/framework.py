@@ -197,8 +197,52 @@ class Model:
 
     def user(self, user=None):
         """The user who made the commit."""
-        if user is not None: self._user = user
-        return self._user
+        if user is not None: self.__user = user
+        return self.__user
+
+    def log(self, log=None):
+        """The log message the user provided when making the commit."""
+        if log is not None: self.__log = log
+        return self.__log
+
+    def files(self, filter=None):
+        """Returns a flat list of files with the optional filter applied to
+        their action."""
+        files = []
+        files.extend(self._files(self.rootDirectory(), filter))
+        return files
+
+    def _files(self, directory, filter):
+        """Internal helper method to recursively build a flat list of files."""
+        files = []
+        for file in directory.files():
+            if filter is not None:
+                if file.action() == filter:
+                    files.append(file)
+            else:
+                files.append(file)
+        for subdir in directory.subdirectories():
+            files.extend(self._files(subdir, filter))
+        return files
+
+    def directories(self, filter=None):
+        """Returns a flat list of directories with the optional filter applied
+        to their action."""
+        dirs = []
+        dirs.extend(self._directories(self.rootDirectory(), filter))
+        return dirs
+
+    def _directories(self, directory, filter):
+        """Internal helper method to recursively build a flat list of directories."""
+        dirs = []
+        for subdir in directory.subdirectories():
+            if filter is not None:
+                if subdir.action() == filter:
+                    dirs.append(subdir)
+            else:
+                dirs.add(subdir)
+            dirs.extend(self._directories(subdir, filter))
+        return dirs
 
 class View:
     """Provides a base View for specific implementations to extend."""
