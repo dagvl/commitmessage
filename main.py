@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
     config = CmConfigParser(os.path.realpath(configFile))
 
-    scm = config.get('scm', 'interface')
+    scm = config.get('scm', 'controller')
     controller = getNewInstance(scm)
 
     # Remove the -c configFile argument that getopt looks for above and pass on
@@ -53,7 +53,7 @@ if __name__ == '__main__':
 
     # Get the other others in the 'scm' section
     for (name, value) in config.items('scm'):
-        if name != 'interface':
+        if name != 'controller':
             setattr(controller, name, value)
 
     controller.process()
