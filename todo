@@ -1,4 +1,4 @@
-- Re-add cvsweb/viewcvs/bombsight url functionality in a generalied manager
+- Re-add cvsweb/viewcvs/bombsight url functionality in a generalized manager
   instead of being hacks in each of the views.
 
     logReplacePattern = b(0|o)mb((site)|(sight)):\\s*([0-9]*)
