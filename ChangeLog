@@ -1,0 +1,33 @@
+
+2004-03-14 2.0-beta-3 Stephen Haberman <stephenh@chase3000.com>
+
+ * ChangeLog
+    (): Started a ChangeLog
+
+ * INSTALL.txt
+    (tips): Added permission note about svnlook and /tmp.
+
+ * commitmessage.conf
+    (email): Include the model revision by default.
+
+ * main.py
+    (main): Added a main function that now accepts a '-p' argument to enable
+    profiling.
+
+ * commitmessage/util.py
+    (execute): When executing command lines (cvs/svnlook), now watches for
+    permission errors and chdirs to /tmp if they occur
+    (getNewInstance): Fixed error with not using package name and reloading
+    packages.
+
+ * commitmessage/model.py
+    (Controller._executeView): If there is only one file in the commit, have
+    the greatestCommonDirectory include that file for matching
+
+ * commitmessage/controllers/svn.py
+    (SvnController.actions): Added _ for modified properties.
+
+ * commitmessages/views/email.py
+    (BaseEmailView.execute): Handle subject lines with \n in them.
+    (InlineAttachmentEmailView): Added Juan's patch attachment view.
+
