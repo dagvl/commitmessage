@@ -94,7 +94,6 @@ class CvsController(Controller):
 
     def populateModel(self):
         """Read in the information."""
-        print('==== populating model ===')
         if len(self.argv) > 2:
             self.doCommitInfo()
         else:
