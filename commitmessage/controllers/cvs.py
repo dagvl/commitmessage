@@ -134,7 +134,7 @@ class CvsController(Controller):
     def saveCurrentDirectoryChangesToFile(self, arg):
         """Parses in the current input to loginfo."""
         temp = arg.split(' ')
-        currentDirectoryName = temp[0]
+        currentDirectoryName = '/' + temp[0]
         directoryFiles = temp[1:]
 
         # Creates self.currentDirectory and self.logLines

@@ -17,6 +17,8 @@ if __name__ == '__main__':
     rootCmPath = os.path.abspath(currentDir + '/../')
     sys.path.append(rootCmPath)
 
+from commitmessage.exceptions import CmException
+
 class Controller:
     """A base implementation for SCM-specific controllers to extend; mostly
     does the generic Views handling."""

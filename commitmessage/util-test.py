@@ -4,7 +4,7 @@
 # Copyright 2002, 2003 Stephen Haberman
 #
 
-"""Tests the basic functionality of the unil module."""
+"""Tests the basic functionality of the util module."""
 
 import unittest
 import os
@@ -72,7 +72,6 @@ class BaseConfigTest(unittest.TestCase):
             'stephen': ['email', 'bombsight'],
             'ibm2': ['bombsight']}
         model = Model()
-        model.baseDirectory('blah')
         for key, value in expected.items():
             views = self.config.getViewsForModule(key, model)
             for view in views:
