@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>commitmessage.Itpl</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css"></link>
+</head>
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+
+<!-- =========== START OF NAVBAR =========== -->
+<table class="navbar" border="0" width="100%" cellpadding="0" bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="center">
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="commitmessage-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="trees.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="indices.html">Index</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <font size="-1"><b class="breadcrumbs">
+        <a href="commitmessage-module.html">Package&nbsp;commitmessage</a> ::
+        Module&nbsp;Itpl
+      </b></font></br>
+    </td>
+    <td><table cellpadding="0" cellspacing="0">
+      <tr><td align="right"><font size="-2">[<a href="../private/commitmessage.Itpl-module.html">show&nbsp;private</a>&nbsp;|&nbsp;hide&nbsp;private]</font></td></tr>
+      <tr><td align="right"><font size="-2">[<a href="frames.html"target="_top">frames</a>&nbsp;|&nbsp;<a href="commitmessage.Itpl-module.html" target="_top">no&nbsp;frames</a>]</font></td></tr>
+    </table></td>
+</tr></table>
+
+<!-- =========== START OF MODULE DESCRIPTION =========== -->
+<h2 class="module">Module commitmessage.Itpl</h2>
+
+<pre class="literalblock">
+String interpolation for Python (by Ka-Ping Yee, 14 Feb 2000).
+
+(Found Itpl via PEP 215 on 2/10/03 for use in commitmessage...Contacted the
+original author and received permission to use Itpl.py for any means.
+- Stephen Haberman)
+
+This module lets you quickly and conveniently interpolate values into
+strings (in the flavour of Perl or Tcl, but with less extraneous
+punctuation).  You get a bit more power than in the other languages,
+because this module allows subscripting, slicing, function calls,
+attribute lookup, or arbitrary expressions.  Variables and expressions
+are evaluated in the namespace of the caller.
+
+The itpl() function returns the result of interpolating a string, and
+printpl() prints out an interpolated string.  Here are some examples:
+
+    from Itpl import printpl
+    printpl(&quot;Here is a $string.&quot;)
+    printpl(&quot;Here is a $module.member.&quot;)
+    printpl(&quot;Here is an $object.member.&quot;)
+    printpl(&quot;Here is a $functioncall(with, arguments).&quot;)
+    printpl(&quot;Here is an ${arbitrary + expression}.&quot;)
+    printpl(&quot;Here is an $array[3] member.&quot;)
+    printpl(&quot;Here is a $dictionary['member'].&quot;)
+
+The filter() function filters a file object so that output through it
+is interpolated.  This lets you produce the illusion that Python knows
+how to do interpolation:
+
+    import Itpl
+    sys.stdout = Itpl.filter()
+    f = &quot;fancy&quot;
+    print &quot;Isn't this $f?&quot;
+    print &quot;Standard output has been replaced with a $sys.stdout object.&quot;
+    sys.stdout = Itpl.unfilter()
+    print &quot;Okay, back $to $normal.&quot;
+
+Under the hood, the Itpl class represents a string that knows how to
+interpolate values.  An instance of the class parses the string once
+upon initialization; the evaluation and substitution can then be done
+each time the instance is evaluated with str(instance).  For example:
+
+    from Itpl import Itpl
+    s = Itpl(&quot;Here is $foo.&quot;)
+    foo = 5
+    print str(s)
+    foo = &quot;bar&quot;
+    print str(s)
+</pre>
+<hr/>
+
+<!-- =========== START OF CLASSES =========== -->
+<table class="summary" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="summary">
+  <th colspan="2">Classes</th></tr>
+<tr><td width="15%">
+  <b><a href="commitmessage.Itpl.Itpl-class.html"><code>Itpl</code></a></b></td>
+  <td>Class representing a string with interpolation abilities.</td></tr>
+<tr><td width="15%">
+  <b><a href="commitmessage.Itpl.ItplFile-class.html"><code>ItplFile</code></a></b></td>
+  <td>A file object that filters each write() through an interpolator.</td></tr>
+</table><br />
+
+
+<!-- =========== START OF EXCEPTIONS =========== -->
+<table class="summary" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="summary">
+  <th colspan="2">Exceptions</th></tr>
+<tr><td width="15%">
+  <b><a href="commitmessage.Itpl.ItplError-class.html"><code>ItplError</code></a></b></td>
+  <td>&nbsp;</td></tr>
+</table><br />
+
+
+<!-- =========== START OF FUNCTION SUMMARY =========== -->
+<table class="summary" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="summary">
+  <th colspan="2">Function Summary</th></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="commitmessage.Itpl-module.html#filter" class="summary-sig-name"><code>filter</code></a>(<span class=summary-sig-arg>file</span>)</span></code>
+<br />
+Return an ItplFile that filters writes to the given file object.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><a name="itpl"></a><span class="summary-sig"><span class="summary-sig-name">itpl</span>(<span class=summary-sig-arg>text</span>)</span></code>
+</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><a name="matchorfail"></a><span class="summary-sig"><span class="summary-sig-name">matchorfail</span>(<span class=summary-sig-arg>text</span>,
+          <span class=summary-sig-arg>pos</span>)</span></code>
+</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><a name="printpl"></a><span class="summary-sig"><span class="summary-sig-name">printpl</span>(<span class=summary-sig-arg>text</span>)</span></code>
+</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="commitmessage.Itpl-module.html#unfilter" class="summary-sig-name"><code>unfilter</code></a>(<span class=summary-sig-arg>ifile</span>)</span></code>
+<br />
+Return the original file that corresponds to the given ItplFile.</td></tr>
+</table><br />
+
+
+<!-- =========== START OF FUNCTION DETAILS =========== -->
+<table class="details" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="details">
+  <th colspan="2">Function Details</th></tr>
+</table>
+
+<a name="filter"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">filter</span>(<span class=sig-arg>file</span>=<span class=sig-default>&lt;epydoc.imports._DevNull&nbsp;instance&nbsp;at&nbsp;0x8265eac&gt;</span>)</span>
+  </h3>
+  <p>Return an ItplFile that filters writes to the given file object.</p>
+  'file = filter(file)' replaces 'file' with a filtered object that 
+  has a write() method. When called with no argument, this creates a 
+  filter to sys.stdout.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="unfilter"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">unfilter</span>(<span class=sig-arg>ifile</span>=<span class=sig-default>None</span>)</span>
+  </h3>
+  <p>Return the original file that corresponds to the given ItplFile.</p>
+  'file = unfilter(file)' undoes the effect of 'file = filter(file)'. 
+  'sys.stdout = unfilter()' undoes the effect of 'sys.stdout = 
+  filter()'.
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+<br />
+
+
+<!-- =========== START OF NAVBAR =========== -->
+<table class="navbar" border="0" width="100%" cellpadding="0" bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="center">
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="commitmessage-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="trees.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="indices.html">Index</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td align="left"><font size="-2">Generated by Epydoc 2.0 on Sun Dec 14 21:38:31 2003</font></td>
+    <td align="right"><a href="http://epydoc.sourceforge.net"
+                      ><font size="-2">http://epydoc.sf.net</font></a></td>
+  </tr>
+</table>
+</body>
+</html>
