@@ -21,15 +21,16 @@ from commitmessage.exceptions import CmException
 from commitmessage.util import CmConfigParser, getNewInstance
 
 if __name__ == '__main__':
-    confFile = '/commitmessage.conf'
+    confFile = 'commitmessage.conf'
 
     options, args = getopt.getopt(sys.argv[1:], "c:")
     for option, value in options:
         if option == "-c":
             confFile = value
 
-    mainModulePath = os.path.abspath(os.path.dirname(sys.argv[0]))
-    conf = CmConfigParser(mainModulePath + confFile)
+    if confFile[0] != '/' and confFile[0] != '.':
+        confFile = os.path.abspath(os.path.dirname(sys.argv[0])) + '/' + confFile
+    conf = CmConfigParser(confFile)
 
     scm = conf.get('scm', 'interface')
     controller = getNewInstance(scm)
