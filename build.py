@@ -8,28 +8,26 @@ import unittest
 
 sys.path.extend(['./src', './test'])
 
-handler = logging.FileHandler('pyow.log', 'w')
-format = logging.Formatter(logging.BASIC_FORMAT)
-handler.setFormatter(format)
-logging.getLogger('pyow').addHandler(handler)
-logging.getLogger('pyow').setLevel(logging.DEBUG)
-
 # Save for the _unittest method
 oldargv = sys.argv
 
-def _unittest():
-    """
-    Passed to the C{unittest} module; returns to it one test suite with all of
-    the unit tests in the C{tests} directory.
-    """
-    modules = []
-    for root, dirs, files in os.walk('test'):
-        for file in files:
-            if file.endswith('est.py'):
-                modules.append('%s%s%s' % (root, os.sep, file))
-    modules = [_importAndReturnModule(module[5:-3].replace(os.sep, '.')) for module in modules]
-    tests = [unittest.defaultTestLoader.loadTestsFromModule(module) for module in modules]
-    return unittest.TestSuite(tests)
+# def _unittest():
+#     """
+#     Passed to the C{unittest} module; returns to it one test suite with all of
+#     the unit tests in the C{tests} directory.
+#     """
+#     modules = []
+#     for root, dirs, files in os.walk('test'):
+#         for file in files:
+#             if file.endswith('est.py'):
+#                 modules.append('%s%s%s' % (root, os.sep, file))
+#     modules = [_importAndReturnModule(module[5:-3].replace(os.sep, '.')) for module in modules]
+#     tests = [unittest.defaultTestLoader.loadTestsFromModule(module) for module in modules]
+#     return unittest.TestSuite(tests)
+#
+# if sys.argv[1] == 'unittest':
+#     sys.argv = sys.argv[0:1]
+#     unittest.main(defaultTest='_unittest')
 
 def _importAndReturnModule(name):
     """
@@ -43,10 +41,6 @@ def _importAndReturnModule(name):
         module = getattr(module, part)
     return module
 
-if sys.argv[1] == 'unittest':
-    sys.argv = sys.argv[0:1]
-    unittest.main(defaultTest='_unittest')
-
 if sys.argv[1] == 'clean':
     for root, dirs, files in os.walk('.'):
         for file in files:
@@ -57,7 +51,7 @@ if sys.argv[1] == 'clean':
 
 if sys.argv[1] == 'doctest':
     modules = []
-    for root, dirs, files in os.walk('src'):
+    for root, dirs, files in os.walk('commitmessage'):
         for file in files:
             if file.endswith('.py'):
                 modules.append('%s%s%s' % (root, os.sep, file))
@@ -68,10 +62,10 @@ if sys.argv[1] == 'doctest':
 
 if sys.argv[1] == 'docs':
     from epydoc.cli import cli
-    sys.argv = ['', 'src/decorator.py', 'src/doctags.py', 'src/smt', 'src/pyow']
+    sys.argv = ['', '-o', 'www/docs', 'commitmessage']
     cli()
 
 if sys.argv[1] == 'tags':
     import os
-    os.popen('exctags -R src')
+    os.popen('exctags -R commitmessage')
 
