@@ -6,14 +6,12 @@
 
 """A harness to test each of the XML file workflows for each controller and each view."""
 
+import getopt
 import os
 import sys
 from xml.dom import minidom
 
 sys.path.append('../')
-
-import commitmessage.controllers.svn
-import commitmessage.controllers.cvs
 
 class ControllerFacade:
     """Wraps the interface to add/remove/changes files and directories in terms of each concrete repository."""
@@ -21,8 +19,16 @@ class ControllerFacade:
 class Harness:
     """A class to wrap the test execution context; creates repository, executes the views, and compares the results."""
 
-    def __init__(self):
+    def __init__(self, args):
+        self.wait = 0
         self.facades = []
+        self.passes = 0
+        self.failures = 0
+
+        options, args = getopt.getopt(args, 'w')
+        for option, value in options:
+            if option == '-w':
+                self.wait = 1
 
     def addFacade(self, facade):
         """A wrapper to SCM-specific repository commands."""
@@ -48,16 +54,46 @@ class Harness:
                 facade.commit()
 
                 """Check the results."""
-                for view in case.views():
-                    if view.contents != facade.view(view.name):
+                for view in commit.views():
+                    matched = 1
+
+                    e = view.expected.strip().split('\n')
+                    a = facade.actual(view.name).strip().split('\n')
+
+                    if len(e) != len(a):
+                        matched = 0
+                    else:
+                        for i in range(0, len(e)):
+                            ignoredDateIndex = e[i].find('#####')
+                            if ignoredDateIndex > -1:
+                                if e[i][0:ignoredDateIndex] != a[i][0:ignoredDateIndex]:
+                                    matched = 0
+                                    break
+                            elif e[i] != a[i]:
+                                matched = 0
+                                break
+
+                    if matched == 0:
+                        self.failures = self.failures + 1
+
                         print 'Error:'
                         print 'Expected:'
-                        print view.contents
+                        print ' ' + '\n '.join(e)
                         print 'Actual:'
-                        print facade.view(view.name)
+                        print ' ' + '\n '.join(a)
+
+                        if self.wait == 1:
+                            raw_input('Waiting...')
+                    else:
+                        self.passes = self.passes + 1
+
 
             """We're done with this test case, so remove the repository."""
             facade.destoryRepository()
+
+        print ''
+        print 'Passes: %s' % self.passes
+        print 'Failures: %s' % self.failures
 
 class Case:
     """A class to wrap the XML workflow files."""
@@ -95,18 +131,26 @@ class Commit:
                 for key in e.attributes.keys():
                     args.append(e.attributes[key].value)
 
-                # The text is an argument, too
+                # The text is an argument too
                 for node in e.childNodes:
                     if node.nodeType == node.TEXT_NODE:
                         args.append(node.data)
-
-                print args
 
                 # Call the function
                 getattr(facade, e.tagName)(*args)
 
     def views(self):
         """Returns the views that are expected by this commit, viewName: results."""
+        return map(lambda x: View(x), self.commitElement.getElementsByTagName('view'))
+
+class View:
+    """A class that wraps the results of a view."""
+
+    def __init__(self, viewElement):
+        self.name = viewElement.attributes['name'].value
+        for node in viewElement.childNodes:
+            if node.nodeType == node.TEXT_NODE:
+                self.expected = node.data
 
 class CvsFacade:
 
@@ -139,6 +183,10 @@ class SvnFacade:
     def destoryRepository(self):
         _exec('rm -fr %s %s' % (self.repoDir, self.workingDir))
 
+    def actual(self, viewName):
+        """Returns the dumped results for the given view."""
+        return file('%s/%s.txt' % (self.workingDir, viewName)).read()
+
     def commit(self):
         self._execsvn('svn commit -m "foo"')
 
@@ -170,7 +218,7 @@ def _exec(cmd):
 for old in filter(lambda x: x.startswith('temp-'), os.listdir('.')):
     _exec('rmdir /S /Q %s' % old)
 
-harness = Harness()
+harness = Harness(sys.argv[1:])
 # harness.addFacade(CvsFacade())
 harness.addFacade(SvnFacade())
 
