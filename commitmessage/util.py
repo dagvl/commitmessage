@@ -32,10 +32,24 @@ class CmConfigParser(ConfigParser):
     def getModulesForPath(self, commitPath):
         """@return: the modules that match the given path (and should hence have their views executed)"""
         modules = []
+
+        # Load the user-defined modules
         for module in ConfigParser.options(self, 'modules'):
             p = re.compile(ConfigParser.get(self, 'modules', module))
-            if p.search(commitPath):
+            if p.match(commitPath):
                 modules.append(module)
+
+        # Add default if necessary
+        if len(modules) == 0:
+            modules.append('DEFAULT_MODULE')
+
+        # Always add universal unless the user has already put it there
+        if 'UNIVERSAL_MODULE' not in modules:
+            modules.append('UNIVERSAL_MODULE')
+
+        # Only return verified modules that have their own section
+        modules = [m for m in modules if ConfigParser.has_section(self, m)]
+
         modules.sort()
         return modules
 
