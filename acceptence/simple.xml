@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<test>
+  <!-- optional config? -->
+  <commit>
+    <addFile name="foo.txt">
+      This text for foo...
+    </addFile>
+    <view name="TigrisStyleEmailView">
+      ...Text goes here...
+    </view>
+    <view name="FooView">
+      ...Output goes here...
+    </view>
+  </commit>
+  <commit>
+    <appendToFile name="foo.txt">
+      More text for foo...
+    </appendToFile>
+    <view name="TigrisStyleEmailView">
+      ...Text goes here...
+    </view>
+    <view name="FooView">
+      ...Output goes here...
+    </view>
+  </commit>
+</test>
+
