@@ -72,7 +72,7 @@ if sys.argv[1] == 'tags':
     os.popen('exctags -R commitmessage')
 
 if sys.argv[1] == 'dist':
-    version = '2.0'
+    version = '2.0-beta-1'
     subdir = 'commitmessage-%s/' % version
 
     if not os.path.exists('dist'):
@@ -85,8 +85,6 @@ if sys.argv[1] == 'dist':
         # Avoid recursion
         if root == 'dist':
             continue
-
-        print root
 
         dirAdded = False
         for file in files:
