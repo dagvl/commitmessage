@@ -89,47 +89,29 @@ class ApacheStyleEmailView(BaseEmailView):
 class TigrisStyleEmailView(BaseEmailView):
     """Sends out an email formatted in a style mimicking Tigris commit emails."""
 
+    def printFiles(self, text, action)
+        directories = self.model.directoriesWithFiles(action)
+        if len(directories) > 0:
+            text.write('%s%s\n' % (action[0].upper(), action[1:]))
+            for dir in directories:
+                text.write(' %s\n' % dir.path())
+                files = dir.files(action)
+                text.write('  %s' % files[0].name())
+                for file in files[1:]:
+                    text.write(', %s' % file.name())
+                text.write('\n')
+            text.write('\n')
+
+
     def generateBody(self, text):
         """Returns a string for the body of the email."""
         text.write('User: %s\n' % self.model.user())
         text.write('Date: %s\n' % time.strftime('%Y/%m/%d %I:%M %p'))
         text.write('\n')
 
-        addFileDirs = self.model.directoriesWithFiles('added')
-        if len(addFileDirs) > 0:
-            text.write('Added\n')
-            for dir in addFileDirs:
-                text.write(' %s\n' % dir.path())
-                files = dir.files('added')
-                text.write('  %s' % files[0].name())
-                for file in files[1:]:
-                    text.write(', %s' % file.name())
-                text.write('\n')
-            text.write('\n')
-
-        remFileDirs = self.model.directoriesWithFiles('removed')
-        if len(remFileDirs) > 0:
-            text.write('Removed\n')
-            for dir in remFileDirs:
-                text.write(' %s\n' % dir.path())
-                files = dir.files('removed')
-                text.write('  %s' % files[0].name())
-                for file in files[1:]:
-                    text.write(', %s' % file.name())
-                text.write('\n')
-            text.write('\n')
-
-        modFileDirs = self.model.directoriesWithFiles('modified')
-        if len(modFileDirs) > 0:
-            text.write('Modified\n')
-            for dir in modFileDirs:
-                text.write(' %s\n' % dir.path())
-                files = dir.files('modified')
-                text.write('  %s' % files[0].name())
-                for file in files[1:]:
-                    text.write(', %s' % file.name())
-                text.write('\n')
-            text.write('\n')
+        self.printFiles(text, 'added')
+        self.printFiles(text, 'removed')
+        self.printFiles(text, 'modified')
 
         text.write('Log\n %s\n\n' % self.model.log())
 
