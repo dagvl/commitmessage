@@ -128,9 +128,12 @@ class Directory:
         if action is not None: self.__action = action
         return self.__action
 
-    def files(self):
+    def files(self, action=None):
         """Returns all of the files in this directory affected by the commit."""
-        return self.__files
+        if action is None:
+            return self.__files
+        else:
+            return filter(lambda file: file.action() == action, self.__files)
 
     def subdirectory(self, name):
         """Return a subdirectory with a specific name."""
@@ -205,43 +208,54 @@ class Model:
         if log is not None: self.__log = log
         return self.__log
 
-    def files(self, filter=None):
+    def files(self, action=None):
         """Returns a flat list of files with the optional filter applied to
         their action."""
-        files = []
-        files.extend(self._files(self.rootDirectory(), filter))
-        return files
+        return self._files(self.rootDirectory(), action)
 
-    def _files(self, directory, filter):
+    def _files(self, directory, action):
         """Internal helper method to recursively build a flat list of files."""
         files = []
         for file in directory.files():
-            if filter is not None:
-                if file.action() == filter:
+            if action is not None:
+                if file.action() == action:
                     files.append(file)
             else:
                 files.append(file)
         for subdir in directory.subdirectories():
-            files.extend(self._files(subdir, filter))
+            files.extend(self._files(subdir, action))
         return files
 
-    def directories(self, filter=None):
+    def directories(self, action=None):
         """Returns a flat list of directories with the optional filter applied
         to their action."""
-        dirs = []
-        dirs.extend(self._directories(self.rootDirectory(), filter))
-        return dirs
+        return self._directories(self.rootDirectory(), action)
 
-    def _directories(self, directory, filter):
+    def _directories(self, directory, action):
         """Internal helper method to recursively build a flat list of directories."""
         dirs = []
         for subdir in directory.subdirectories():
-            if filter is not None:
-                if subdir.action() == filter:
+            if action is not None:
+                if subdir.action() == action:
                     dirs.append(subdir)
             else:
                 dirs.add(subdir)
-            dirs.extend(self._directories(subdir, filter))
+            dirs.extend(self._directories(subdir, action))
+        return dirs
+
+    def directoriesWithFiles(self, action=None):
+        """Returns a flat list of directories that have changes to files in
+        them."""
+        return self._directoriesWithFiles(self.rootDirectory(), action)
+
+    def _directoriesWithFiles(self, directory, action):
+        """Internal helper method to recursively build a flat list of
+        directories that contain changes to files in them."""
+        dirs = []
+        for subdir in directory.subdirectories():
+            if len(subdir.files(action)) > 0:
+                dirs.append(subdir)
+            dirs.extend(self._directoriesWithFiles(subdir, action))
         return dirs
 
 class View:

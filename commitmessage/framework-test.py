@@ -74,5 +74,12 @@ class TestDirectoryHierarchy(unittest.TestCase):
         self.assertEquals(2, len(self.model.files('added')))
         self.assertEquals('x.txt', self.model.files('added')[0].name())
 
+    def testFilesFilter(self):
+        dir = Directory('/module1')
+        f = File('x.txt', dir, 'added')
+        f = File('y.txt', dir, 'modified')
+        self.assertEquals(1, len(dir.files('added')))
+        self.assertEquals(1, len(dir.files('modified')))
+
 if __name__ == '__main__':
     unittest.main()
