@@ -13,11 +13,12 @@ import getopt
 import os
 import sys
 
+# Assume this main.py is in the commitmessage package and setup sys.path to
+# import the rest of the commitmessage package
+currentDir = os.path.dirname(sys.argv[0])
+rootCmPath = os.path.abspath(currentDir + '/../')
+
 if __name__ == '__main__':
-    # Assume this main.py is in the commitmessage package and setup sys.path to
-    # import the rest of the commitmessage package
-    currentDir = os.path.dirname(sys.argv[0])
-    rootCmPath = os.path.abspath(currentDir + '/../')
     sys.path.append(rootCmPath)
 
 from commitmessage.exceptions import CmException
@@ -32,8 +33,8 @@ if __name__ == '__main__':
             configFile = value
 
     # Handle relative paths.
-    # if configFile[0] != '/' and configFile[0] != '.':
-    #    configFile = os.path.abspath(os.path.dirname(sys.argv[0])) + '/' + configFile
+    if configFile[0] != '/' and configFile[0] != '.':
+       configFile = rootCmPath + os.sep + configFile
     config = CmConfigParser(os.path.realpath(configFile))
 
     scm = config.get('scm', 'interface')
