@@ -122,6 +122,21 @@ sub main {
     # Save the files in the current directory to the persistent log
     $self->saveCurrentFilesToPersistentLog;
 
+    if ($self->couldBeImport) {
+        # Check the log for the definitive answer
+        $self->parseAndSaveLogMessage;
+
+        if ($self->isImport) {
+            $self->model->module("CVSROOT");
+
+            $self->parseImportLog;
+            $self->loadViews;
+            $self->execCommit;
+
+            return;
+        }
+    }
+
     if (!$self->isLastDirectoryOfCommit) {
         print "More commits to come...\n";
         return;
@@ -136,6 +151,56 @@ sub main {
 
     $self->loadViews;
     $self->execCommit;
+}
+
+#
+# Return whether this loginfo could be the result of an import command
+#
+sub couldBeImport {
+    my($self) = @_;
+
+    if (-e "$LAST_FILE") {
+        return 0;
+    }
+    else {
+        return 1;
+    }
+}
+
+#
+# Return whether this loginfo was the result of an import command
+#
+sub isImport {
+    my($self) = @_;
+
+    my $log = $self->model->log;
+    if ($log =~ /Status:\n\nVendor Tag:\t/) {
+        return 1;
+    }
+
+    return 0;
+}
+
+#
+# Parses the special log sent in with an import command
+# and puts the file information into the Model.
+#
+sub parseImportLog {
+    my($self) = @_;
+
+    my $log = $self->model->log;
+    my @mary = split("Status:\n\nVendor Tag:\t", $log);
+
+    $self->model->log($mary[0]);
+
+    @mary = split("\n", $mary[1]);
+    foreach my $line (@mary) {
+        if ($line =~ /^N /) {
+            my $file = substr($line, 2);
+            my($delta, $rcsfile, $diff) = ("+", Controller->CVSROOT . $file, "<<new file>>");
+            $self->model->addEntry($file, "added", 1.1, $delta, $rcsfile, $diff);
+        }
+    }
 }
 
 #
@@ -166,6 +231,7 @@ sub saveCurrentFilesToPersistentLog {
     my $STATE_ADDED = 2;
     my $STATE_REMOVED = 3;
     my $STATE_LOG = 4;
+    my $STATE_IMPORT = 5;
 
     my $state = $STATE_NONE;
 
@@ -265,14 +331,14 @@ sub loadViews {
     foreach my $line (@config) {
         # Look for global definitions
         if ($line =~ /^ALL\.($VIEW_NAME)$EQUALS($PACKAGE_NAME)$/) {
-##            print "Found global view $1 = $2\n";
+##print "Found global view $1 = $2\n";
             %{$views{$1}} = ();
             $views{$1}{commitmessageName} = $1;
             $views{$1}{commitmessagePackage} = $2;
         }
         # Look for module definitions
         if ($line =~ /^$module\.($VIEW_NAME)$EQUALS($PACKAGE_NAME)$/) {
-##            print "Found module view $1 = $2\n";
+##print "Found module view $1 = $2\n";
             %{$views{$1}} = ();
             $views{$1}{commitmessageName} = $1;
             $views{$1}{commitmessagePackage} = $2;
@@ -282,7 +348,7 @@ sub loadViews {
     # Fill in global defaults
     foreach my $line (@config) {
         if ($line =~ /^ALL.($VIEW_NAME)\.($PROPERTY_NAME)$PROPERTY_EQUALS($PROPERTY_VALUE)$/) {
-##            print "Set global $1.$2 = " . Controller->optionalEval($6, $3, $self->model) . "\n";
+##print "Set global $1.$2 = " . Controller->optionalEval($6, $3, $self->model) . "\n";
             $views{$1}{$2} = Controller->optionalEval($6, $3, $self->model->om);
         }
     }
@@ -290,7 +356,7 @@ sub loadViews {
     # Now override defaults and fill in module-specific properties
     foreach my $line (@config) {
         if ($line =~ /^$module\.($VIEW_NAME)\.($PROPERTY_NAME)$PROPERTY_EQUALS($PROPERTY_VALUE)$/) {
-##            print "Set module $1.$2 = " . Controller->optionalEval($6, $3, $self->model) . "\n";
+##print "Set module $1.$2 = " . Controller->optionalEval($6, $3, $self->model) . "\n";
             $views{$1}{$2} = Controller->optionalEval($6, $3, $self->model->om);
         }
     }
@@ -312,7 +378,7 @@ sub loadViews {
         eval($foo) || die "An error occurred: $@\n";
 
         foreach my $prop (keys %{$views{$name}}) {
-##            print "Setting $prop = $views{$name}{$prop}\n";
+##print "Setting $prop = $views{$name}{$prop}\n";
             $viewObject->{$prop} = $views{$name}{$prop};
         }
 
