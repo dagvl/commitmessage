@@ -1,4 +1,10 @@
 
+2004-09-21 2.0-beta-6 Stephen Haberman <stephenh@chase3000.com>
+
+ * commitmessage/util.py
+   (CmConfigParser.getModulesForPath): Added DEFAULT_MODULE and UNIVERSAL_MODULE support - Jonathan Vonk
+   (CmConfigParser.getModulesForPath): Only return verified modules - Jonathan Vonk
+
 2004-09-21 2.0-beta-5 Stephen Haberman <stephenh@chase3000.com>
 
  * commitmessage/model.py
