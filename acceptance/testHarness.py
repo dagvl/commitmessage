@@ -12,6 +12,7 @@ view.
 import difflib
 import getopt
 import os
+import re
 import shutil
 import stat
 import sys
@@ -35,8 +36,9 @@ class Harness:
         self.facades = facades
         self.passes = 0
         self.failures = 0
+        self.commits = None
 
-        options, args = getopt.getopt(args, '', ['trace', 'trace-svn', 'do-not-destroy'])
+        options, args = getopt.getopt(args, '', ['trace', 'trace-svn', 'do-not-destroy', 'commits='])
         for option, value in options:
             if option == '--trace':
                 self.facades = [Tracer(x) for x in self.facades]
@@ -45,6 +47,8 @@ class Harness:
                     facade.tracesvn = 1
             if option == '--do-not-destroy':
                 self.donotdestroy = 1
+            if option == '--commits':
+                self.commits = int(value)
 
     def run(self, cases):
         """Runs a suite of L{Case}s."""
@@ -58,7 +62,7 @@ class Harness:
             # Each execution of the test case gets its own repository.
             facade.createRepository(case.config())
 
-            for commit in case.commits():
+            for commit in case.commits()[:self.commits]:
                 # Let the case do its stuff (e.g. modifying files)
                 commit.doChanges(facade)
 
@@ -70,6 +74,9 @@ class Harness:
                 for view in commit.views():
                     expected = view.expected.strip().split('\n')
                     actual = [x.replace('\r', '') for x in facade.actual(view.name).strip().split('\n')]
+
+                    # Clean on the !svn/!cvs lines
+                    expected = facade.clean(expected)
 
                     if self._matchesIgnoringDates(expected, actual):
                         self.passes = self.passes + 1
@@ -191,6 +198,23 @@ class ControllerFacade:
     def __init__(self):
         self.mainPath = os.path.join(os.getcwd().replace('\\', '/'), '..', 'commitmessage', 'main.py')
 
+    def clean(self, expected):
+        new = []
+
+        goodStart = '!%s' % self.name
+        someStart = re.compile('!((cvs)|(svn)) ')
+
+        for line in expected:
+            if line.startswith(goodStart):
+                new.append(line[5:])
+            elif someStart.match(line):
+                # Ignore
+                pass
+            else:
+                new.append(line)
+
+        return new
+
 class CvsFacade(ControllerFacade):
     """
     A facade for executing the test cases against a CVS installation (Unix only).
@@ -202,6 +226,7 @@ class CvsFacade(ControllerFacade):
         self.repoDir = '%s/temp-cvs-repo' % os.getcwd().replace('\\', '/')
         self.workingDir = '%s/temp-cvs-wd' % os.getcwd().replace('\\', '/')
         self.message = ''
+        self.name = 'cvs'
 
     def _execCvs(self, cmd):
         """Executes C{cmd} in the current directory with C{cvs -d :local:repoDir} as a prefix."""
@@ -317,6 +342,7 @@ class SvnFacade(ControllerFacade):
         self.repoDir = '%s/temp-svn-repo' % os.getcwd().replace('\\', '/')
         self.workingDir = '%s/temp-svn-wd' % os.getcwd().replace('\\', '/')
         self.message = ''
+        self.name = 'svn'
 
     def _execInWorkingDir(self, cmd):
         """Executes C{cmd} in the working directory."""
