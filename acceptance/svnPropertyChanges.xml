@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+
+<test>
+  <config>
+[scm]
+controller = CONTROLLER
+
+[modules]
+all = ^/
+
+[views]
+email = commitmessage.views.email.TigrisStyleEmailView
+
+[email]
+to = stephen@beachead.com
+server = mail.beachead.com
+from = stephen@beachead.com
+subject = commit: $model.greatestCommonDirectory()
+acceptance = ACCEPTANCE_DIRECTORY
+
+[all]
+views = email
+  </config>
+  <commit>
+    <message>set property on new</message>
+    <addFile name="foo.txt">
+      This text for foo...
+    </addFile>
+    <setProperty name="foo.txt" property="svn:mime-type" value="text/html"/>
+    <view name="TigrisStyleEmailView">
+To: stephen@beachead.com
+From: stephen@beachead.com
+Subject: commit: /
+Date: #####
+
+User: stephen
+Date: #####
+
+Added:
+ /
+  foo.txt
+
+Log:
+ set property on new
+
+File Changes:
+
+Directory: /
+============
+
+File [added]: foo.txt
+Delta lines: +1 -0
+===================================================================
+--- foo.txt	#####
++++ foo.txt	#####
+@@ -0,0 +1 @@
++This text for foo...
+\ No newline at end of file
+
+
+
+Property changes on: foo.txt
+___________________________________________________________________
+Name: svn:mime-type
+   + text/html
+    </view>
+  </commit>
+  <commit>
+    <message>set property on old</message>
+    <setProperty name="foo.txt" property="svn:mime-type" value="text/css"/>
+    <view name="TigrisStyleEmailView">
+To: stephen@beachead.com
+From: stephen@beachead.com
+Subject: commit: /
+Date: #####
+
+User: stephen
+Date: #####
+
+Modified:
+ /
+  foo.txt
+
+Log:
+ set property on old
+
+File Changes:
+
+Directory: /
+============
+
+File [modified]: foo.txt
+Delta lines: +0 -0
+===================================================================
+
+Property changes on: foo.txt
+___________________________________________________________________
+Name: svn:mime-type
+   - text/html
+   + text/css
+    </view>
+  </commit>
+</test>

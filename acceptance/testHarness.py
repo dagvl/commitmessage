@@ -86,7 +86,7 @@ class Harness:
 
                 # Check the results.
                 for view in commit.views():
-                    if view.notexecuted:
+                    if not view.shouldBeExecuted(facade.name):
                         if facade.doesViewActualExist(view.name):
                             self.failures = self.failures + 1
                             print 'Error, view %s was not supposed to execute' % view.name
@@ -202,10 +202,21 @@ class View:
 
     def __init__(self, viewElement):
         self.name = viewElement.attributes['name'].value
-        self.notexecuted = (viewElement.attributes.has_key('notexecuted') and True) or False
+        self._executed = viewElement.attributes.get('executed')
         for node in viewElement.childNodes:
             if node.nodeType == node.TEXT_NODE:
                 self.expected = node.data
+
+    def shouldBeExecuted(self, facadeName):
+        """@return: whether the 'executed' propery says the view should be done for none/svn/cvs"""
+        if not self._executed:
+            return True
+        elif self._executed == 'none':
+            return False
+        elif self._executed == facadeName:
+            return True
+        else:
+            return False
 
 class ControllerFacade:
     """
@@ -368,6 +379,10 @@ class CvsFacade(ControllerFacade):
 
         self._writeFile(name, '\n'.join(newLines))
 
+    def setProperty(self, name='', propery='', value=''):
+        # CVS does not support file properties
+        pass
+
 class SvnFacade(ControllerFacade):
     """
     A facade for executing the test cases against SVN installation (both Unix and Windows).
@@ -458,6 +473,9 @@ class SvnFacade(ControllerFacade):
             newLines.append(oldLines[i])
 
         self._writeFile(name, '\n'.join(newLines))
+
+    def setProperty(self, name='', property='', value=''):
+        self._execInWorkingDir('svn propset %s %s %s' % (property, value, name))
 
 def _exec(cmd):
     """Executes C{cmd} and returns the lines of C{stdout}."""

@@ -251,10 +251,12 @@ Delta lines: +0 -0
 !svn (Binary files differ)
 !svn 
 !svn 
+!svn 
 !svn Property changes on: sub1/binary.gif
 !svn ___________________________________________________________________
 !svn Name: svn:mime-type
 !svn    + application/octet-stream
+!svn 
 !cvs &lt;&lt;Binary file&gt;&gt;
 
 File [added]: foo1.txt

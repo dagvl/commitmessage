@@ -65,6 +65,6 @@ Delta lines: +1 -0
     <addFile name="foo2.txt">
       This text for foo...
     </addFile>
-    <view name="TigrisStyleEmailView" notexecuted="true"/>
+    <view name="TigrisStyleEmailView" executed="none"/>
   </commit>
 </test>

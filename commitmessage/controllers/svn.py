@@ -49,22 +49,37 @@ class SvnController(Controller):
 
         # And finally parse through the diffs and save them into our tree of changes
         diffs = []
+        partialDiff = None
         for line in self._svnlook('diff'):
-            if line.startswith('Modified: ') or line.startswith('Added: ') or line.startswith('Copied: ') or line.startswith('Deleted: '):
+            if line.startswith('Modified: ') or line.startswith('Added: ') or line.startswith('Copied: ') or line.startswith('Deleted: ') or line.startswith('Property changes on: '):
                 # Handle starting a new diff
                 partialDiff = [line]
                 diffs.append(partialDiff)
-            else:
+            elif partialDiff:
                 partialDiff.append(line)
 
         for diff in diffs:
             # Use [:-1] to leave of the trailing \n
-            filePath = '/' + diff[0][:-1].split(' ')[1]
-            delta, text = self._parse_diff(diff)
+            if not diff[0].startswith('Property changes on:'):
+                filePath = '/' + diff[0][:-1].split(' ')[1]
+            else:
+                # Property changes line puts the file name somewhere else
+                filePath = '/' + diff[0][:-1].split(' ')[-1]
 
             file = self.model.file(self.prefix + filePath)
-            file.diff = text
-            file.delta = delta
+
+            if not diff[0].startswith('Property changes on:'):
+                file.delta, file.diff = self._parse_diff(diff)
+            else:
+                if file.diff:
+                    file.diff = file.diff + '\n\n' + ''.join(diff)
+                else:
+                    # If the 'Property changes on' line is here without a
+                    # file.diff, that file.diff will never come because it would
+                    # have been printed before us
+                    sep = '===================================================================\n\n'
+                    file.diff = ''.join([sep] + diff)
+                    file.delta = '+0 -0'
 
     def _parse_diff(self, diff):
         text = ''
