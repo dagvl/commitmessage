@@ -294,7 +294,8 @@ class View:
     """Provides a base View for specific implementations to extend."""
 
     def __init__(self, name, model):
-        """Initializes a new module given it's name."""
+        """Initializes a new view given it's instance C{name} and C{model}."""
+        self.acceptance = 0
         self.name = name
         self.model = model
 
