@@ -131,6 +131,10 @@ class File:
         """@return: the path of the file"""
         return '<File %s>' % self.path
 
+    def __cmp__(self, other):
+        """@return: the cmp'ing of self.path and other.path"""
+        return cmp(self.path, other.path)
+
     def path():
         doc = """The full path (C{/dir/foo.txt}) of the file"""
         def fget(self):
@@ -175,6 +179,10 @@ class Directory:
     def __str__(self):
         """@return: the path of the directory"""
         return """<Directory '%s'>""" % self.path
+
+    def __cmp__(self, other):
+        """@return: the cmp'ing self.path and other.path"""
+        return cmp(self.path, other.path)
 
     def filesByAction(self, action):
         """@return: all of the files in this directory affected by the commit"""
