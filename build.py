@@ -71,6 +71,7 @@ if sys.argv[1] == 'tags':
     os.popen('exctags -R commitmessage')
 
 if sys.argv[1] == 'dist':
+    version = '2.0'
     t = tarfile.TarFile('commitmessage.tar', 'w')
     for root, dirs, files in os.walk('commitmessage'):
         dirAdded = False
@@ -78,9 +79,11 @@ if sys.argv[1] == 'dist':
             if file.endswith('.py'):
                 # See if we need to add the directory
                 if not dirAdded:
-                    t.add('%s' % root, recursive=False)
+                    t.add('%s' % root, 'commitmessage-%s/%s' % (version, root), recursive=False)
                     dirAdded = True
-                t.add('%s%s%s' % (root, os.sep, file))
-    t.add('commitmessage.conf')
+                f = root + os.sep + file
+                t.add(f, 'commitmessage-%s/%s' % (version, f))
+    t.add('commitmessage.conf', 'commitmessage-%s/commitmessage.conf' % version)
+    t.add('INSTALL.txt', 'commitmessage-%s/INSTALL.txt' % version)
     t.close()
 
