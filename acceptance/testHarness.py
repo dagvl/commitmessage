@@ -221,6 +221,10 @@ class SvnFacade:
         self._openFile(name, 'w').write(content)
         self._execsvn('svn add %s' % name)
 
+    def addReferencedFile(self, name, location):
+        self._openFile(name, 'w').writelines(self._openFile(location, 'r').readlines())
+        self._execsvn('svn add %s' % name)
+
     def changeFile(self, name, fromLine, toLine, content):
         fromLine = int(fromLine)
         toLine = int(toLine)

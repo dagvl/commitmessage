@@ -162,6 +162,7 @@ Delta lines: +2 -0
     <changeFile name="foo3.txt" fromLine="1" toLine="2">
       see-more
     </changeFile>
+    <addReferencedFile name="sub1/binary.gif" location="../binary.gif" />
     <view name="TigrisStyleEmailView">
 To: stephen@beachead.com
 From: stephen@beachead.com
@@ -175,7 +176,7 @@ Added
  /
   foo4.txt
  /sub1/
-  foo1.txt, foo2.txt
+  binary.gif, foo1.txt, foo2.txt
 
 Modified
  /
@@ -214,6 +215,18 @@ Delta lines: +1 -0
 
 Directory: /sub1/
 =================
+
+File [added]: binary.gif
+Delta lines: +0 -0
+===================================================================
+(Binary files differ)
+
+
+Property changes on: sub1/binary.gif
+___________________________________________________________________
+Name: svn:mime-type
+   + application/octet-stream
+
 
 File [added]: foo1.txt
 Delta lines: +1 -0
