@@ -128,7 +128,8 @@ Troubleshooting a Subversion installation is fairly easy:
     (Unix)
     /my-svn-repo/hooks/post-commit "/my-svn-repo" 1
 
- 3. On unix, double check that the #! within the main.py is working (e.g. you
-    may have to explicitly call 'python .../main.py' instead of just
-    '.../main.py' to ensure the Python interpreter is executed).
+ 3. On unix, double check that the #! within the main.py is working. E.g. you
+    may have to change your post-commit hook file to explicitly call python:
+
+    /path/to/python /path/to/commitmessage-2.0-beta-1/main.py "$1" "$2"
 
