@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #
 # ViewEmail.pm
-# commitmessage Version 0.91
+# commitmessage Version 1.0-alpha1
 #
 # Simple email script that acts as a view for the MVC-based
 # commitmessage script.

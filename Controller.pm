@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #
 # Model.pm
-# commitmessage Version 0.91
+# commitmessage Version 1.0-alpha1
 #
 # Wraps the module that gets sent between
 # the Controller and Views.

@@ -1,6 +1,6 @@
 #
 # config
-# commitmessage Version 0.91
+# commitmessage Version 1.0-alpha1
 #
 # Configuration of commitmessage is simple. Merely modify this file and make
 # sure any packages you refer to are in @INC or the CVSROOT.

@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #
 # ViewBase.pm
-# commitmessage Version 0.91
+# commitmessage Version 1.0-alpha1
 #
 # Provides a base implementation for all Views to extend.
 #

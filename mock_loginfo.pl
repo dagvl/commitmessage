@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #
 # mock_loginfo.pl
-# commitmessage Version 0.91
+# commitmessage Version 1.0-alpha1
 #
 # This script will test a commitmessage installation by mimicking the
 # functionality of commitmessage_loginfo.pl and executing the
