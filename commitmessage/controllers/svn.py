@@ -28,7 +28,7 @@ class SvnController(Controller):
 
         lines = self.svnlook('info')
         self.model.user(lines[0][:-1])
-        self.model.log(lines[3:])
+        self.model.log(''.join(lines[3:])[:-1])
 
         changes = self.svnlook('changed')
         for change in changes:
