@@ -51,7 +51,10 @@ sub user {
 # The module the commit happened in
 #
 sub module {
-    my($self) = @_;
+    my $self = shift;
+    if(@_) {
+        $self->om->{module} = shift;
+    }
     return $self->om->{module};
 }
 
@@ -82,7 +85,7 @@ sub newDirectory {
 # Return the list of files
 #
 sub files {
-    my($self) = @_;
+    my $self = shift;
     return $self->om->{files};
 }
 
