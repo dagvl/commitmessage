@@ -60,9 +60,9 @@ class BaseEmailView(View):
             smtp.sendmail(self['from'], self.to, body)
             smtp.quit()
 
-class ApacheStyleEmailView(BaseEmailView):
-    """Sends out an email formatted in a style mimicking Apace commit emails."""
-    pass
+# class ApacheStyleEmailView(BaseEmailView):
+#     """Sends out an email formatted in a style mimicking Apace commit emails."""
+#     pass
 
 class TigrisStyleEmailView(BaseEmailView):
     """Sends out an email formatted in a style mimicking Tigris commit emails."""
