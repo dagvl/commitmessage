@@ -319,7 +319,7 @@ class CvsFacade(ControllerFacade):
         self._writeFile(name, content)
         self._execInWorkingDir('cvs add %s' % name)
 
-    def addReferencedFile(self, name='', location=''):
+    def addBinaryFile(self, name='', location=''):
         self._writeFile(name, self._readFile(location))
         self._execInWorkingDir('cvs add -kb %s' % name)
 
@@ -413,7 +413,7 @@ class SvnFacade(ControllerFacade):
         self._writeFile(name, content)
         self._execInWorkingDir('svn add %s' % name)
 
-    def addReferencedFile(self, name='', location=''):
+    def addBinaryFile(self, name='', location=''):
         self._writeFile(name, self._readFile(location))
         self._execInWorkingDir('svn add %s' % name)
 
