@@ -10,95 +10,55 @@ import os
 import sys
 import time
 
-if __name__ == '__main__':
-    # Setup sys.path to correctly search for commitmessage.xxx[.yyy] modules
-    currentDir = os.path.dirname(sys.argv[0])
-    rootCmPath = os.path.abspath(currentDir + '/../../')
-    sys.path.append(rootCmPath)
-
 from StringIO import StringIO
 from smtplib import SMTP
 from commitmessage.framework import View
 
 class BaseEmailView(View):
-    """Provides a basic implementation of sending an email for other
-    style-specific email Views to extend."""
+    """Provides a basic implementation of sending an email for other style-specific email views to extend."""
 
     def __init__(self, name, model):
         """Initialize all the username to None."""
         View.__init__(self, name, model)
-        self._username = None
 
+        self.acceptance = 0
+        self.username = None
+        self.header = 0
+        self.footer = 0
+
+    def __getitem__(self, name):
+        """Used to get the 'from' attribute."""
+        return self.__dict__[name]
 
     def execute(self):
-        to = self.to().split(',')
-        to = map(lambda t: t.strip(), to)
-
         text = StringIO('')
-        text.write('To: %s\n' % ', '.join(to))
-        text.write('From: %s\n' % self.keyword_from())
-        text.write('Subject: %s\n' % self.subject())
+        text.write('To: %s\n' % self.to)
+        text.write('From: %s\n' % self['from'])
+        text.write('Subject: %s\n' % self.subject)
         text.write('Date: %s -0000 (GMT)\n' % time.strftime('%A %d %B %Y %H:%M:%S', time.gmtime()))
         text.write('\n')
 
-        if len(self.header()) > 0:
-            text.write('%s\n\n' % self.header())
+        if len(self.header) > 0:
+            text.write('%s\n\n' % self.header)
+
         self.generateBody(text)
-        if len(self.footer()) > 0:
-            text.write('\n\n%s' % self.footer())
+
+        if len(self.footer) > 0:
+            text.write('\n\n%s' % self.footer)
 
         text.seek(0)
         body = text.read()
 
-        smtp = SMTP(self.server())
-        if self.username() is not None:
-            smtp.login(self.username(), self.password())
-        smtp.sendmail(self.keyword_from(), to, body)
-        smtp.quit()
-
-    def footer(self, footer=None):
-        """A string of text to include at the beginning of the body."""
-        if footer != None: self._footer = footer
-        return self._footer
-
-    def header(self, header=None):
-        """A string of text to include at the beginning of the body."""
-        if header != None: self._header = header
-        return self._header
-
-    def keyword_from(self, afrom=None):
-        """Who the email is coming from, e.g. 'cvs-commits@test.com'.
-
-        The config file uses 'from', but in Python, 'from' is a keyword, so the
-        class cannot use it as a method name, so 'keyword_from' is a hack around
-        it."""
-        return self._from
-
-    def server(self, server=None):
-        """The mail server to connect to when sending the email."""
-        if server != None: self._server = server
-        return self._server
-
-    def subject(self, subject=None):
-        """The subject for the email."""
-        if subject != None: self._subject = subject
-        return self._subject
-
-    def to(self, to=None):
-        """Who to send the email to; a comma-separated list of email addresses,
-        e.g. 'foo@bar.com, test@test.com'."""
-        if to != None: self._to = to
-        return self._to
-
-    def username(self, username=None):
-        """The username to authenticate with, if required."""
-        if username != None: self._username = username
-        return self._username
-
-    def password(self, password=None):
-        """The password to authenticate with, if required."""
-        if password != None: self._password = password
-        return self._password
+        if self.acceptance == '1':
+            # Write out in a file called 'SubClassName.txt'
+            f = file('%s.txt' % str(self).split(' ')[0].split('.')[-1], 'w')
+            f.write(body)
+        else:
+            smtp = SMTP(self.server())
+            if self.username() is not None:
+                smtp.login(self.username(), self.password())
+            smtp.sendmail(self.keyword_from(), to, body)
+            smtp.quit()
 
 class ApacheStyleEmailView(BaseEmailView):
     """Sends out an email formatted in a style mimicking Apace commit emails."""
