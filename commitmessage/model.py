@@ -309,11 +309,15 @@ class View:
         pass
 
     def isTesting(self):
-        return self.acceptance == '1'
+        return self.acceptance != 0
+
+    def testFilePath(self):
+        """@return: the path of the test dump file"""
+        return '%s/%s.txt' % (self.acceptance, str(self).split(' ')[0].split('.')[-1])
 
     def dumpToTestFile(self, text):
         """Writes out text to a file called 'SubClassName.txt'."""
-        f = file('%s.txt' % str(self).split(' ')[0].split('.')[-1], 'w')
+        f = file(self.testFilePath(), 'w')
         f.write(text)
         f.close()
 

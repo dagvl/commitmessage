@@ -235,6 +235,7 @@ class CvsFacade(ControllerFacade):
         checkoutlist.close()
 
         cvsConfig = config.replace('CONTROLLER', 'commitmessage.controllers.cvs.CvsController')
+        cvsConfig = cvsConfig.replace('ACCEPTANCE_DIRECTORY', self.workingDir)
 
         newConfig = file('CVSROOT/commitmessage.conf', 'w')
         newConfig.write(cvsConfig)
@@ -257,7 +258,7 @@ class CvsFacade(ControllerFacade):
         _exec('rm -fr %s %s' % (self.repoDir, self.workingDir))
 
     def actual(self, viewName):
-        """Returns the dumped results for the given view."""
+        """@return: the dumped results for the given view."""
         return file('%s/%s.txt' % (self.workingDir, viewName)).read()
 
     def commit(self):
@@ -277,7 +278,7 @@ class CvsFacade(ControllerFacade):
 
     def addReferencedFile(self, name='', location=''):
         self._openFile(name, 'w').writelines(self._openFile(location, 'r').readlines())
-        self._execInWorkingDir('cvs add %s' % name)
+        self._execInWorkingDir('cvs add -kb %s' % name)
 
     def moveFile(self, fromPath='', toPath=''):
         self._execInWorkingDir('mv %s %s' % (fromPath, toPath))
@@ -342,6 +343,7 @@ class SvnFacade(ControllerFacade):
             (os.linesep, os.linesep, self.mainPath, self.repoDir, arg, arg))
 
         svnConfig = config.replace('CONTROLLER', 'commitmessage.controllers.svn.SvnController')
+        svnConfig = cvsConfig.replace('ACCEPTANCE_DIRECTORY', self.workingDir)
 
         newConfig = file('%s/commitmessage.conf' % self.repoDir, 'w')
         newConfig.write(svnConfig)
@@ -356,7 +358,7 @@ class SvnFacade(ControllerFacade):
         _exec('rm -fr %s %s' % (self.repoDir, self.workingDir))
 
     def actual(self, viewName):
-        """Returns the dumped results for the given view."""
+        """@return: the dumped results for the given view."""
         return file('%s/%s.txt' % (self.workingDir, viewName)).read()
 
     def commit(self):
@@ -413,12 +415,12 @@ def _exec(cmd):
     stderr.close()
 
     if len(errlines) > 0:
-        print 'Error executing: %s' % cmd
-        print ''.join(errlines)
-        print ''
-
-    print ''.join(outlines)
-    print ''
+        for line in errlines:
+            if not line.startswith('cvs'):
+                print 'Error executing: %s' % cmd
+                print ''.join(errlines)
+                print ''
+                break
 
     return outlines
 

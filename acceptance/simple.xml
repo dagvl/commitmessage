@@ -25,7 +25,7 @@ from = stephen@beachead.com
 subject = commit: $model.greatestCommonDirectory()
 header =
 footer =
-acceptance = 1
+acceptance = ACCEPTANCE_DIRECTORY
 
 [all]
 views = bombsight, email
