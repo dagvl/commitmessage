@@ -95,9 +95,6 @@ class Harness:
                         print '\n'.join(difflib.unified_diff(expected, actual))
                         print delim
 
-                        print expected
-                        print actual
-
                         if self.wait == 1:
                             raw_input('Waiting...')
 
