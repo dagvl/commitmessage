@@ -22,6 +22,35 @@ acceptance = ACCEPTANCE_DIRECTORY
 views = email
   </config>
   <commit>
+    <message>set property on root directory</message>
+    <setProperty name="." property="svn:ignore" value="*.dll"/>
+    <view name="TigrisStyleEmailView">
+To: stephen@beachead.com
+From: stephen@beachead.com
+Subject: commit: /
+Date: #####
+
+User: stephen
+Date: #####
+
+Modified:
+ /
+
+Log:
+ set property on root directory
+
+Directory Changes:
+
+Directory: /
+============
+
+Property changes on: 
+___________________________________________________________________
+Name: svn:ignore
+   + *.dll
+    </view>
+  </commit>
+  <commit>
     <message>set property on new</message>
     <addFile name="foo.txt">
       This text for foo...

@@ -272,7 +272,7 @@ class Model:
         if path == '':
             raise CmException, "File paths may not be empty."
         if path[0] != '/' or path[-1] == '/':
-            raise CmException, "File paths must begin with a forward slash and not end with a back slash."
+            raise CmException, "File paths must begin with a forward slash and not end with a forward slash."
         parts = path.split('/')
 
         # Leave off the file name to get the parent directory

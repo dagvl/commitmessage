@@ -68,7 +68,16 @@ class SvnController(Controller):
             if stop == -2: stop = len(diff[0])
 
             filePath = '/' + diff[0][:-1][start:stop]
-            file = self.model.file(self.prefix + filePath)
+
+            # This could be a file or a directory - going ahead with the .file()
+            # call for most directories is fine as it will just return null.
+            #
+            # Howeever, root / will exception out as an invalid file path so
+            # just special case it
+            if filePath == '/':
+                file = None
+            else:
+                file = self.model.file(self.prefix + filePath)
 
             # Maybe its a directory
             if file:
