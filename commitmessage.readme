@@ -8,3 +8,69 @@ Note: Please keep this readme file with the other commitmessage Perl
 scripts in your CVSROOT directory to provide a convenient source
 for future reference, both for you and future admins.
 
+Please refer to http://commitmessage.tigris.org for more information.
+
+#####################################################################
+#
+# Install
+#
+#####################################################################
+
+1. Check in the following files to your CVSROOT:
+
+ - commitmessage.config
+ - commitmessage.readme
+ - commitmessage_commitinfo.pl
+ - commitmessage_loginfo.pl
+
+Also, you can optionally checkin the sample Views that come with commitmessage:
+
+ - ViewBombsight.pm
+ - ViewEmail.pm
+
+
+2. Hook the scripts into CVS
+
+Edit the CVSROOT/checkoutlist file and add:
+
+ commitmessage.config
+ commitmessage.readme
+ commitmessage_commitinfo.pl
+ commitmessage_loginfo.pl
+
+And again, optionally the Views:
+
+ ViewBombsight.pm
+ ViewEmail.pm
+
+Edit the CVSROOT/commitinfo file and add:
+
+ DEFAULT $CVSROOT/CVSROOT/commitmessage_commitinfo.pl
+
+What you put in place of "DEFAULT" can vary based upon which modules you want 
+fed into commitmessage. The commitinfo file should describe some options, 
+such as ALL, but DEFALUT works well.
+
+Edit the CVSROOT/loginfo file and add:
+
+ DEFAULT $CVSROOT/CVSROOT/commitmessage_loginfo.pl %{s}
+
+Again, DEFAULT can optionally be changed.
+
+Commit these three files (checkoutlist, commitinfo, loginfo) to CVS.
+
+#####################################################################
+#
+# Configuration
+#
+#####################################################################
+
+Configuration is simple; just refer to the commitmessage.config file. It has
+a good amount of documentation on the syntax for it and how to hook up the 
+various Views in to commitmessage.
+
+Once you've configured the commitmessage.config file, commit it to CVS, and
+everything should begin working.
+
+If you have any problems, please refer to the user list on 
+http://commitmessage.tigris.org.
