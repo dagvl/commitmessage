@@ -83,7 +83,9 @@ class SvnController(Controller):
         return ('+%s -%s' % (added, removed), text)
 
     def _svnlook(self, command):
-        """Returns the lines ouput by the svnlook command against the current
-        repo and rev."""
+        """
+        Returns the lines ouput by the svnlook command against the current repo
+        and rev.
+        """
         return execute('svnlook %s %s -r %s' % (command, self.repoPath, self.rev))
 
