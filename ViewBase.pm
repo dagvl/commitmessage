@@ -1,7 +1,8 @@
 #!/usr/bin/perl -w
 #
 # ViewBase.pm
-# commitmessage Version 1.0-beta1
+# commitmessage Version 1.0
+# Copyright 2002 Stephen Haberman
 #
 # Provides a base implementation for all Views to extend.
 #

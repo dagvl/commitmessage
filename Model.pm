@@ -1,7 +1,8 @@
 #!/usr/bin/perl -w
 #
 # Model.pm
-# commitmessage Version 1.0-beta1
+# commitmessage Version 1.0
+# Copyright 2002 Stephen Haberman
 #
 # Wraps the model that gets sent between
 # the Controller and Views.

@@ -1,7 +1,8 @@
 #!/usr/bin/perl -w
 #
 # ViewEmail.pm
-# commitmessage Version 1.0-beta1
+# commitmessage Version 1.0
+# Copyright 2002 Stephen Haberman
 #
 # Simple email script that acts as a view for the MVC-based
 # commitmessage script.
@@ -60,7 +61,7 @@ sub commit {
 
     # Go through the diffs of the added/modified files
     $text .= "Diffs:</p>\n\n";
-    foreach my $file ($model->filesKeysSorted) {
+    foreach my $file ($model->fileKeysSorted) {
         my $action = $model->files->{$file}{action};
         if ($action eq "added" || $action eq "modified") {
             $text .= $model->files->{$file}{diff} . "\n\n";

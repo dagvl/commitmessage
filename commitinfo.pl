@@ -1,7 +1,8 @@
 #!/usr/bin/perl -w
 #
 # commitmessage_commitinfo.pl
-# commitmessage Version 1.0-beta1
+# commitmessage Version 1.0
+# Copyright 2002 Stephen Haberman
 #
 # Perl filter to handle pre-commit checking of files.  This program
 # records the last directory where commits will be taking place for

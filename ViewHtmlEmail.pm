@@ -1,7 +1,8 @@
 #!/usr/bin/perl -w
 #
 # ViewHtmlEmail.pm
-# commitmessage Version 1.0-beta1
+# commitmessage Version 1.0
+# Copyright 2002 Stephen Haberman
 #
 # Simple email script that acts as a view for the MVC-based
 # commitmessage script.

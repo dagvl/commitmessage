@@ -1,6 +1,7 @@
 
 readme
-commitmessage Version 1.0-beta1
+commitmessage Version 1.0
+Copyright 2002 Stephen Haberman
 
 Note: Please keep this readme file with the other commitmessage Perl
 scripts in your CVSROOT directory to provide a convenient source

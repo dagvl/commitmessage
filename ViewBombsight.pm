@@ -1,7 +1,8 @@
 #!/usr/bin/perl -w
 #
 # ViewBombsight.pm
-# commitmessage Version 1.0-beta1
+# commitmessage Version 1.0
+# Copyright 2002 Stephen Haberman
 #
 # Sample script that sends out notification of bug-related commits
 # to Bombsight.

@@ -1,6 +1,7 @@
 #
 # config
-# commitmessage Version 1.0-beta1
+# commitmessage Version 1.0
+# Copyright 2002 Stephen Haberman
 #
 # Configuration of commitmessage is simple. Merely modify this file and make
 # sure any packages you refer to are in @INC or the CVSROOT.
