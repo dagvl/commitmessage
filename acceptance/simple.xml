@@ -59,7 +59,7 @@ Directory: /
 
 File [added]: foo.txt
 Delta lines: +1 -0
-!cvs Index foo.txt
+!cvs Index: foo.txt
 ===================================================================
 !svn --- foo.txt	#####
 !svn +++ foo.txt	#####
@@ -116,7 +116,12 @@ Directory: /
 
 File [modified]: foo.txt
 Delta lines: +3 -1
+!cvs Index: foo.txt
 ===================================================================
+!cvs RCS file: /home/stephen/cvs/commitmessage/acceptance/temp-cvs-repo/temp-cvs-wd/foo.txt,v
+!cvs retrieving revision 1.1
+!cvs retrieving revision 1.2
+!cvs diff -u -r1.1 -r1.2
 --- foo.txt	#####
 +++ foo.txt	#####
 @@ -1 +1,3 @@
@@ -129,22 +134,27 @@ Delta lines: +3 -1
 
 File [added]: foo2.txt
 Delta lines: +1 -0
+!cvs Index: foo2.txt
 ===================================================================
---- foo2.txt	#####
-+++ foo2.txt	#####
-@@ -0,0 +1 @@
-+one-liner
-\ No newline at end of file
+!svn --- foo2.txt	#####
+!svn +++ foo2.txt	#####
+!svn @@ -0,0 +1 @@
+!svn +one-liner
+!svn \ No newline at end of file
+!cvs one-liner
 
 File [added]: foo3.txt
 Delta lines: +2 -0
+!cvs Index: foo3.txt
 ===================================================================
---- foo3.txt	#####
-+++ foo3.txt	#####
-@@ -0,0 +1,2 @@
-+two-liner
-+see
-\ No newline at end of file
+!svn --- foo3.txt	#####
+!svn +++ foo3.txt	#####
+!svn @@ -0,0 +1,2 @@
+!svn +two-liner
+!svn +see
+!svn \ No newline at end of file
+!cvs two-liner
+!cvs see
     </view>
   </commit>
   <commit>
@@ -162,7 +172,7 @@ Delta lines: +2 -0
     <changeFile name="foo3.txt" fromLine="1" toLine="2">
       see-more
     </changeFile>
-    <!-- addReferencedFile name="sub1/binary.gif" location="../binary.gif" /-->
+    <addBinaryFile name="sub1/binary.gif" location="../binary.gif" />
     <removeFile name="foo2.txt" />
     <view name="TigrisStyleEmailView">
 To: stephen@beachead.com
@@ -196,17 +206,23 @@ Directory: /
 ============
 
 File [removed]: foo2.txt
-Delta lines: +0 -1
+!svn Delta lines: +0 -1
+!cvs Delta lines: +0 -0
 ===================================================================
---- foo2.txt	#####
-+++ foo2.txt	#####
-@@ -1 +0,0 @@
--one-liner
-\ No newline at end of file
+!svn --- foo2.txt	#####
+!svn +++ foo2.txt	#####
+!svn @@ -1 +0,0 @@
+!svn -one-liner
+!svn \ No newline at end of file
 
 File [modified]: foo3.txt
 Delta lines: +2 -0
+!cvs Index: foo3.txt
 ===================================================================
+!cvs RCS file: /home/stephen/cvs/commitmessage/acceptance/temp-cvs-repo/temp-cvs-wd/foo3.txt,v
+!cvs retrieving revision 1.1
+!cvs retrieving revision 1.2
+!cvs diff -u -r1.1 -r1.2
 --- foo3.txt	#####
 +++ foo3.txt	#####
 @@ -1,2 +1,4 @@
@@ -214,16 +230,18 @@ Delta lines: +2 -0
 +
 +see-more
  see
-\ No newline at end of file
+!svn \ No newline at end of file
 
 File [added]: foo4.txt
 Delta lines: +1 -0
+!cvs Index: foo4.txt
 ===================================================================
---- foo4.txt	#####
-+++ foo4.txt	#####
-@@ -0,0 +1 @@
-+this is not a sub directory
-\ No newline at end of file
+!svn --- foo4.txt	#####
+!svn +++ foo4.txt	#####
+!svn @@ -0,0 +1 @@
+!svn +this is not a sub directory
+!svn \ No newline at end of file
+!cvs this is not a sub directory
 
 Directory: /sub1/
 =================
@@ -231,31 +249,36 @@ Directory: /sub1/
 File [added]: binary.gif
 Delta lines: +0 -0
 ===================================================================
-(Binary files differ)
-
-
-Property changes on: sub1/binary.gif
-___________________________________________________________________
-Name: svn:mime-type
-   + application/octet-stream
+!svn (Binary files differ)
+!svn 
+!svn 
+!svn Property changes on: sub1/binary.gif
+!svn ___________________________________________________________________
+!svn Name: svn:mime-type
+!svn    + application/octet-stream
+!cvs &lt;&lt;Binary file&gt;&gt;
 
 File [added]: foo1.txt
 Delta lines: +1 -0
+!cvs Index: foo1.txt
 ===================================================================
---- sub1/foo1.txt	#####
-+++ sub1/foo1.txt	#####
-@@ -0,0 +1 @@
-+this is a sub directory
-\ No newline at end of file
+!svn --- sub1/foo1.txt	#####
+!svn +++ sub1/foo1.txt	#####
+!svn @@ -0,0 +1 @@
+!svn +this is a sub directory
+!svn \ No newline at end of file
+!cvs this is a sub directory
 
 File [added]: foo2.txt
 Delta lines: +1 -0
+!cvs Index: foo2.txt
 ===================================================================
---- sub1/foo2.txt	#####
-+++ sub1/foo2.txt	#####
-@@ -0,0 +1 @@
-+this is also a sub directory
-\ No newline at end of file
+!svn --- sub1/foo2.txt	#####
+!svn +++ sub1/foo2.txt	#####
+!svn @@ -0,0 +1 @@
+!svn +this is also a sub directory
+!svn \ No newline at end of file
+!cvs this is also a sub directory
     </view>
   </commit>
   <commit>
