@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # commitmessage.py Version 2.0-alpha2
-# Copyright 2002, 2003 Stephen Haberman
+# Copyright 2002, 2004 Stephen Haberman
 #
 
 """

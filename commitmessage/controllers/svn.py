@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #
 # commitmessage
-# Copyright 2002-2003 Stephen Haberman
+# Copyright 2002-2004 Stephen Haberman
 #
 
 """The controller and utils for the Subversion SCM (U{http://subversion.tigris.org})"""

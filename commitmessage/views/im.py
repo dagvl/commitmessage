@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # commitmessage
-# Copyright 2002-2003 Stephen Haberman
+# Copyright 2002-2004 Stephen Haberman
 #
 
 """Provides an IM-related L{commitmessage.model.View}s"""

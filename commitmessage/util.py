@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # commitmessage
-# Copyright 2002-2003 Stephen Haberman
+# Copyright 2002-2004 Stephen Haberman
 #
 
 """Basic utility functions and classes (L{CmConfigParser}, L{getNewInstance}, and L{execute})"""
