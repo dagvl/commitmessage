@@ -92,6 +92,14 @@ def getNewInstance(fullClassName, searchPath=['./']):
     except Exception, e:
         raise CmException, """The class '%s' was not found: '%s'""" % (fullClassName, e)
 
+def execute(command):
+    """Executes a command line and returns the contents of stdout as a list of liens."""
+    pipeIn, pipeOut = os.popen2(command, 'r')
+    lines = pipeOut.readlines()
+    pipeIn.close()
+    pipeOut.close()
+    return lines
+
 def _test():
     """Executes doctest on this module."""
     import doctest, util

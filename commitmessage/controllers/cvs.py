@@ -18,29 +18,24 @@ if __name__ == '__main__':
     sys.path.append(rootCmPath)
 
 from commitmessage.framework import Controller, Directory, File, Model
+from commitmessage.util import execute
 
 def cvs_status(file):
     """Returns rev and delta for file."""
     rev, delta = '', ''
     p = re.compile(r"^[ \t]*Repository revision")
     q = re.compile(r"^date:")
-    pipeIn, pipeOut = os.popen2('cvs -Qn status %s' % file, 'r')
-    for line in pipeOut.readlines():
+    for line in execute('cvs -Qn status %s' % file):
         if p.search(line):
             rev = line.strip().split('\t')[1]
             break
-    pipeIn.close()
-    pipeOut.close()
     if rev != '':
-        pipeIn, pipeOut = os.popen2('cvs -Qn log -r%s %s' % (rev, file), 'r')
-        for line in pipeOut.readlines():
+        for line in execute('cvs -Qn log -r%s %s' % (rev, file)):
             if q.search(line):
                 line = line.strip()
                 line = re.sub(re.compile(r"^.*;"), '', line)
                 line = re.sub(re.compile(r"^[\s]+lines:"), '', line)
                 delta = line.strip()
-        pipeIn.close()
-        pipeOut.close()
     return rev, delta
 
 def cvs_previous_rev(rev):
@@ -61,21 +56,14 @@ def cvs_diff(file, rev):
     if (p.search(file)):
         return '<<Binary file>>'
 
-    prev = cvs_previous_rev(rev)
-    diff, pipeIn, pipeOut = '', None, None
-
+    diff, lines = '', []
     if rev == '1.1':
-        pipeIn, pipeOut = os.popen2('cvs -Qn update -p -r1.1')
+        lines = execute('cvs -Qn update -p -r1.1')
         diff = 'Index %s\n===================================================================\n' % file
     else:
-        pipeIn, pipeOut = os.popen2('cvs -Qn diff -u -r%s -r %s %s' % (prev, rev, file))
-
-    for line in pipeOut.readlines():
+        lines = execute('cvs -Qn diff -u -r%s -r %s %s' % (cvs_previous_rev(rev), rev, file))
+    for line in lines:
         diff = diff + line
-
-    pipeIn.close()
-    pipeOut.close()
-
     return diff
 
 class CvsController(Controller):
