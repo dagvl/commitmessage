@@ -18,6 +18,7 @@ Please refer to http://commitmessage.tigris.org for more information.
 You can install commitmessage in several ways:
 
 1. You can install the commitmessage files in a variety of places:
+
  - For CVS, in the CVSROOT module of your repository
  - For SVN, in the hooks directory of your repository
  - For either CVS or SVN, in a traditional directory like /usr/local

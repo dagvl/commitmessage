@@ -25,6 +25,7 @@ class SvnController(Controller):
         """Fill out the model."""
         self.repoPath = self.argv[1]
         self.rev = self.argv[2]
+        self.model.rev = self.rev
 
         lines = self.svnlook('info')
         self.model.user(lines[0][:-1])
@@ -102,7 +103,6 @@ class SvnController(Controller):
         for diff in diffs:
             # Use [:-1] to leave of the trailing \n
             filePath = '/' + diff[3][:-1].split(' ')[1].split('\t')[0]
-            print filePath
             text = ''
             added = 0
             removed = 0
