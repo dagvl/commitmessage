@@ -3,7 +3,7 @@
           "DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>commitmessage.Itpl.ItplFile</title>
+  <title>commitmessage.views.im</title>
   <link rel="stylesheet" href="epydoc.css" type="text/css"></link>
 </head>
 <body bgcolor="white" text="black" link="blue" vlink="#204080"
@@ -24,44 +24,37 @@
     <td width="100%">
       <font size="-1"><b class="breadcrumbs">
         <a href="commitmessage-module.html">Package&nbsp;commitmessage</a> ::
-        <a href="commitmessage.Itpl-module.html">Module&nbsp;Itpl</a> ::
-        Class&nbsp;ItplFile
+        <a href="commitmessage.views-module.html">Package&nbsp;views</a> ::
+        Module&nbsp;im
       </b></font></br>
     </td>
     <td><table cellpadding="0" cellspacing="0">
-      <tr><td align="right"><font size="-2">[<a href="../private/commitmessage.Itpl.ItplFile-class.html">show&nbsp;private</a>&nbsp;|&nbsp;hide&nbsp;private]</font></td></tr>
-      <tr><td align="right"><font size="-2">[<a href="frames.html"target="_top">frames</a>&nbsp;|&nbsp;<a href="commitmessage.Itpl.ItplFile-class.html" target="_top">no&nbsp;frames</a>]</font></td></tr>
+      <tr><td align="right"><font size="-2">[<a href="../private/commitmessage.views.im-module.html">show&nbsp;private</a>&nbsp;|&nbsp;hide&nbsp;private]</font></td></tr>
+      <tr><td align="right"><font size="-2">[<a href="frames.html"target="_top">frames</a>&nbsp;|&nbsp;<a href="commitmessage.views.im-module.html" target="_top">no&nbsp;frames</a>]</font></td></tr>
     </table></td>
 </tr></table>
 
-<!-- =========== START OF CLASS DESCRIPTION =========== -->
-<h2 class="class">Class ItplFile</h2>
+<!-- =========== START OF MODULE DESCRIPTION =========== -->
+<h2 class="module">Module commitmessage.views.im</h2>
 
+Provides an IM-related <a href="commitmessage.model.View-class.html" 
+class="link"><code>commitmessage.model.View</code></a>s
 <hr/>
 
-A file object that filters each write() through an interpolator.
-<hr/>
-
-
-<!-- =========== START OF METHOD SUMMARY =========== -->
+<!-- =========== START OF CLASSES =========== -->
 <table class="summary" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
 <tr bgcolor="#70b0f0" class="summary">
-  <th colspan="2">Method Summary</th></tr>
-<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><a name="__init__"></a><span class="summary-sig"><span class="summary-sig-name">__init__</span>(<span class=summary-sig-arg>self</span>,
-          <span class=summary-sig-arg>file</span>)</span></code>
-</td></tr>
-<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><a name="__getattr__"></a><span class="summary-sig"><span class="summary-sig-name">__getattr__</span>(<span class=summary-sig-arg>self</span>,
-          <span class=summary-sig-arg>attr</span>)</span></code>
-</td></tr>
-<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><a name="__repr__"></a><span class="summary-sig"><span class="summary-sig-name">__repr__</span>(<span class=summary-sig-arg>self</span>)</span></code>
-</td></tr>
-<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><a name="write"></a><span class="summary-sig"><span class="summary-sig-name">write</span>(<span class=summary-sig-arg>self</span>,
-          <span class=summary-sig-arg>text</span>)</span></code>
-</td></tr>
+  <th colspan="2">Classes</th></tr>
+<tr><td width="15%">
+  <b><a href="commitmessage.views.im.AIMView-class.html"><code>AIMView</code></a></b></td>
+  <td>Sends out commit messages on AIM</td></tr>
+<tr><td width="15%">
+  <b><a href="commitmessage.views.im.IMView-class.html"><code>IMView</code></a></b></td>
+  <td>An abstract class to hold the message-generation logic for IM 
+clients</td></tr>
+<tr><td width="15%">
+  <b><a href="commitmessage.views.im.MSNView-class.html"><code>MSNView</code></a></b></td>
+  <td>Sends out commit messages on MSN</td></tr>
 </table><br />
 
 
