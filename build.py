@@ -57,7 +57,7 @@ if sys.argv[1] == 'doctest':
         for file in files:
             if file.endswith('.py'):
                 modules.append('%s%s%s' % (root, os.sep, file))
-    modules = [_importAndReturnModule(module[4:-3].replace(os.sep, '.')) for module in modules]
+    modules = [_importAndReturnModule(module[:-3].replace(os.sep, '.')) for module in modules]
     for module in modules:
         if hasattr(module, '_doctest'):
             module._doctest()
@@ -72,7 +72,7 @@ if sys.argv[1] == 'tags':
     os.popen('exctags -R commitmessage')
 
 if sys.argv[1] == 'dist':
-    version = '2.0-beta-2'
+    version = '2.0-beta-3'
     subdir = 'commitmessage-%s/' % version
 
     if not os.path.exists('dist'):
