@@ -81,7 +81,7 @@ if sys.argv[1] == 'dist':
     t = tarfile.TarFile('dist/commitmessage-%s.tar' % version, 'w')
     z = zipfile.ZipFile('dist/commitmessage-%s.zip' % version, 'w')
 
-    for package in ['commitmessage', 'msnp']:
+    for package in ['commitmessage']:
         for root, dirs, files in os.walk(package):
             if root.endswith('CVS'):
                 continue
@@ -95,7 +95,7 @@ if sys.argv[1] == 'dist':
                     t.add(file, subdir + file)
                     z.write(file, subdir + file)
 
-    for file in ['commitmessage.conf', 'INSTALL.txt', 'main.py', 'toc.py']:
+    for file in ['commitmessage.conf', 'INSTALL.txt', 'main.py']:
         t.add(file, subdir + file)
         z.write(file, subdir + file)
     t.close()
