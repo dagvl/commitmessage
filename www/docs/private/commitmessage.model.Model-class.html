@@ -42,8 +42,11 @@
 Wraps the <a href="commitmessage.model.File-class.html" 
 class="link"><code>File</code></a>s and <a 
 href="commitmessage.model.Directory-class.html" 
-class="link"><code>Directory</code></a>s that get sent between the 
-Controller and Views.
+class="link"><code>Directory</code></a>s created by the <a 
+href="commitmessage.model.Controller-class.html" 
+class="link"><code>Controller</code></a> and used by <a 
+href="commitmessage.model.View-class.html" 
+class="link"><code>View</code></a>s
 <hr/>
 
 
@@ -58,7 +61,7 @@ Controller and Views.
   <td><code><span class="summary-sig"><a href="commitmessage.model.Model-class.html#addDirectory" class="summary-sig-name"><code>addDirectory</code></a>(<span class=summary-sig-arg>self</span>,
           <span class=summary-sig-arg>directory</span>)</span></code>
 <br />
-Adds <code>directory</code> into the model's directory tree.</td></tr>
+Adds <code>directory</code> into the model's directory tree</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="commitmessage.model.Model-class.html#directories" class="summary-sig-name"><code>directories</code></a>(<span class=summary-sig-arg>self</span>,
           <span class=summary-sig-arg>action</span>)</span></code>
@@ -102,21 +105,22 @@ matching on</td></tr>
           <span class=summary-sig-arg>directory</span>,
           <span class=summary-sig-arg>action</span>)</span></code>
 <br />
-Internal helper method to recursively build a flat list of 
-directories.</td></tr>
+Return a flat list of <a href="commitmessage.model.Directory-class.html" 
+class="link"><code>Directory</code></a>s (helper method)</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="..\private\commitmessage.model.Model-class.html#_directoriesWithFiles" class="summary-sig-name"><code>_directoriesWithFiles</code></a>(<span class=summary-sig-arg>self</span>,
           <span class=summary-sig-arg>directory</span>,
           <span class=summary-sig-arg>action</span>)</span></code>
 <br />
-Internal helper method to recursively build a flat list of directories 
-that contain changes to files in them.</td></tr>
+Return a flat list of <a href="commitmessage.model.Directory-class.html" 
+class="link"><code>Directory</code></a>s (helper method)</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="..\private\commitmessage.model.Model-class.html#_files" class="summary-sig-name"><code>_files</code></a>(<span class=summary-sig-arg>self</span>,
           <span class=summary-sig-arg>directory</span>,
           <span class=summary-sig-arg>action</span>)</span></code>
 <br />
-Internal helper method to recursively build a flat list of files.</td></tr>
+Return a flat list of <a href="commitmessage.model.File-class.html" 
+class="link"><code>File</code></a>s (helper method)</td></tr>
 </table><br />
 
 
@@ -141,7 +145,7 @@ Internal helper method to recursively build a flat list of files.</td></tr>
   <h3><span class="sig"><span class="sig-name">addDirectory</span>(<span class=sig-arg>self</span>,
           <span class=sig-arg>directory</span>)</span>
   </h3>
-  <p>Adds <code>directory</code> into the model's directory tree.</p>
+  <p>Adds <code>directory</code> into the model's directory tree</p>
   Uses <code>self.directory(path)</code>, except it takes a default 
   value for the new directory to add at the bottom of the hierarchy.
   <dl><dt></dt><dd>
@@ -249,9 +253,14 @@ Internal helper method to recursively build a flat list of files.</td></tr>
           <span class=sig-arg>directory</span>,
           <span class=sig-arg>action</span>)</span>
   </h3>
-  Internal helper method to recursively build a flat list of 
-  directories.
   <dl><dt></dt><dd>
+    <dl><dt><b>Returns:</b></dt>
+      <dd>
+        a flat list of <a 
+        href="commitmessage.model.Directory-class.html" 
+        class="link"><code>Directory</code></a>s (helper method)
+      </dd>
+    </dl>
   </dd></dl>
 </td></tr></table>
 
@@ -261,9 +270,14 @@ Internal helper method to recursively build a flat list of files.</td></tr>
           <span class=sig-arg>directory</span>,
           <span class=sig-arg>action</span>)</span>
   </h3>
-  Internal helper method to recursively build a flat list of 
-  directories that contain changes to files in them.
   <dl><dt></dt><dd>
+    <dl><dt><b>Returns:</b></dt>
+      <dd>
+        a flat list of <a 
+        href="commitmessage.model.Directory-class.html" 
+        class="link"><code>Directory</code></a>s (helper method)
+      </dd>
+    </dl>
   </dd></dl>
 </td></tr></table>
 
@@ -273,9 +287,13 @@ Internal helper method to recursively build a flat list of files.</td></tr>
           <span class=sig-arg>directory</span>,
           <span class=sig-arg>action</span>)</span>
   </h3>
-  Internal helper method to recursively build a flat list of 
-  files.
   <dl><dt></dt><dd>
+    <dl><dt><b>Returns:</b></dt>
+      <dd>
+        a flat list of <a href="commitmessage.model.File-class.html" 
+        class="link"><code>File</code></a>s (helper method)
+      </dd>
+    </dl>
   </dd></dl>
 </td></tr></table>
 <br />
@@ -356,7 +374,7 @@ The user performing the commit
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
   <tr>
-    <td align="left"><font size="-2">Generated by Epydoc 2.0 on Fri Dec 19 03:33:28 2003</font></td>
+    <td align="left"><font size="-2">Generated by Epydoc 2.0 on Fri Dec 19 11:52:17 2003</font></td>
     <td align="right"><a href="http://epydoc.sourceforge.net"
                       ><font size="-2">http://epydoc.sf.net</font></a></td>
   </tr>

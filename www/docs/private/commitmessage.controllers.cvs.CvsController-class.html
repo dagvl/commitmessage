@@ -46,7 +46,7 @@
 
 <hr/>
 
-Translates CVS loginfo/commitinfo information into the Model.
+Translates CVS loginfo/commitinfo information into the model
 <hr/>
 
 
@@ -60,34 +60,43 @@ Translates CVS loginfo/commitinfo information into the Model.
           <span class=summary-sig-arg>argv</span>,
           <span class=summary-sig-arg>stdin</span>)</span></code>
 <br />
-Sets the 'done' attribute to false so we handle the multiple 
-executions CVS does of main.py (one per directory in the commit).</td></tr>
+Initializes up the <a 
+href="commitmessage.controllers.cvs.CvsController-class.html#FILE_PREFIX" 
+class="link"><code>FILE_PREFIX</code></a>, <a 
+href="commitmessage.controllers.cvs.CvsController-class.html#LAST_DIRECTORY_FILE" 
+class="link"><code>LAST_DIRECTORY_FILE</code></a>, and other 
+variables</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
-  <td><code><a name="removeCvsModulePrefix"></a><span class="summary-sig"><span class="summary-sig-name">removeCvsModulePrefix</span>(<span class=summary-sig-arg>self</span>)</span></code>
-</td></tr>
+  <td><code><span class="summary-sig"><a href="commitmessage.controllers.cvs.CvsController-class.html#removeCvsModulePrefix" class="summary-sig-name"><code>removeCvsModulePrefix</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
+<br />
+Return whether the name of the CVS module should be stripped from directory 
+paths</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doCommitInfo" class="summary-sig-name"><code>_doCommitInfo</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
 <br />
-Executed first and saves the current directory name to 
-LAST_DIRECTORY_FILE so that doLogInfo will know when it is done (it will 
-be done with it's on the same directory as the last one that doCommitInfo 
-saved).</td></tr>
+Saves the current directory name to <code>LAST_DIRECTORY_FILE</code> 
+so that <a 
+href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doLogInfo" 
+class="link"><code>_doLogInfo</code></a> will know when it is done (when 
+it's on the same directory as the last one <a 
+href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doCommitInfo" 
+class="link"><code>_doCommitInfo</code></a> saved)</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doLogInfo" class="summary-sig-name"><code>_doLogInfo</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
 <br />
-Executed after all of the directories' commitinfos have ran, so we 
-know the last directory and can start to build the Model of commit 
-information.</td></tr>
+Starts building the model if this is the last <a 
+href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doLogInfo" 
+class="link"><code>_doLogInfo</code></a> of the commit</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_executeViews" class="summary-sig-name"><code>_executeViews</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
 <br />
-Override the parent executeViews to re-build the model from the 
-temporary files.</td></tr>
+Overrides the parent <code>_executeViews</code> to r-build the model 
+with all of the temporary files</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_fillInValues" class="summary-sig-name"><code>_fillInValues</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
 <br />
-Goes through each file and fills in the missing rev/delta/diff 
-information.</td></tr>
+Goes through each file in this execution's directory and fills in the 
+missing rev/delta/diff information</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_isLastDirectoryOfCommit" class="summary-sig-name"><code>_isLastDirectoryOfCommit</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
 <br />
@@ -95,36 +104,50 @@ Return whether the current directory is the last directory of the commit</td></t
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_loadSavedDirectoriesIntoModel" class="summary-sig-name"><code>_loadSavedDirectoriesIntoModel</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
 <br />
-Reloads the directories into the Model.</td></tr>
+Reloads the pickled <a href="commitmessage.model.Directory-class.html" 
+class="link"><code>Directory</code></a>s into the model</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_parseLoginfoStdinIntoFiles" class="summary-sig-name"><code>_parseLoginfoStdinIntoFiles</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
 <br />
-Reads in the loginfo text from self.stdin and retreives the 
-corresponding diff/delta information for each file.</td></tr>
+Reads in the loginfo text from <code>stdin</code> and parses the file 
+information into <a href="commitmessage.model.File-class.html" 
+class="link"><code>File</code></a>s</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_parseLogLinesIntoModel" class="summary-sig-name"><code>_parseLogLinesIntoModel</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
 <br />
-Saves the logLines found on stdin into the model.</td></tr>
+Saves the log lines found on <code>stdin</code> into the model</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_populateModel" class="summary-sig-name"><code>_populateModel</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
 <br />
-Read in the information.</td></tr>
+Performs <a 
+href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doCommitInfo" 
+class="link"><code>_doCommitInfo</code></a> (done first for each 
+directory) or <a 
+href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doLogInfo" 
+class="link"><code>_doLogInfo</code></a> (done last for each 
+directory)</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_saveDirectory" class="summary-sig-name"><code>_saveDirectory</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
 <br />
-Pickles the given directory off to TMPDIR/FILE_PREFIX directory.</td></tr>
+Pickles the current <a href="commitmessage.model.Directory-class.html" 
+class="link"><code>Directory</code></a> off to the 
+<code>TMPDIR/FILE_PREFIX</code> directory</td></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_stopProcessForNow" class="summary-sig-name"><code>_stopProcessForNow</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
 <br />
-Return whether we should stop and wait for CVS to re-execute main.py on the 
-next directory of the commit.</td></tr>
+Return <code>True</code> if we're in <a 
+href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doCommitInfo" 
+class="link"><code>_doCommitInfo</code></a> or not the last directory for 
+which <a 
+href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doLogInfo" 
+class="link"><code>_doLogInfo</code></a> will be invoked</td></tr>
 <tr bgcolor="#e8f0f8" class="group">
   <th colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;Inherited from Controller</th></tr>
 <tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
   <td><code><span class="summary-sig"><a href="commitmessage.model.Controller-class.html#process" class="summary-sig-name"><code>process</code></a>(<span class=summary-sig-arg>self</span>)</span></code>
 <br />
 Starts the SCM-agnostic process of building the model and executing 
-the views.</td></tr>
+the views</td></tr>
 </table><br />
 
 
@@ -160,11 +183,29 @@ the views.</td></tr>
           <span class=sig-arg>stdin</span>)</span>
     <br /><i>(Constructor)</i>
   </h3>
-  Sets the 'done' attribute to false so we handle the multiple 
-  executions CVS does of main.py (one per directory in the commit).
+  Initializes up the <a 
+  href="commitmessage.controllers.cvs.CvsController-class.html#FILE_PREFIX" 
+  class="link"><code>FILE_PREFIX</code></a>, <a 
+  href="commitmessage.controllers.cvs.CvsController-class.html#LAST_DIRECTORY_FILE" 
+  class="link"><code>LAST_DIRECTORY_FILE</code></a>, and other 
+  variables
   <dl><dt></dt><dd>
     <dl><dt><b>Overrides:</b></dt>
       <dd><a href="commitmessage.model.Controller-class.html#__init__"><code>commitmessage.model.Controller.__init__</code></a></dd>
+    </dl>
+  </dd></dl>
+</td></tr></table>
+
+<a name="removeCvsModulePrefix"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">removeCvsModulePrefix</span>(<span class=sig-arg>self</span>)</span>
+  </h3>
+  <dl><dt></dt><dd>
+    <dl><dt><b>Returns:</b></dt>
+      <dd>
+        whether the name of the CVS module should be stripped from 
+        directory paths
+      </dd>
     </dl>
   </dd></dl>
 </td></tr></table>
@@ -173,10 +214,16 @@ the views.</td></tr>
 <table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
   <h3><span class="sig"><span class="sig-name">_doCommitInfo</span>(<span class=sig-arg>self</span>)</span>
   </h3>
-  Executed first and saves the current directory name to 
-  LAST_DIRECTORY_FILE so that doLogInfo will know when it is done (it 
-  will be done with it's on the same directory as the last one that 
-  doCommitInfo saved).
+  <p>Saves the current directory name to <code>LAST_DIRECTORY_FILE</code> 
+  so that <a 
+  href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doLogInfo" 
+  class="link"><code>_doLogInfo</code></a> will know when it is done 
+  (when it's on the same directory as the last one <a 
+  href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doCommitInfo" 
+  class="link"><code>_doCommitInfo</code></a> saved)</p>
+  Executed for each directory in the commit before any <a 
+  href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doLogInfo" 
+  class="link"><code>_doLogInfo</code></a>s are called.
   <dl><dt></dt><dd>
   </dd></dl>
 </td></tr></table>
@@ -185,9 +232,12 @@ the views.</td></tr>
 <table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
   <h3><span class="sig"><span class="sig-name">_doLogInfo</span>(<span class=sig-arg>self</span>)</span>
   </h3>
-  Executed after all of the directories' commitinfos have ran, so we 
-  know the last directory and can start to build the Model of commit 
-  information.
+  <p>Starts building the model if this is the last <a 
+  href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doLogInfo" 
+  class="link"><code>_doLogInfo</code></a> of the commit</p>
+  Executed for each directory in the commit after all of the <a 
+  href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doCommitInfo" 
+  class="link"><code>_doCommitInfo</code></a>s are called.
   <dl><dt></dt><dd>
   </dd></dl>
 </td></tr></table>
@@ -196,8 +246,8 @@ the views.</td></tr>
 <table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
   <h3><span class="sig"><span class="sig-name">_executeViews</span>(<span class=sig-arg>self</span>)</span>
   </h3>
-  Override the parent executeViews to re-build the model from the 
-  temporary files.
+  Overrides the parent <code>_executeViews</code> to r-build the model 
+  with all of the temporary files
   <dl><dt></dt><dd>
     <dl><dt><b>Overrides:</b></dt>
       <dd><a href="..\private\commitmessage.model.Controller-class.html#_executeViews"><code>commitmessage.model.Controller._executeViews</code></a></dd>
@@ -209,8 +259,8 @@ the views.</td></tr>
 <table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
   <h3><span class="sig"><span class="sig-name">_fillInValues</span>(<span class=sig-arg>self</span>)</span>
   </h3>
-  Goes through each file and fills in the missing rev/delta/diff 
-  information.
+  Goes through each file in this execution's directory and fills in 
+  the missing rev/delta/diff information
   <dl><dt></dt><dd>
   </dd></dl>
 </td></tr></table>
@@ -233,7 +283,9 @@ the views.</td></tr>
 <table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
   <h3><span class="sig"><span class="sig-name">_loadSavedDirectoriesIntoModel</span>(<span class=sig-arg>self</span>)</span>
   </h3>
-  Reloads the directories into the Model.
+  Reloads the pickled <a 
+  href="commitmessage.model.Directory-class.html" 
+  class="link"><code>Directory</code></a>s into the model
   <dl><dt></dt><dd>
   </dd></dl>
 </td></tr></table>
@@ -242,8 +294,9 @@ the views.</td></tr>
 <table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
   <h3><span class="sig"><span class="sig-name">_parseLoginfoStdinIntoFiles</span>(<span class=sig-arg>self</span>)</span>
   </h3>
-  Reads in the loginfo text from self.stdin and retreives the 
-  corresponding diff/delta information for each file.
+  Reads in the loginfo text from <code>stdin</code> and parses the 
+  file information into <a href="commitmessage.model.File-class.html" 
+  class="link"><code>File</code></a>s
   <dl><dt></dt><dd>
   </dd></dl>
 </td></tr></table>
@@ -252,7 +305,7 @@ the views.</td></tr>
 <table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
   <h3><span class="sig"><span class="sig-name">_parseLogLinesIntoModel</span>(<span class=sig-arg>self</span>)</span>
   </h3>
-  Saves the logLines found on stdin into the model.
+  Saves the log lines found on <code>stdin</code> into the model
   <dl><dt></dt><dd>
   </dd></dl>
 </td></tr></table>
@@ -261,7 +314,13 @@ the views.</td></tr>
 <table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
   <h3><span class="sig"><span class="sig-name">_populateModel</span>(<span class=sig-arg>self</span>)</span>
   </h3>
-  Read in the information.
+  Performs <a 
+  href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doCommitInfo" 
+  class="link"><code>_doCommitInfo</code></a> (done first for each 
+  directory) or <a 
+  href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doLogInfo" 
+  class="link"><code>_doLogInfo</code></a> (done last for each 
+  directory)
   <dl><dt></dt><dd>
     <dl><dt><b>Overrides:</b></dt>
       <dd><a href="..\private\commitmessage.model.Controller-class.html#_populateModel"><code>commitmessage.model.Controller._populateModel</code></a></dd>
@@ -273,7 +332,10 @@ the views.</td></tr>
 <table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
   <h3><span class="sig"><span class="sig-name">_saveDirectory</span>(<span class=sig-arg>self</span>)</span>
   </h3>
-  Pickles the given directory off to TMPDIR/FILE_PREFIX directory.
+  Pickles the current <a 
+  href="commitmessage.model.Directory-class.html" 
+  class="link"><code>Directory</code></a> off to the 
+  <code>TMPDIR/FILE_PREFIX</code> directory
   <dl><dt></dt><dd>
   </dd></dl>
 </td></tr></table>
@@ -285,8 +347,12 @@ the views.</td></tr>
   <dl><dt></dt><dd>
     <dl><dt><b>Returns:</b></dt>
       <dd>
-        whether we should stop and wait for CVS to re-execute main.py 
-        on the next directory of the commit.
+        <code>True</code> if we're in <a 
+        href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doCommitInfo" 
+        class="link"><code>_doCommitInfo</code></a> or not the last 
+        directory for which <a 
+        href="..\private\commitmessage.controllers.cvs.CvsController-class.html#_doLogInfo" 
+        class="link"><code>_doLogInfo</code></a> will be invoked
       </dd>
     </dl>
     <dl><dt><b>Overrides:</b></dt>
@@ -358,7 +424,7 @@ the views.</td></tr>
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
   <tr>
-    <td align="left"><font size="-2">Generated by Epydoc 2.0 on Fri Dec 19 03:33:28 2003</font></td>
+    <td align="left"><font size="-2">Generated by Epydoc 2.0 on Fri Dec 19 11:52:17 2003</font></td>
     <td align="right"><a href="http://epydoc.sourceforge.net"
                       ><font size="-2">http://epydoc.sf.net</font></a></td>
   </tr>

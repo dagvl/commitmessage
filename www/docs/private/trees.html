@@ -32,30 +32,40 @@
 <!-- =========== START OF MODULE HIERARCHY =========== -->
 <h2>Module Hierarchy</h2>
 <ul>
-<li> <b><a href="commitmessage-module.html"><code>commitmessage</code></a></b>: <i>A MVC framework for capturing information from scm systems.</i>
+<li> <b><a href="commitmessage-module.html"><code>commitmessage</code></a></b>: <i>A MVC framework for capturing commit information from SCM systems</i>
   <ul>
     <li> <b><a href="commitmessage.attribute-module.html"><code>attribute</code></a></b>
-    <li> <b><a href="commitmessage.controllers-module.html"><code>controllers</code></a></b>: <i>Controllers parse information from a scm into the Model and then 
-execute the Views.</i>
+    <li> <b><a href="commitmessage.controllers-module.html"><code>controllers</code></a></b>: <i>Contains <a href="commitmessage.model.Controller-class.html" 
+class="link"><code>commitmessage.model.Controller</code></a> 
+implementations</i>
       <ul>
-        <li> <b><a href="commitmessage.controllers.cvs-module.html"><code>cvs</code></a></b>: <i>The controller and utils for the CVS SCM (http://www.cvshome.org).</i>
-        <li> <b><a href="commitmessage.controllers.svn-module.html"><code>svn</code></a></b>: <i>The controller and utils for the Subversion SCM 
-(http://subversion.tigris.org).</i>
+        <li> <b><a href="commitmessage.controllers.cvs-module.html"><code>cvs</code></a></b>: <i>The controller and utils for the CVS SCM (<a 
+href="http://www.cvshome.org">http://www.cvshome.org</a>)</i>
+        <li> <b><a href="commitmessage.controllers.svn-module.html"><code>svn</code></a></b>: <i>The controller and utils for the Subversion SCM (<a 
+href="http://subversion.tigris.org">http://subversion.tigris.org</a>)</i>
       </ul>
     <li> <b><a href="commitmessage.exceptions-module.html"><code>exceptions</code></a></b>: <i>Contains the <a href="commitmessage.exceptions.CmException-class.html" 
-class="link"><code>CmException</code></a> class.</i>
+class="link"><code>CmException</code></a> class</i>
     <li> <b><a href="commitmessage.Itpl-module.html"><code>Itpl</code></a></b>: <i>String interpolation for Python (by Ka-Ping Yee, 14 Feb 2000).</i>
-    <li> <b><a href="commitmessage.main-module.html"><code>main</code></a></b>: <i>Bootstraps the commitmessage framework by reading in the configuration 
-file and initializing the controller.</i>
-    <li> <b><a href="commitmessage.model-module.html"><code>model</code></a></b>: <i>Provides the model classes for the commitmessage framework.</i>
-    <li> <b><a href="commitmessage.util-module.html"><code>util</code></a></b>: <i>Provides some basic utility classes, such as wrapping the ConfigParser 
-to add commitmessage-specific logic to the view/module lookups.</i>
-    <li> <b><a href="commitmessage.views-module.html"><code>views</code></a></b>: <i>Views work against the object model to send out information to outside 
-systems.</i>
+    <li> <b><a href="commitmessage.main-module.html"><code>main</code></a></b>: <i>Bootstraps the commitmessage framework</i>
+    <li> <b><a href="commitmessage.model-module.html"><code>model</code></a></b>: <i>Provides the model classes for the commitmessage framework</i>
+    <li> <b><a href="commitmessage.util-module.html"><code>util</code></a></b>: <i>Basic utility functions and classes (<a 
+href="commitmessage.util.CmConfigParser-class.html" 
+class="link"><code>CmConfigParser</code></a>, <a 
+href="commitmessage.util-module.html#getNewInstance" 
+class="link"><code>getNewInstance</code></a>, and <a 
+href="commitmessage.util-module.html#execute" 
+class="link"><code>execute</code></a>)</i>
+    <li> <b><a href="commitmessage.views-module.html"><code>views</code></a></b>: <i>Views work against the <a href="commitmessage.model-module.html" 
+class="link"><code>commitmessage.model</code></a> to send out information 
+to outside systems.</i>
       <ul>
-        <li> <b><a href="commitmessage.views.email-module.html"><code>email</code></a></b>: <i>Provides several email Views for the commitmessage framework.</i>
-        <li> <b><a href="commitmessage.views.misc-module.html"><code>misc</code></a></b>: <i>Provides several email Views for the commitmessage framework.</i>
-        <li> <b><a href="commitmessage.views.post-module.html"><code>post</code></a></b>: <i>Provides hooks into various systems via HTTP post.</i>
+        <li> <b><a href="commitmessage.views.email-module.html"><code>email</code></a></b>: <i>Provides an email <a href="commitmessage.model.View-class.html" 
+class="link"><code>commitmessage.model.View</code></a>s</i>
+        <li> <b><a href="commitmessage.views.misc-module.html"><code>misc</code></a></b>: <i>A placeholder for future <a href="commitmessage.model.View-class.html" 
+class="link"><code>commitmessage.model.View</code></a>s</i>
+        <li> <b><a href="commitmessage.views.post-module.html"><code>post</code></a></b>: <i>Provides hooks into various systems via HTTP post (not 
+implemented).</i>
       </ul>
   </ul>
 </ul>
@@ -68,8 +78,8 @@ systems.</i>
   <li> <b><a href="ConfigParser.ConfigParser-class.html"><code>ConfigParser.ConfigParser</code></a></b>
     <ul>
   <li> <b><a href="commitmessage.util.CmConfigParser-class.html"><code>commitmessage.util.CmConfigParser</code></a></b>: <i>
-Provides cm-specific logic, such as getting view settings from both 
-the view definition and the module-specific settings.</i>
+Provides config-centric logic for views and modules that would be 
+confused elsewhere</i>
     </ul>
     </ul>
   <li> <b><a href="commitmessage.Itpl.Itpl-class.html"><code>commitmessage.Itpl.Itpl</code></a></b>: <i>
@@ -81,43 +91,47 @@ A base implementation for SCM-specific controllers to extend; mostly
 does the generic Views handling.</i>
     <ul>
   <li> <b><a href="commitmessage.controllers.cvs.CvsController-class.html"><code>commitmessage.controllers.cvs.CvsController</code></a></b>: <i>
-Translates CVS loginfo/commitinfo information into the Model.</i>
+Translates CVS loginfo/commitinfo information into the model</i>
   <li> <b><a href="commitmessage.controllers.svn.SvnController-class.html"><code>commitmessage.controllers.svn.SvnController</code></a></b>: <i>
-Uses 'svnlook' to pull data from svn repositories.</i>
+Uses <code>svnlook</code> to pull data from svn repositories</i>
     </ul>
   <li> <b><a href="commitmessage.model.Directory-class.html"><code>commitmessage.model.Directory</code></a></b>: <i>
-Represents a directory that has been affected by the commit.</i>
+A directory that has been affected by the commit</i>
   <li> <b><a href="commitmessage.model.File-class.html"><code>commitmessage.model.File</code></a></b>: <i>
-Represents a file that has been affected by the commit.</i>
+Represents a file that has been affected by the commit</i>
   <li> <b><a href="commitmessage.model.Model-class.html"><code>commitmessage.model.Model</code></a></b>: <i>
 Wraps the <a href="commitmessage.model.File-class.html" 
 class="link"><code>File</code></a>s and <a 
 href="commitmessage.model.Directory-class.html" 
-class="link"><code>Directory</code></a>s that get sent between the 
-Controller and Views.</i>
+class="link"><code>Directory</code></a>s created by the <a 
+href="commitmessage.model.Controller-class.html" 
+class="link"><code>Controller</code></a> and used by <a 
+href="commitmessage.model.View-class.html" 
+class="link"><code>View</code></a>s</i>
   <li> <b><a href="commitmessage.model.View-class.html"><code>commitmessage.model.View</code></a></b>: <i>
-Provides a base View for specific implementations to extend.</i>
+A base class for specific view implementations to extend</i>
     <ul>
   <li> <b><a href="commitmessage.views.email.BaseEmailView-class.html"><code>commitmessage.views.email.BaseEmailView</code></a></b>: <i>
-Provides a basic implementation of sending an email for other 
-style-specific email views to extend.</i>
+A basic email implementation for other style-specific email views to 
+extend</i>
     <ul>
+  <li> <b><a href="commitmessage.views.email.ApacheStyleEmailView-class.html"><code>commitmessage.views.email.ApacheStyleEmailView</code></a></b>: <i>
+Sends out an email in a style mimicking <a 
+href="http://www.apache.org">Apache</a> commit emails (not 
+implemented)</i>
   <li> <b><a href="commitmessage.views.email.HtmlEmailView-class.html"><code>commitmessage.views.email.HtmlEmailView</code></a></b>: <i>
-Sends out a HTML formatted email with the commit info in tables.</i>
+Sends out an email in a style using HTML tables for better readability 
+with variable-width font (not implemented)</i>
   <li> <b><a href="commitmessage.views.email.TigrisStyleEmailView-class.html"><code>commitmessage.views.email.TigrisStyleEmailView</code></a></b>: <i>
-Sends out an email formatted in a style mimicking Tigris commit 
-emails.</i>
+Sends out an email in a style mimicking <a 
+href="http://www.tigris.org">Tigris</a> commit email format</i>
     </ul>
-  <li> <b><a href="commitmessage.views.misc.DumpView-class.html"><code>commitmessage.views.misc.DumpView</code></a></b>: <i>
-Provides unit testing capabilities by doing a simple dump of the Model 
-to a text file.</i>
-  <li> <b><a href="commitmessage.views.post.PostView-class.html"><code>commitmessage.views.post.PostView</code></a></b>
     </ul>
   <li> <b><a href="exceptions.Exception-class.html"><code>exceptions.Exception</code></a></b>: <i>
 Common base class for all exceptions.</i>
     <ul>
   <li> <b><a href="commitmessage.exceptions.CmException-class.html"><code>commitmessage.exceptions.CmException</code></a></b>: <i>
-The exception for all commitmessage-related exceptions.</i>
+The exception for all commitmessage-related exceptions</i>
   <li> <b><a href="exceptions.StandardError-class.html"><code>exceptions.StandardError</code></a></b>: <i>
 Base class for all standard Python exceptions.</i>
     <ul>
@@ -143,7 +157,7 @@ Inappropriate argument value (of correct type).</i>
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
   <tr>
-    <td align="left"><font size="-2">Generated by Epydoc 2.0 on Fri Dec 19 03:33:29 2003</font></td>
+    <td align="left"><font size="-2">Generated by Epydoc 2.0 on Fri Dec 19 11:52:17 2003</font></td>
     <td align="right"><a href="http://epydoc.sourceforge.net"
                       ><font size="-2">http://epydoc.sf.net</font></a></td>
   </tr>
