@@ -4,15 +4,18 @@
 # Copyright 2002 Stephen Haberman
 #
 
-"""Bootstraps the commitmessage framework by reading in the configuration file
-and initializing the controller."""
+"""
+Bootstraps the commitmessage framework by reading in the configuration file
+and initializing the controller.
+"""
 
 import getopt
 import os
 import sys
 
 if __name__ == '__main__':
-    # Setup sys.path to correctly search for commitmessage.xxx[.yyy] modules
+    # Assume this main.py is in the commitmessage package and setup sys.path to
+    # import the rest of the commitmessage package
     currentDir = os.path.dirname(sys.argv[0])
     rootCmPath = os.path.abspath(currentDir + '/../')
     sys.path.append(rootCmPath)
@@ -28,7 +31,7 @@ if __name__ == '__main__':
         if option == "-c":
             configFile = value
 
-    """Handle relative paths."""
+    # Handle relative paths.
     # if configFile[0] != '/' and configFile[0] != '.':
     #    configFile = os.path.abspath(os.path.dirname(sys.argv[0])) + '/' + configFile
     config = CmConfigParser(os.path.realpath(configFile))
@@ -36,7 +39,11 @@ if __name__ == '__main__':
     scm = config.get('scm', 'interface')
     controller = getNewInstance(scm)
 
+    # Remove the -c configFile argument that getopt looks for above and pass on
+    # the rest of the arguments getopt did not grok to the controller
     cleanArgs = [sys.argv[0]]
     cleanArgs.extend(args)
+
     controller.__init__(config, cleanArgs, sys.stdin)
     controller.process()
+
