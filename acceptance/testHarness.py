@@ -60,6 +60,9 @@ class Harness:
         """Runs a suite of L{Case}s."""
         for case in self.cases:
             self._runCase(case)
+        print ''
+        print 'Passes: %s' % self.passes
+        print 'Failures: %s' % self.failures
 
     def _runCase(self, case):
         """Runs L{Case}."""
@@ -102,10 +105,6 @@ class Harness:
             # We're done with this test case, so remove the repository.
             if not hasattr(self, 'donotdestroy'):
                 facade.destroyRepository()
-
-        print ''
-        print 'Passes: %s' % self.passes
-        print 'Failures: %s' % self.failures
 
     def _matchesIgnoringDates(self, expected, actual):
         """
