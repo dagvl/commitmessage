@@ -16,6 +16,9 @@ import sys
 from commitmessage.model import Controller, Directory, File, Model
 from commitmessage.util import execute
 
+# The cvs_status and cvs_diff commands are executed in the ...working
+# directory... either client side or server side, I forget which.
+
 def cvs_status(file):
     """@return: the rev and delta for C{file} during a commit"""
     rev, delta = '', ''
@@ -87,8 +90,17 @@ class CvsController(Controller):
             sys.stderr.write('WARNING, the CvsController is designed only to run on Unix.')
             CvsController.FILE_PREFIX = '#cvs.'
         CvsController.LAST_DIRECTORY_FILE = '%s/%slastdir' % (Controller.TMPDIR, CvsController.FILE_PREFIX)
+
         Controller.__init__(self, config, argv, stdin)
+
         self.model.user = os.getenv('USER') or os.getlogin()
+        self.removecvsmoduleprefix = 'yes'
+
+    def removeCvsModulePrefix(self):
+        if self.removecvsmoduleprefix == 'yes':
+            return True
+        else:
+            return False
 
     def _populateModel(self):
         """Read in the information."""
@@ -118,22 +130,39 @@ class CvsController(Controller):
         if len(self.currentDirectory.files) == 0:
             return True
 
-        # Simple cache to avoid re-parsing the file
-        if hasattr(self, '_done'):
-            return self._done
-
-        pathToMatch = '%s%s' % (os.environ['CVSROOT'], self.currentDirectory.path[:-1])
-        matched = False
         f = file(CvsController.LAST_DIRECTORY_FILE, 'r')
-        for line in f.readlines():
-            if pathToMatch.endswith(line):
-                matched = True
+        fullPath = f.readlines()[0]
         f.close()
 
-        # Cache the value
-        self._done = matched
+        lastColon = os.environ['CVSROOT'].rindex(':')
+        rootPath = os.environ['CVSROOT'][lastColon+1:]
 
-        return matched
+        # Standardize to have an end slash
+        if not rootPath.endswith('/'):
+            rootPath = rootPath + '/'
+
+        if not fullPath.startswith(rootPath):
+            return False
+        else:
+            # len(rootPath)-1 as we want to keep a beginning slash
+            pathWithModule = fullPath[len(rootPath)-1:]
+
+        if not pathWithModule.endswith(self.currentDirectory.path):
+            return False
+        else:
+            endAt = len(pathWithModule) - len(self.currentDirectory.path)
+            leftOverModule = pathWithModule[:endAt] + '/'
+
+        # If the cvs module was in the currentDirectory.path and nothing was left, we're good
+        if self.removeCvsModulePrefix() and leftOverModule == '/':
+            return True
+
+        # Else we want only the module to be left: a starting /, ending /, and no other /
+        if leftOverModule[1:-1].count('/') == 0:
+            return True
+
+        # There was a slash in the left over part, so this is not the right directory
+        return False
 
     def _doCommitInfo(self):
         """
@@ -143,7 +172,12 @@ class CvsController(Controller):
         doCommitInfo saved).
         """
         f = file(CvsController.LAST_DIRECTORY_FILE, 'w')
-        f.write(self.argv[1])
+
+        fullPath = self.argv[1]
+        if not fullPath.endswith('/'):
+            fullPath = fullPath + '/'
+
+        f.write(fullPath)
         f.close()
 
     def _doLogInfo(self):
@@ -153,11 +187,18 @@ class CvsController(Controller):
         information.
         """
         temp = self.argv[1].split(' ')
-        currentDirectoryName = '/' + temp[0]
+        directoryPath = '/' + temp[0] + '/'
         directoryFiles = temp[1:]
 
-        # Creates self.currentDirectory and self.logLines
-        self._parseLoginfoStdin(currentDirectoryName)
+        # Handle removing the module prefix from the directory name
+        if self.removeCvsModulePrefix():
+            secondSlash = directoryPath.find('/', 1)
+            directoryPath = directoryPath[secondSlash:]
+
+        self.currentDirectory = Directory(directoryPath)
+
+        # Also creates self.logLines
+        self._parseLoginfoStdinIntoFiles()
 
         # Check for a new directory commit
         if len(directoryFiles) == 3 \
@@ -187,7 +228,7 @@ class CvsController(Controller):
             self.model.log = '\n'.join(self.logLines)
 
     def _saveDirectory(self):
-        """Pickles the given directory off to TMPDIR/FILE_PREFIXdir-path."""
+        """Pickles the given directory off to TMPDIR/FILE_PREFIX directory."""
         path = '%s/%s%s' % (
             Controller.TMPDIR,
             CvsController.FILE_PREFIX,
@@ -203,13 +244,16 @@ class CvsController(Controller):
             if file.action == 'added' or file.action == 'modified':
                 file.diff = cvs_diff(file.name, file.rev)
 
-    def _parseLoginfoStdin(self, directoryName):
+                # the cvs diff does not include a delta
+                if file.action == 'added':
+                    file.delta = '+%s -0' % (file.diff.count('\n') - 1)
+
+    def _parseLoginfoStdinIntoFiles(self):
         """
         Reads in the loginfo text from self.stdin and retreives the
         corresponding diff/delta information for each file.
         """
         self.logLines = []
-        self.currentDirectory = Directory(directoryName + '/')
 
         STATE_NONE = 0
         STATE_MODIFIED = 1
