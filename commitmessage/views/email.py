@@ -25,6 +25,7 @@ class BaseEmailView(View):
         self.username = None
         self.header = ''
         self.footer = ''
+        self.rfc_header = ''
 
     def __getitem__(self, name):
         """Used to get the 'from' attribute (as it is a keyword)"""
@@ -37,6 +38,10 @@ class BaseEmailView(View):
         text.write('From: %s\n' % self['from'])
         text.write('Subject: %s\n' % self.subject.split('\n')[0])
         text.write('Date: %s -0000 (GMT)\n' % time.strftime('%A %d %B %Y %H:%M:%S', time.gmtime()))
+
+        if len(self.rfc_header) > 0:
+            text.write('%s\n' % self.rfc_header)
+
         text.write('\n')
 
         if len(self.header) > 0:
@@ -52,7 +57,7 @@ class BaseEmailView(View):
 
         if self.isTesting():
             self.dumpToTestFile(body)
-        else:
+        elif len(self.server) > 0:
             smtp = SMTP(self.server)
             if self.username is not None:
                 smtp.login(self.username, self.password)
@@ -61,6 +66,8 @@ class BaseEmailView(View):
                 [addr.strip() for addr in self.to.split(',')],
                 body)
             smtp.quit()
+        else:
+            print 'No server provided, not sending an email.'
 
 class ApacheStyleEmailView(BaseEmailView):
     """Sends out an email in a style mimicking U{Apache<http://www.apache.org>} commit emails (not implemented)"""
@@ -107,8 +114,7 @@ class TigrisStyleEmailView(BaseEmailView):
         self.printFiles(text, 'modified')
 
         text.write('Log:\n')
-        lines = self.model.log.split('\n')
-        for line in lines:
+        for line in self.model.log.split('\n'):
             text.write(' %s\n' % line)
         text.write('\n')
 
@@ -124,4 +130,80 @@ class TigrisStyleEmailView(BaseEmailView):
                 text.write('File [%s]: %s\n' % (file.action, file.name))
                 text.write('Delta lines: %s\n' % file.delta)
                 text.write('%s\n' % file.diff)
+
+class InlineAttachmentEmailView(BaseEmailView):
+    """Sends out an email with the diffs inlined in the email as attachments
+
+    This view has several properties:
+
+     - server (required) - the mail server to relay through
+     - subject (required) - the subject line (e.g. "commit: $model.greatestCommonDirectory()")
+     - from (required) - the from email address (e.g. "$model.user@yourdomain.com")
+     - to (required) - a comma-separated list of email addresses to send to
+     - header (optional) - text to put at the beginning of the email
+     - footer (optional) - text to put at the end of the email
+
+    Contributed by Juan F. Codagnone <juam@users.sourceforge.net>
+    """
+
+    def __init__(self, name, model):
+        """Initializes the the username to None, header, footer, and rfc_header
+
+        The username is default to None, header to 'This is a multi-part message
+        in MIME format.', footer to '' and rfc_header to the MIME boundary.
+        """
+
+        BaseEmailView.__init__(self, name, model)
+
+        self.boundary = 'Boundary-00=_Ij9UAWIepv2oFVA'
+        self.header = 'This is a multi-part message in MIME format.'
+        self.rfc_header = \
+            'MIME-Version: 1.0\n' \
+            'Content-Type: Multipart/Mixed;\n' \
+            ' boundary="%s"' % (self.boundary)
+
+    def generateBody(self, text):
+        """Generates the email with the patch inlined
+
+        Should probably use the email.MIMEImage module, but this just works.
+        """
+
+        # First write out the body of the email with the log and list of changed files
+        text.write(
+            '--%s\n'
+            'Content-Type: text/plain;\n'
+            ' charset="US-ASCII"\n'
+            'Content-Transfer-Encoding: 7bit\n'
+            'Content-Disposition: inline\n\n' % self.boundary)
+
+
+        text.write('Log:\n')
+        for line in self.model.log.split('\n'):
+            text.write(' %s\n' % line)
+        text.write('\n')
+
+        for dir in self.model.directoriesWithFiles():
+            for file in dir.files:
+                text.write(' * %s %s\n' % (file.action.upper(), file.path))
+
+
+        # Second write out the patch file
+        filename = 'rev-%s.diff' % (self.model.rev)
+
+        text.write(
+            '\n'
+            '--%s\n'
+            'Content-Type: text/x-diff;\n'
+            ' charset="US-ASCII"\n'
+            ' name="%s"'
+            'Content-Transfer-Encoding: 8bit\n'
+            'Content-Disposition: inline;\n'
+            ' filename="%s"\n\n' % (self.boundary, filename, filename))
+
+        for dir in self.model.directoriesWithFiles():
+            for file in dir.files:
+                text.write('File [%s]: %s\tDelta lines: %s\n' % (file.action, file.path, file.delta))
+                text.write('%s\n' % file.diff)
+
+        text.write('--%s--\n' % self.boundary)
 
