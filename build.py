@@ -81,22 +81,21 @@ if sys.argv[1] == 'dist':
     t = tarfile.TarFile('dist/commitmessage-%s.tar' % version, 'w')
     z = zipfile.ZipFile('dist/commitmessage-%s.zip' % version, 'w')
 
-    for root, dirs, files in os.walk('commitmessage'):
-        # Avoid recursion
-        if root == 'dist':
-            continue
+    for package in ['commitmessage', 'msnp']:
+        for root, dirs, files in os.walk(package):
+            if root.endswith('CVS'):
+                continue
 
-        dirAdded = False
-        for file in files:
-            if file.endswith('.py'):
-                # See if we need to add the directory
-                if not dirAdded:
-                    t.add(root, subdir + root, recursive=False)
-                    dirAdded = True
-                file = root + os.sep + file
-                t.add(file, subdir + file)
-                z.write(file, subdir + file)
-    for file in ['commitmessage.conf', 'INSTALL.txt', 'main.py']:
+            if len(files) > 0:
+                t.add(root, subdir + root, recursive=False)
+
+            for file in files:
+                if file.endswith('.py'):
+                    file = root + os.sep + file
+                    t.add(file, subdir + file)
+                    z.write(file, subdir + file)
+
+    for file in ['commitmessage.conf', 'INSTALL.txt', 'main.py', 'toc.py']:
         t.add(file, subdir + file)
         z.write(file, subdir + file)
     t.close()
