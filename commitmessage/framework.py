@@ -114,12 +114,6 @@ class File(DomainObject):
         """Returns the path of the file."""
         return '<File %s>' % self.path
 
-    def setName(self, value):
-        raise CmException, 'The file''s name cannot be changed.'
-
-    def setDirectory(self, value):
-        raise CmException, 'The file''s directory cannot be changed.'
-
     def getPath(self):
         return self.directory.path + self.name
 
@@ -141,9 +135,6 @@ class Directory(DomainObject):
 
     def __str__(self):
         return self.__repr__()
-
-    def setPath(self, value):
-        raise CmException, 'A directory''s path cannot be changed.'
 
     def getName(self):
         """Returns just the name of the directory, e.g. testdir with no slashes."""
