@@ -125,7 +125,6 @@ Delta lines: +3 -1
 +changed-three
 \ No newline at end of file
 
-
 File [added]: foo2.txt
 Delta lines: +1 -0
 ===================================================================
@@ -134,7 +133,6 @@ Delta lines: +1 -0
 @@ -0,0 +1 @@
 +one-liner
 \ No newline at end of file
-
 
 File [added]: foo3.txt
 Delta lines: +2 -0
@@ -204,7 +202,6 @@ Delta lines: +0 -1
 -one-liner
 \ No newline at end of file
 
-
 File [modified]: foo3.txt
 Delta lines: +2 -0
 ===================================================================
@@ -217,7 +214,6 @@ Delta lines: +2 -0
  see
 \ No newline at end of file
 
-
 File [added]: foo4.txt
 Delta lines: +1 -0
 ===================================================================
@@ -226,7 +222,6 @@ Delta lines: +1 -0
 @@ -0,0 +1 @@
 +this is not a sub directory
 \ No newline at end of file
-
 
 Directory: /sub1/
 =================
@@ -242,7 +237,6 @@ ___________________________________________________________________
 Name: svn:mime-type
    + application/octet-stream
 
-
 File [added]: foo1.txt
 Delta lines: +1 -0
 ===================================================================
@@ -251,7 +245,6 @@ Delta lines: +1 -0
 @@ -0,0 +1 @@
 +this is a sub directory
 \ No newline at end of file
-
 
 File [added]: foo2.txt
 Delta lines: +1 -0
@@ -303,10 +296,9 @@ Delta lines: +0 -1
 -this is a sub directory
 \ No newline at end of file
 
-
 File [added]: foo1a.txt
 Delta lines: +0 -0
-
+Copied: sub1/foo1a.txt (from rev 3, sub1/foo1.txt)
 
 File [removed]: foo2.txt
 Delta lines: +0 -1
@@ -316,7 +308,6 @@ Delta lines: +0 -1
 @@ -1 +0,0 @@
 -this is also a sub directory
 \ No newline at end of file
-
 
 File [added]: foo2a.txt
 Delta lines: +2 -0
