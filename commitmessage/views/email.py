@@ -29,11 +29,11 @@ class BaseEmailView(View):
         to = map(lambda t: t.strip(), to)
 
         text = StringIO('')
-        text.write('To: %s\r\n' % ', '.join(to))
-        text.write('From: %s\r\n' % self.keyword_from())
-        text.write('Subject: %s\r\n' % self.subject())
-        text.write('Date: %s -0000 (GMT)\r\n' % time.strftime('%A %d %B %Y %H:%M:%S', time.gmtime()))
-        text.write('\r\n\r\n')
+        text.write('To: %s\n' % ', '.join(to))
+        text.write('From: %s\n' % self.keyword_from())
+        text.write('Subject: %s\n' % self.subject())
+        text.write('Date: %s -0000 (GMT)\n' % time.strftime('%A %d %B %Y %H:%M:%S', time.gmtime()))
+        text.write('\n')
 
         if len(self.header()) > 0:
             text.write('%s\n\n' % self.header())
