@@ -140,6 +140,22 @@ Troubleshooting a Subversion installation is fairly easy:
 
  4. If you are not seeing the diffs in emails, it is probably because svnlook is
     trying to create an '.svnlook' directory and doesn't have the correct
-    permissions.  There is a fix in 2.0-rc-1 for this to chdir to '/tmp',
-    which only works on Unix, but I don't think there will be a problem with this
-    on Windows. Let me know if you do.
+    permissions.  There is a fix in 2.0-rc-1 for this to chdir to '/tmp', which
+    only works on Unix, but I don't think there will be a problem with this on
+    Windows. Let me know if you do.
+
+ 5. If you're having problems with i18n characters (e.g. umlauts) in the emailed
+    log messages, try telling Subversion to output the characters nicely by
+    putting:
+
+    set LC_CTYPE=de_DE@euro
+
+    At the beginning of your post-commit file (replacing de_DE@euro with the
+    correct value for your part of the world).
+
+    You can also change the Content-Type email header from its default
+    (text/plain; charset="iso-8859-1") by using the conf file. E.g.:
+
+    [email]
+    contenttype = text/plain; your-custom-charset
+
