@@ -176,7 +176,6 @@ class InlineAttachmentEmailView(BaseEmailView):
             'Content-Transfer-Encoding: 7bit\n'
             'Content-Disposition: inline\n\n' % self.boundary)
 
-
         text.write('Log:\n')
         for line in self.model.log.split('\n'):
             text.write(' %s\n' % line)
