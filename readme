@@ -1,8 +1,6 @@
 
-commitmessage
-
-Version 0.9
-Readme
+readme
+commitmessage Version 0.91
 
 Note: Please keep this readme file with the other commitmessage Perl
 scripts in your CVSROOT directory to provide a convenient source

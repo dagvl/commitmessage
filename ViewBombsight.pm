@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #
 # ViewBombsight.pm
-# Version 0.9
+# commitmessage Version 0.91
 #
 # Sample script that sends out notification of bug-related commits
 # to Bombsight.

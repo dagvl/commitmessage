@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #
 # CvsUtil.pm
-# commitmessage version 0.91
+# commitmessage Version 0.91
 #
 # Executes and parsers a few generic cvs commands.
 #
