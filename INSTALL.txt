@@ -3,102 +3,47 @@ readme
 commitmessage Version 2.0
 Copyright 2003 Stephen Haberman
 
-#####################################################################
-#
-# Install
-#
-#####################################################################
+This file contains the install instructions for:
 
-Downloaq 
-You can install commitmessage in several ways:
+ A. CVS on Unix
+ B. Subversion on Unix/Windows
 
-1. You can install the commitmessage files in a variety of places:
-
- - For CVS, in the CVSROOT module of your repository
- - For SVN, in the hooks directory of your repository
- - For either CVS or SVN, in a traditional directory like /usr/local
-
-Whichever one you choose, you'll want to copy the entire unzipped directory,
-including the root commitmessage directory, e.g.:
-
- - commitmessage/commitinfo.pl
- - commitmessage/config
- - commitmessage/loginfo.pl
- - commitmessage/mock_loginfo.pl
- - commitmessage/readme
- - commitmessage/Controller.pm
- - commitmessage/CvsUtil.pm
- - commitmessage/Model.pm
-
-Also, you can optionally checkin the sample Views that come with commitmessage:
-
- - commitmessage/ViewBombsight.pm
- - commitmessage/ViewEmail.pm
-
-(Note that the commitmessage sub-directory is not required)
-
-2. Hook the scripts into CVS
-
-Edit the CVSROOT/checkoutlist file and add:
-
- - commitmessage/commitinfo.pl
- - commitmessage/config
- - commitmessage/loginfo.pl
- - commitmessage/readme
- - commitmessage/Controller.pm
- - commitmessage/CvsUtil.pm
- - commitmessage/Model.pm
-
-And again, optionally the Views:
-
- - commitmessage/ViewBombsight.pm
- - commitmessage/ViewEmail.pm
-
-Edit the CVSROOT/commitinfo file and add:
-
- DEFAULT $CVSROOT/CVSROOT/commitmessage/commitinfo.pl
-
-What you put in place of "DEFAULT" can vary based upon which modules you want 
-fed into commitmessage. The commitinfo file should describe some options, 
-such as ALL, but DEFALUT works well.
-
-Edit the CVSROOT/loginfo file and add:
-
- DEFAULT $CVSROOT/CVSROOT/commitmessage/loginfo.pl %{s}
-
-Again, DEFAULT can optionally be changed.
-
-Commit these three files (checkoutlist, commitinfo, loginfo) to CVS.
-
+For configuration, see the commitmessage.conf file.
 
 #####################################################################
 #
-# Permissions
+# A. Install for CVS (Unix only - CVS is not supported on Windows)
 #
 #####################################################################
 
-Anybody who commits to CVS will need permission to the run commitmessage
-scripts. To allow this, cd to CVSROOT and run the following commands:
+1. Download and extract commitmessage.tar.gz to a convenient location.
 
-chmod ga+x commitmessage/*.pl
-chmod ga+x commitmessage/*.pl,v
+2. Checkout your repository's CVSROOT
 
-The View scripts are Perl packages and dynamically loaded by the 
-loginfo.pl Controller, so do not need execute permission.
+    cvs -D :local:/path/to/repo checkout CVSROOT
 
+3. In the CVSROOT directory that was just checked out, edit the commitinfo file
+   and add:
+
+    DEFAULT path-to-commitmessage/commitmessage/main.py
+
+4. Also in the CVSROOT directory that was just checked out, edit the
+   loginfo file and add:
+
+    DEFAULT path-to-commitmessage/commitmessage/main.py %{s}
+
+5. Commit the changes to commitinfo and loginfo to CVS.
+
+6. Anybody who commits to CVS will need permission to the run commitmessage
+   main.py script. To allow this, go to the directory you unpacked commitmessage
+   to and run the following commands:
+
+    chmod ga+x commitmessage/main.py
 
 #####################################################################
 #
-# Configuration
+# B. Install for Subversion (Unix only - CVS is not supported on Windows)
 #
 #####################################################################
 
-Configuration is simple; just refer to the commitmessage.config file. It has
-a good amount of documentation on the syntax for it and how to hook up the 
-various Views in to commitmessage.
 
-Once you've configured the commitmessage.config file, commit it to CVS, and
-everything should begin working.
-
-If you have any problems, please refer to the user list on 
-http://commitmessage.tigris.org.
