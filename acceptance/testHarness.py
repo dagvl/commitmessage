@@ -50,9 +50,15 @@ class Harness:
             if option == '--commits':
                 self.commits = int(value)
 
-    def run(self, cases):
+        if len(args) == 0:
+            # Create a L{Case} for each xml test file in this directory
+            self.cases = [Case(x) for x in os.listdir('.') if x.endswith('.xml')]
+        else:
+            self.cases = [Case(x) for x in args]
+
+    def run(self):
         """Runs a suite of L{Case}s."""
-        for case in cases:
+        for case in self.cases:
             self._runCase(case)
 
     def _runCase(self, case):
@@ -89,6 +95,9 @@ class Harness:
                         print '\n'.join(difflib.unified_diff(expected, actual))
                         print delim
 
+                        print expected
+                        print actual
+
                         if self.wait == 1:
                             raw_input('Waiting...')
 
@@ -113,12 +122,12 @@ class Harness:
             ignoredDateIndex = expected[i].find('#####')
             if ignoredDateIndex > -1:
                 if expected[i][0:ignoredDateIndex] != actual[i][0:ignoredDateIndex]:
-                    print expected[i-1:i+2]
-                    print actual[i-1:i+2]
+                    # print expected[i-1:i+2]
+                    # print actual[i-1:i+2]
                     return 0
             elif expected[i] != actual[i]:
-                print expected[i-1:i+2]
-                print actual[i-1:i+2]
+                # print expected[i-1:i+2]
+                # print actual[i-1:i+2]
                 return 0
 
         return 1
@@ -201,14 +210,14 @@ class ControllerFacade:
     def clean(self, expected):
         new = []
 
-        goodStart = '!%s' % self.name
-        someStart = re.compile('!((cvs)|(svn)) ')
+        goodStart = '!%s ' % self.name
+        someStart = re.compile('^!((cvs)|(svn)) ')
 
         for line in expected:
             if line.startswith(goodStart):
                 new.append(line[5:])
             elif someStart.match(line):
-                # Ignore
+                # Ignore a line for a different facade
                 pass
             else:
                 new.append(line)
@@ -369,7 +378,7 @@ class SvnFacade(ControllerFacade):
             (os.linesep, os.linesep, self.mainPath, self.repoDir, arg, arg))
 
         svnConfig = config.replace('CONTROLLER', 'commitmessage.controllers.svn.SvnController')
-        svnConfig = cvsConfig.replace('ACCEPTANCE_DIRECTORY', self.workingDir)
+        svnConfig = svnConfig.replace('ACCEPTANCE_DIRECTORY', self.workingDir)
 
         newConfig = file('%s/commitmessage.conf' % self.repoDir, 'w')
         newConfig.write(svnConfig)
@@ -479,15 +488,10 @@ if __name__ == '__main__':
     cleanup()
 
     # Create the harness for (currently, just) svn
-    facades = [] #SvnFacade()]
+    facades = [SvnFacade()]
     if os.name == 'posix':
         facades.append(CvsFacade())
 
     harness = Harness(facades, sys.argv[1:])
-
-    # Create a L{Case} for each xml test file in this directory
-    cases = [Case(x) for x in os.listdir('.') if x.endswith('.xml')]
-
-    # Run the cases through the harness
-    harness.run(cases)
+    harness.run()
 
