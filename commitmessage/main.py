@@ -7,6 +7,7 @@
 """Bootstraps the commitmessage framework by reading in the configuration file
 and initializing the controller."""
 
+import getopt
 import os
 import sys
 
@@ -22,11 +23,18 @@ from commitmessage.util import CmConfigParser, getNewInstance
 if __name__ == '__main__':
     confFile = '/commitmessage.conf'
 
+    options, args = getopt.getopt(sys.argv[1:], "c:")
+    for option, value in options:
+        if option == "-c":
+            confFile = value
+
     mainModulePath = os.path.abspath(os.path.dirname(sys.argv[0]))
     conf = CmConfigParser(mainModulePath + confFile)
 
     scm = conf.get('scm', 'interface')
     controller = getNewInstance(scm)
 
-    controller.__init__(conf, sys.argv, sys.stdin)
+    cleanArgs = [sys.argv[0]]
+    cleanArgs.extend(args)
+    controller.__init__(conf, cleanArgs, sys.stdin)
     controller.process()
