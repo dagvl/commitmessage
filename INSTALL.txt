@@ -1,14 +1,15 @@
 
 readme
-commitmessage Version 2.0
-Copyright 2003 Stephen Haberman
+commitmessage
+Copyright 2002-2003 Stephen Haberman
 
 This file contains the install instructions for:
 
  A. CVS on Unix
- B. Subversion on Unix/Windows
+ B. Subversion on Unix or Windows
 
-For configuration, see the commitmessage.conf file.
+Either set of instructions should take about 5 minutes to hook into
+commitmessage into your repository and have it start sending out commit emails.
 
 #####################################################################
 #
@@ -16,34 +17,88 @@ For configuration, see the commitmessage.conf file.
 #
 #####################################################################
 
-1. Download and extract commitmessage.tar.gz to a convenient location.
+To install commitmessage for a Unix CVS repository, you should have:
 
-2. Checkout your repository's CVSROOT
+ a. Python 2.3 installed (2.x might work, only 2.3 is tested)
+ b. A CVS repository already setup
+ c. Commit access to the CVS repository's CVSROOT module
+
+Once you have all of these requirements, you can start installing commitmessage.
+
+ 1. Download and extract commitmessage.tar.gz to a convenient location
+
+ 2. Customize the commitmessage-2.0/commitmessage.conf
+
+    The commitmessage.conf has documentation within it about how to configure
+    the various modules and views, along with a few examples that you should be
+    able to easily customize.
+
+    Note: the commitmessage.conf defaults to using the SVN controller. Make sure
+    to un-comment the CVS controller and comment out the SVN controller.
+
+ 3. Checkout your repository's CVSROOT
 
     cvs -D :local:/path/to/repo checkout CVSROOT
 
-3. In the CVSROOT directory that was just checked out, edit the commitinfo file
-   and add:
+ 4. In the CVSROOT directory that was just checked out, edit the commitinfo file
+    and add:
 
-    DEFAULT path-to-commitmessage/commitmessage/main.py
+    DEFAULT /path/to/commitmessage-2.0/main.py
 
-4. Also in the CVSROOT directory that was just checked out, edit the
-   loginfo file and add:
+ 5. Also in the CVSROOT directory that was just checked out, edit the loginfo
+    file and add:
 
-    DEFAULT path-to-commitmessage/commitmessage/main.py %{s}
+    DEFAULT /path/to/commitmessage-2.0/main.py %{s}
 
-5. Commit the changes to commitinfo and loginfo to CVS.
+ 6. Commit the changes to commitinfo and loginfo to CVS
 
-6. Anybody who commits to CVS will need permission to the run commitmessage
-   main.py script. To allow this, go to the directory you unpacked commitmessage
-   to and run the following commands:
+    $ cvs commit -m "Updated commitinfo and loginfo to execute commitmessage."
 
-    chmod ga+x commitmessage/main.py
+That's it. Any commits in the CVS modules of the repository will be run through
+their configured commitmessage views.
+
+Notes:
+
+ - You may also keep the commitmessage.conf file within the CVSROOT directory
+   so that it is versioned as well. To do so, move the file into CVSROOT, 'cvs
+   add' it, add 'commitmessage.conf' to the checkoutlist file, and then modify
+   both commitinfo and loginfo files to pass a -c parameter to main.py with the
+   new location, such as:
+
+   DEFAULT /path/to/commitmessage-2.0/main.py -c /path/to/repo/CVSROOT/commitmessage.conf
 
 #####################################################################
 #
-# B. Install for Subversion (Unix only - CVS is not supported on Windows)
+# B. Install for Subversion
 #
 #####################################################################
+
+To install commitmessage for a Unix CVS repository, you should have:
+
+ a. Python 2.3 installed (2.x might work, only 2.3 is tested)
+ b. The executable 'python' on your path (or adjust the entry in step 3 appropriately)
+ c. A SVN repository already setup
+ d. Write access to the SVN repository's hooks directory
+
+ 1. Download and extract commitmessage.tar.gz or commitmessage.zip to a
+    convenient location
+
+ 2. Customize the commitmessage-2.0/commitmessage.conf
+
+    The commitmessage.conf has documentation within it about how to configure
+    the various modules and views, along with a few examples that you should be
+    able to easily customize.
+
+ 3. If on Windows: create the file svn-repo/hooks/post-commit.bat and add:
+
+    python c:\path\to\commitmessage-2.0\main.py "%1" "%2"
+
+    If on Unix: create the file svn-repo/hooks/post-commit and add:
+
+    #!/bin/sh
+    /path/to/commitmessage-2.0/main.py "$1" "$2"
+
+That's it. Any commits in this SVN repository will be run through their
+configured commitmessage views.
 
 
