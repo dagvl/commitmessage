@@ -6,6 +6,13 @@
 
 - Provide a nice CLI with:
 
-  o '--help'
-  o module scanning to list the currently available views
-  o the respective views' properties
+  - '--help'
+  - module scanning to list the currently available views
+  - the respective views' properties
+
+- Add tests for:
+
+  - Removing directories
+  - Changing properties on directories
+  - Changing properties on files
+
