@@ -21,110 +21,67 @@ from commitmessage.util import execute
 class SvnController(Controller):
     """Uses 'svnlook' to pull data from svn repositories."""
 
+    actions = { 'A': 'added', 'D': 'removed', 'U': 'modified' }
+    """A mapping from abbreviation to a better description."""
+
     def populateModel(self):
-        """Fill out the model."""
+        """Fills out the model by invoking svnlook."""
+
         self.repoPath = self.argv[1]
         self.rev = self.argv[2]
         self.model.rev = self.rev
 
+        # First, get the user and log message
         lines = self.svnlook('info')
         self.model.user(lines[0][:-1])
-        logLines = lines[3:]
+        self.model.log(''.join(lines[3:]).strip())
 
-        # Trim off \n from the end of logLines
-        r = range(0, len(logLines))
-        r.reverse()
-        for i in r:
-            if logLines[i] == '\n':
-                del logLines[i]
-            else:
-                logLines[i] = logLines[i][:-1]
-                break
-        self.model.log(''.join(logLines))
+        # Now build an initial tree of file and tree changes
+        for line in self.svnlook('changed'):
+            action = self.actions[line[0]]
+            target = '/' + line[4:-1]
 
-        changes = self.svnlook('changed')
-        for change in changes:
-            action = self.getAction(change[0])
-            target = change[4:-1]
-            if target != '/' and target[0] != '/':
-                target = '/' + target
             if target.endswith('/'):
-                self.handleDirectory(action, target)
+                directory = self.model.directory(target)
+                directory.action(action)
             else:
-                self.handleFile(action, target)
-        self.saveDiffs(self.svnlook('diff'))
+                parts = target.split('/')
+                name = parts[-1]
+                directoryPath = '/' + '/'.join(parts[0:-1]) + '/'
 
-    def getAction(self, changeLetter):
-        """Converts single action abbreviations (e.g. U/A/D) to commitmessage's
-        fuller versions (e.g. modified/added/removed).  Raises a CmException if
-        the conversion fails."""
-        if changeLetter == 'A':
-            return 'added'
-        elif changeLetter == 'D':
-            return 'removed'
-        elif changeLetter == 'U':
-            return 'modified'
-        else:
-            raise CmException, "The change letter '%s' was invalid." % changeLetter
+                file = File(name, self.model.directory(directoryPath), action)
 
-    def handleDirectory(self, action, path):
-        """Adds directories to the model."""
-        dir = self.model.directory(path)
-        dir.action(action)
-
-    def handleFile(self, action, path):
-        """Adds files to the model."""
-        # Remove the name of the file from the path
-        parts = path.split('/')
-        name = parts[-1]
-        dirPath = '/' + '/'.join(parts[0:-1]) + '/'
-
-        dir = self.model.directory(dirPath)
-        f = File(name, dir, action)
-
-    def saveDiffs(self, lines):
-        """Calls svnlook diff and parses out the diff information."""
+        # And finally parse through the diffs and save them into our tree of changes
         diffs = []
-        if len(lines) > 0:
-            currentDiff = None
-            for line in lines:
-                if line.startswith('Modified: ') \
-                    or line.startswith('Added: ') \
-                    or line.startswith('Copied: ') \
-                    or line.startswith('Deleted: '):
-                    if currentDiff is not None:
-                        diffs.append(currentDiff)
-                    currentDiff = [line]
-                else:
-                    if currentDiff is not None:
-                        currentDiff.append(line)
-            if currentDiff is not None:
-                diffs.append(currentDiff)
+        for line in self.svnlook('diff'):
+            if line.startswith('Modified: ') or line.startswith('Added: ') or line.startswith('Copied: ') or line.startswith('Deleted: '):
+                # Handle starting a new diff
+                partialDiff = [line]
+                diffs.append(partialDiff)
+            else:
+                partialDiff.append(line)
 
         for diff in diffs:
-            if diff[0].startswith('Copied: '):
-                fileName = diff[0][:-1].split(' ')[1]
-                for addedFile in self.model.files('added'):
-                    if addedFile.name() == fileName:
-                        addedFile.diff(diff[0])
-                        addedFile.delta('Unknown')
-                continue
-
             # Use [:-1] to leave of the trailing \n
             filePath = '/' + diff[0][:-1].split(' ')[1]
-            text = ''
-            added = 0
-            removed = 0
-            for line in diff[1:]:
-                if len(line) > 0:
-                    if line[0] == '+' and not line[0:4] == '+++ ':
-                        added = added + 1
-                    elif line[0] == '-' and not line[0:4] == '--- ':
-                        removed = removed + 1
-                text = text + line
-            f = self.model.file(filePath)
-            f.diff(text)
-            f.delta('+%s -%s' % (added, removed))
+            delta, text = self.parse_diff(diff)
+
+            file = self.model.file(filePath)
+            file.diff(text)
+            file.delta(delta)
+
+    def parse_diff(self, diff):
+        text = ''
+        added = 0
+        removed = 0
+        for line in diff[1:]:
+            if len(line) > 0:
+                if line[0] == '+' and not line[0:4] == '+++ ':
+                    added = added + 1
+                elif line[0] == '-' and not line[0:4] == '--- ':
+                    removed = removed + 1
+            text = text + line
+        return ('+%s -%s' % (added, removed), text)
 
     def svnlook(self, command):
         """Returns the lines ouput by the svnlook command against the current
