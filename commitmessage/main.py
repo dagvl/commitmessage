@@ -32,7 +32,7 @@ if __name__ == '__main__':
         if option == "-c":
             configFile = value
 
-    # Handle relative paths.
+    # Handle loading the default conf from within the commitmessage module
     if configFile[0] != '/' and configFile[0] != '.' and configFile[1] != ':':
        configFile = rootCmPath + os.sep + configFile
 
@@ -47,5 +47,11 @@ if __name__ == '__main__':
     cleanArgs.extend(args)
 
     controller.__init__(config, cleanArgs, sys.stdin)
+
+    # Get the other others in the 'scm' section
+    for (name, value) in config.items('scm'):
+        if name != 'interface':
+            setattr(controller, name, value)
+
     controller.process()
 
