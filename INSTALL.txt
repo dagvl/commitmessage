@@ -1,7 +1,7 @@
 
 INSTALL
 commitmessage
-Copyright 2002-2003 Stephen Haberman
+Copyright 2002-2004 Stephen Haberman
 
 This file contains the install instructions for:
 
