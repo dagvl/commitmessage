@@ -9,13 +9,13 @@ module1 x.txt,1.4,1.5
 ----////----
 Update of /home/stephen/test/cvs/module1
 
-Modified files:
+Modified Files:
    x.txt
 Log Message:
 Text.
 ----////----
 Modified:
-  x.txt
+  /module1/x.txt
 Log:
 Text.
 ====////====
@@ -38,8 +38,8 @@ Log Message:
 Multiple line...\n...
 ----////----
 Modified:
-  x.txt
-  y.txt
+  /module1/x.txt
+  /module1/y.txt
 Log:
 Multiple line...\n...
 ====////====
@@ -58,7 +58,7 @@ Directory /home/stephen/test/cvs/module1/a/a-c added to the repository
 Directory /home/stephen/test/cvs/module1/a/a-c added to the repository
 ----////----
 Added:
-  module1/a/a-c
+  /module1/a/a-c
 Log:
 Directory /home/stephen/test/cvs/module1/a/a-c added to the repository
 ====////====
