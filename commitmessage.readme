@@ -10,6 +10,7 @@ for future reference, both for you and future admins.
 
 Please refer to http://commitmessage.tigris.org for more information.
 
+
 #####################################################################
 #
 # Install
@@ -58,6 +59,22 @@ Edit the CVSROOT/loginfo file and add:
 Again, DEFAULT can optionally be changed.
 
 Commit these three files (checkoutlist, commitinfo, loginfo) to CVS.
+
+
+#####################################################################
+#
+# Permissions
+#
+#####################################################################
+
+Anybody who commits to CVS will need permission to the run commitmessage
+scripts. To allow this, cd to CVSROOT and run the following commands:
+
+chmod ga+x commitmessage_*
+
+The View scripts are Perl packages and dynamically loaded by the 
+commitmessage_loginfo.pl Controller, so do not need execute permission.
+
 
 #####################################################################
 #
