@@ -9,6 +9,7 @@
 import os
 import sys
 import time
+import rfc822
 
 from StringIO import StringIO
 from smtplib import SMTP
@@ -61,7 +62,7 @@ class BaseEmailView(View):
 
         text.write('From: %s\n' % self['from'])
         self.generateSubject(text)
-        text.write('Date: %s -0000 (GMT)\n' % time.strftime('%A %d %B %Y %H:%M:%S', time.gmtime()))
+        text.write('Date: %s\n' % rfc822.formatdate())
         text.write('Content-Type: %s\n' % self.contenttype)
 
         for name, value in self.otherHeaders.items():
