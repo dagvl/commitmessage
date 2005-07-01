@@ -118,10 +118,10 @@ Troubleshooting a Subversion installation is fairly easy:
  1. Try running main.py by itself, just as the Subversion hook file would. E.g.:
 
     (Windows)
-    python c:\path\to\commitmesasge-2.0\main.py "c:\my-svn-repo" 1
+    python c:\path\to\commitmessage-2.0\main.py "c:\my-svn-repo" 1
 
     (Unix)
-    python /path/to/commitmesasge-2.0/main.py "/my-svn-repo" 1
+    python /path/to/commitmessage-2.0/main.py "/my-svn-repo" 1
 
     Where 1 is a revision number you have previously committed.
 
