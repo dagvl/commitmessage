@@ -6,54 +6,90 @@
 <h3>News</h3>
 
 <ul>
-<li>
-(1/12/2005) commitmessage-2.0-rc-3 released
-
-<p>See <a href="http://commitmessage.tigris.org/servlets/ProjectDocumentList">Documents & files</a> for downloads.</p>
-
-<p><ul>
-<li>New summaryThreshold feature (Subversion only) for not parsing diffs for large commits (Jonathan Vonk)
-<li>Work around for severe Subversion bug (issue 1789) on Windows which would cause commitmessage to hang (Jonathan Vonk)
-</ul>
-</p>
-
-<li>
-(1/6/2005) commitmessage-2.0-rc-2 released
-
-<p><ul><li>Better i18n support (e.g. umlauts) in sent emails by using a customizable Content-Type header (defaults to text/plain; charset="iso-8859-1")</ul></p>
-
-<li>
-(11/16/2004) commitmessage-2.0-rc-1 released
-
-<p><ul><li>Bug fix for setting Subversion properties on the root directory</ul></p>
-
-<li>
-(9/21/2004) commitmessage-2.0-beta-6 released
-
-<p><ul><li><code>DEFAULT_MODULE</code> support for when no other module matches - patch by Jonathan Vonk<li><code>UNIVERSAL_MODULE</code> support for every commit - patch by Jonathan Vonk</ul></p>
-
-<li>
-(9/21/2004) commitmessage-2.0-beta-5 released
-
-<p><ul><li>Subversion bug fix for directory property changes<li>Email cc support<li>Removed msnp and toc from the distribution - users must download the packages themselves now to avoid GPL license issues</ul></p>
-
-<li>
-(9/8/2004) commitmessage-2.0-beta-4 released
-
-<p><ul><li>Subversion bug fixes with spaces and properties<li>user login name -> email address map functionality<li>configurable multiple repos-per-config file functionality (matchAgainstRepoPrefix)<li>configurable inclusion of module/repo names in the model (addRepoPrefix)</ul></p>
-</li>
-
-<li>
-(3/14/2004) commitmessage-2.0-beta-3 released
-
-<p><ul><li>several bug fixes (svnlook not having the right permissions, etc.)<li>a profiling option (-p) to debug slow commits (rarely happens)<li>the addition of another view to send email with the diffs as an attached patch file, contributed by Juan F. Codagnone (juam@users.sourceforge.net)</ul></p>
-</li>
-
-<li>
-(2/7/2004) commitmessage-2.0-beta-2 released
-
-<p><ul><li>fixed wrong EOL in the tar.gz distribution<li>sending email to multiple address<li>the addition of IM support (AIM and MSN)</ul></p>
-</li>
+  <li>
+    (7/1/2005) commitmessage-2.0 released
+    <p>See <a href="http://commitmessage.tigris.org/servlets/ProjectDocumentList">Documents & files</a> for downloads.</p>
+    <p>
+      <ul>
+        <li>Better email date headers via rfc822 - Gerald Combs</li>
+      </ul>
+    </p>
+  </li>
+  <li>
+    (1/12/2005) commitmessage-2.0-rc-3 released
+    <p>
+      <ul>
+        <li>New summaryThreshold feature (Subversion only) for not parsing diffs for large commits - Jonathan Vonk</li>
+        <li>Work around for severe Subversion bug (issue 1789) on Windows which would cause commitmessage to hang - Jonathan Vonk</li>
+      </ul>
+    </p>
+  </li>
+  <li>
+    (1/6/2005) commitmessage-2.0-rc-2 released
+    <p>
+      <ul>
+        <li>Better i18n support (e.g. umlauts) in sent emails by using a customizable Content-Type header (defaults to text/plain; charset="iso-8859-1")</li>
+      </ul>
+    </p>
+  </li>
+  <li>
+    (11/16/2004) commitmessage-2.0-rc-1 released
+    <p>
+      <ul>
+        <li>Bug fix for setting Subversion properties on the root directory</li>
+      </ul>
+    </p>
+  </li>
+  <li>
+    (9/21/2004) commitmessage-2.0-beta-6 released
+    <p>
+      <ul>
+        <li><code>DEFAULT_MODULE</code> support for when no other module matches - Jonathan Vonk</li>
+        <li><code>UNIVERSAL_MODULE</code> support for every commit - Jonathan Vonk</li>
+      </ul>
+    </p>
+  </li>
+  <li>
+    (9/21/2004) commitmessage-2.0-beta-5 released
+    <p>
+      <ul>
+        <li>Subversion bug fix for directory property changes</li>
+        <li>Email cc support</li>
+        <li>Removed msnp and toc from the distribution - users must download the packages themselves now to avoid GPL license issues</li>
+      </ul>
+    </p>
+  </li>
+  <li>
+    (9/8/2004) commitmessage-2.0-beta-4 released
+    <p>
+      <ul>
+        <li>Subversion bug fixes with spaces and properties</li>
+        <li>user login name -> email address map functionality</li>
+        <li>configurable multiple repos-per-config file functionality (matchAgainstRepoPrefix)</li>
+        <li>configurable inclusion of module/repo names in the model (addRepoPrefix)</li>
+      </ul>
+    </p>
+  </li>
+  <li>
+    (3/14/2004) commitmessage-2.0-beta-3 released
+    <p>
+      <ul>
+        <li>several bug fixes (svnlook not having the right permissions, etc.)</li>
+        <li>a profiling option (-p) to debug slow commits (rarely happens)</li>
+        <li>the addition of another view to send email with the diffs as an attached patch file - Juan F. Codagnone</li>
+      </ul>
+    </p>
+  </li>
+  <li>
+    (2/7/2004) commitmessage-2.0-beta-2 released
+    <p>
+      <ul>
+        <li>fixed wrong EOL in the tar.gz distribution</li>
+        <li>sending email to multiple address</li>
+        <li>the addition of IM support (AIM and MSN)</li>
+      </ul>
+    </p>
+  </li>
 </ul>
 
 <p>The API documentation is available at <a href="http://commitmessage.tigris.org/docs/public/trees.html">http://commitmessage.tigris.org/docs/public/trees.html</a></p>
@@ -61,81 +97,70 @@
 <h3>Overview</h3>
 
 <p>
-commitmessage provides a modular, easy-to-use approach to sending
-CVS and SVN commit information to other systems.
+  commitmessage provides a modular, easy-to-use approach to sending
+  CVS and SVN commit information to other systems.
 </p>
 
 <p>
-Many scripts already exist to send out email diffs for commits, post
-information into bug tracking systems, etc., but they all have tight coupling
-between the logic of collecting information from CVS and the logic of sending
-relevant information out to the other system.
+  Many scripts already exist to send out email diffs for commits, post
+  information into bug tracking systems, etc., but they all have tight coupling
+  between the logic of collecting information from CVS and the logic of sending
+  relevant information out to the other system.
 </p>
 
 <p>
-commitmessage takes smarter approach: MVC.
+  commitmessage takes smarter approach: MVC.
 </p>
 
 <p>
-A controller exists for each supported SCM (CVS and SVN) that populates a
-generic module of the entire commit (not just per-directory as is the default in
-CVS) and then passes the model to the configured views.
+  A controller exists for each supported SCM (CVS and SVN) that populates a
+  generic module of the entire commit (not just per-directory as is the default in
+  CVS) and then passes the model to the configured views.
 </p>
 
 <p>
-The views are written as Python classes and are dynamically configured via the
-<code>commitmessage.conf</code> file to allow the controller to allocate and
-execute them with no customization of the controllers or views by the user.
+  The views are written as Python classes and are dynamically configured via the
+  <code>commitmessage.conf</code> file to allow the controller to allocate and
+  execute them with no customization of the controllers or views by the user.
 </p>
 
 <p>
-Also, the <code>commitmessage.conf</code> can set view properties on either a
-global or per-module basis to allow a single view class to be reused by various
-modules with module-specific behavior (e.g. different email addresses per
-module).
+  Also, the <code>commitmessage.conf</code> can set view properties on either a
+  global or per-module basis to allow a single view class to be reused by various
+  modules with module-specific behavior (e.g. different email addresses per
+  module).
 </p>
 
 <p>
-The overall affect is cutting down on the extreme duplication between scripts
-that used to occur just to change the target system or even simple properties
-such as URLs or mailing address for different modules. With commitmessage, the
-simple <code>commitmessage.conf</code> is the only file you'll ever have to
-edit.
+  The overall affect is cutting down on the extreme duplication between scripts
+  that used to occur just to change the target system or even simple properties
+  such as URLs or mailing address for different modules. With commitmessage, the
+  simple <code>commitmessage.conf</code> is the only file you'll ever have to
+  edit.
 </p>
 
 <h3>Usage</h3>
 
 <p>
-commitmessage is very easy to use. Just download the file and hook it into
-either your <code>CVSROOT</code> or SVN <code>hooks</code> directory by
-following the
-<ul>
-    <li>
-        <a href="http://commitmessage.tigris.org/source/browse/commitmessage/INSTALL.txt?rev=HEAD&content-type=text/vnd.viewcvs-markup">
-            INSTALL.txt
-        </a>, and
-    </li>
-    <li>
-        <a href="http://commitmessage.tigris.org/source/browse/commitmessage/commitmessage.conf?rev=HEAD&content-type=text/vnd.viewcvs-markup">
-            commitmessage.conf
-        </a>
-    </li>
-</ul>
-instructions.
+  commitmessage is very easy to use. Just download the file and hook it into
+  either your <code>CVSROOT</code> or SVN <code>hooks</code> directory by
+  following the docs:
+  <ul>
+    <li><a href="http://commitmessage.tigris.org/source/browse/commitmessage/INSTALL.txt?rev=HEAD&content-type=text/vnd.viewcvs-markup">INSTALL.txt</a>, and</li>
+    <li><a href="http://commitmessage.tigris.org/source/browse/commitmessage/commitmessage.conf?rev=HEAD&content-type=text/vnd.viewcvs-markup">commitmessage.conf</a>.</li>
+  </ul>
 </p>
 
 <h3>Related resources</h3>
 
 <ul>
-
-<li>
-The Perl scripts of the 1.0 branch are originally based on the Apache CVS
-scripts at <a href="http://cvs.apache.org/viewcvs.cgi/CVSROOT/">http://cvs.apache.org/viewcvs.cgi/CVSROOT/</a>.
-While the Apache scripts had the cool per-commit instead of per-directory
-functionality, the view logic of formatting together the email was spread all
-over the file and directly mixed in with other logic.
-</li>
-
+  <li>
+    The Perl scripts of the 1.0 branch are originally based on the Apache CVS
+    scripts at <a href="http://cvs.apache.org/viewcvs.cgi/CVSROOT/">http://cvs.apache.org/viewcvs.cgi/CVSROOT/</a>.
+    While the Apache scripts had the cool per-commit instead of per-directory
+    functionality, the view logic of formatting together the email was spread all
+    over the file and directly mixed in with other logic.
+  </li>
 </ul>
 
 </body>
