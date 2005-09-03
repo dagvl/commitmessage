@@ -110,3 +110,49 @@ try:
                 bot.do_SEND_IM(name, message)
 except:
     pass    
+
+
+
+class JabberView(IMView):
+    """Sends out commit messages on Jabber
+    
+    This view has three properties:
+    
+    - jid - the Jabber ID to login with
+    - password - the password for the Jabber account
+    - resource - the Jabber resource of the client 
+    
+    NOTE: A 'to' argument is not necessary, as the view will send notifications to
+    everybody on the JID's roster. 
+    """
+        
+    def execute(self):
+        """Sends the notification with the commit message"""
+        
+        try:
+            import xmpp
+    
+            # JIDs are compounded with an '@', similar to email addresses
+            userName, server = self.jid.split('@')
+            
+            # Set up the client and connect to the host server
+            jc = xmpp.Client(server)
+            jc.connect()
+
+            # Authorize the client
+            jc.auth(userName, self.password, self.resource)
+
+            # Set the client's initial presence notification
+            jc.sendInitPresence()
+            
+            # Generate the message
+            message = self._generateMessage()
+
+            # Send the notification to each individual subscribed to this JID
+            roster = jc.getRoster()		    
+            for name in roster.getItems():
+                jc.send(xmpp.Message(name, message))
+
+        except:
+            pass
+
