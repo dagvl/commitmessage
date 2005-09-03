@@ -21,6 +21,40 @@ from xml.dom import minidom
 sys.path.append('../')
 
 
+class Expected:
+    """
+    Hold a line of expected output for comparison with actual output.
+    The expected string may contain wildcards.
+    """
+    wildcard_re = re.compile(r'^(?P<pre>.*?)\#\#\#\#\#(?P<post>.*)$')
+
+    def __init__(self, s):
+        """
+        Initialize object with expected string s.
+        The expected string may contain the substring '#####', which can
+        match any string of characters in the actual output (including the
+        empty string).  '#####' may appear multiple times in the string.
+        @param s: the expected string.
+        """
+        self.s = s
+        restring = [r'^']
+        while True:
+            m = self.wildcard_re.match(s)
+            if not m:
+                break
+            restring.append(re.escape(m.group('pre')))
+            restring.append(r'.*')
+            s = m.group('post')
+
+        restring.append(re.escape(s))
+        restring.append(r'$')
+        restring = ''.join(restring)
+        self.regexp = re.compile(self.restring)
+
+    def matches(self, s):
+        return bool(self.regexp.match(s))
+
+
 class Harness:
     """
     A class to wrap the test context: creates a repository, executes the views,
@@ -128,22 +162,15 @@ class Harness:
 
     def _matchesIgnoringDates(self, expected, actual):
         """
-        Takes two lists of lines and sees if they are the same, ignoring lines
-        that are marked as having dates by having '#####' within them.
+        Takes two lists of lines and sees if they are the same,
+        ignoring parts of lines that are marked as being variable by
+        having '#####' within them.
         """
         if len(expected) != len(actual):
             return 0
 
         for i in range(0, len(expected)):
-            ignoredDateIndex = expected[i].find('#####')
-            if ignoredDateIndex > -1:
-                if expected[i][0:ignoredDateIndex] != actual[i][0:ignoredDateIndex]:
-                    # print expected[i-1:i+2]
-                    # print actual[i-1:i+2]
-                    return 0
-            elif expected[i] != actual[i]:
-                # print expected[i-1:i+2]
-                # print actual[i-1:i+2]
+            if not Expected(expected[i]).matches(actual[i]):
                 return 0
 
         return 1
