@@ -298,14 +298,26 @@ class ControllerFacade:
 
     def _readFile(self, name):
         f = file('%s/%s' % (self.workingDir, name), 'r')
-        lines = f.readlines()
+        text = f.read()
         f.close()
-        return lines
+        return text
 
-    def _writeFile(self, name, lines):
+    def _writeFile(self, name, text):
         f = file('%s/%s' % (self.workingDir, name), 'w')
-        f.writelines(lines)
+        f.write(text)
         f.close()
+
+    def _changeFile(self, name, fromLine, toLine, content):
+        """Change a file in the working directory."""
+
+        oldLines = self._readFile(name).splitlines(True)
+        newLines = []
+
+        newLines.extend(oldLines[0:fromLine])
+        newLines.extend(content.split('\n'))
+        newLines.extend(oldLines[fromLine:toLine])
+
+        self._writeFile(name, '\n'.join(newLines))
 
     def shouldSkipCase(self, case):
         return False
@@ -466,21 +478,7 @@ class CvsFacade(ControllerFacade):
         self._execInWorkingDir('cvs -f remove "%s"' % name)
 
     def changeFile(self, name='', fromLine='', toLine='', content=''):
-        fromLine = int(fromLine)
-        toLine = int(toLine)
-
-        oldLines = self._readFile(name)
-        newLines = []
-
-        for i in range(0, fromLine):
-            newLines.append(oldLines[i])
-
-        newLines.extend(content.split('\n'))
-
-        for i in range(fromLine, toLine):
-            newLines.append(oldLines[i])
-
-        self._writeFile(name, '\n'.join(newLines))
+        self._changeFile(name, int(fromLine), int(toLine), content)
 
     def setProperty(self, name='', propery='', value=''):
         # CVS does not support file properties
@@ -564,21 +562,7 @@ class SvnFacade(ControllerFacade):
         self._execInWorkingDir('svn remove "%s"' % name)
 
     def changeFile(self, name='', fromLine='', toLine='', content=''):
-        fromLine = int(fromLine)
-        toLine = int(toLine)
-
-        oldLines = self._readFile(name)
-        newLines = []
-
-        for i in range(0, fromLine):
-            newLines.append(oldLines[i])
-
-        newLines.extend(content.split('\n'))
-
-        for i in range(fromLine, toLine):
-            newLines.append(oldLines[i])
-
-        self._writeFile(name, '\n'.join(newLines))
+        self._changeFile(name, int(fromLine), int(toLine), content)
 
     def setProperty(self, name='', property='', value=''):
         self._execInWorkingDir('svn propset "%s" "%s" "%s"' % (property, value, name))
