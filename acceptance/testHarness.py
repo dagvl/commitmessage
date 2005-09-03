@@ -321,13 +321,9 @@ class ControllerFacade:
         """Change a file in the working directory."""
 
         oldLines = self._readFile(name).splitlines(True)
-        newLines = []
+        newLines = oldLines[:fromLine] + [content] + oldLines[toLine:]
 
-        newLines.extend(oldLines[0:fromLine])
-        newLines.extend(content.split('\n'))
-        newLines.extend(oldLines[fromLine:toLine])
-
-        self._writeFile(name, '\n'.join(newLines))
+        self._writeFile(name, ''.join(newLines))
 
     def shouldSkipCase(self, case):
         return False

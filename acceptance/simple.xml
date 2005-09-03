@@ -73,7 +73,7 @@ has
 four
 lines
     </message>
-    <changeFile name="foo.txt" fromLine="0" toLine="0">
+    <changeFile name="foo.txt" fromLine="0" toLine="1">
 changed-one
 changed-two
 changed-three
@@ -213,7 +213,7 @@ File [removed]: foo2.txt
 !svn -one-liner
 
 File [modified]: foo3.txt
-Delta lines: +3 -0
+Delta lines: +1 -1
 !cvs Index: foo3.txt
 ===================================================================
 !cvs RCS file: #####/acceptance/temp-cvs-repo/temp-cvs-wd/foo3.txt,v
@@ -222,12 +222,10 @@ Delta lines: +3 -0
 !cvs diff -u -r1.1 -r1.2
 --- foo3.txt	#####
 +++ foo3.txt	#####
-@@ -1,2 +1,5 @@
+@@ -1,2 +1,2 @@
  two-liner
-+
+-see
 +see-more
-+
- see
 
 File [added]: foo4.txt
 Delta lines: +1 -0
@@ -282,7 +280,7 @@ Delta lines: +1 -0
   <commit>
     <message>doing several things</message>
     <moveFile fromPath="sub1/foo2.txt" toPath="sub1/foo2a.txt" />
-    <changeFile name="sub1/foo2a.txt" fromLine="0" toLine="1">
+    <changeFile name="sub1/foo2a.txt" fromLine="0" toLine="0">
       this is in a sub directory
     </changeFile>
     <moveFile fromPath="sub1/foo1.txt" toPath="sub1/foo1a.txt" />
@@ -341,17 +339,15 @@ File [removed]: foo2.txt
 !svn -this is also a sub directory
 
 File [added]: foo2a.txt
-Delta lines: +3 -0
+Delta lines: +2 -0
 !cvs Index: foo2a.txt
 ===================================================================
 !svn --- sub1/foo2.txt	#####
 !svn +++ sub1/foo2a.txt	#####
-!svn @@ -0,0 +1,3 @@
+!svn @@ -0,0 +1,2 @@
 !svn +this is in a sub directory
-!svn +
 !svn +this is also a sub directory
 !cvs this is in a sub directory
-!cvs 
 !cvs this is also a sub directory
     </view>
   </commit>
