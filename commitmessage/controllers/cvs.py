@@ -24,12 +24,12 @@ def cvs_status(file):
     rev, delta = '', ''
     p = re.compile(r"^[ \t]*Repository revision")
     q = re.compile(r"^date:")
-    for line in execute('cvs -Qn status "%s"' % file):
+    for line in execute('cvs -Qnf status "%s"' % file):
         if p.search(line):
             rev = line.strip().split('\t')[1]
             break
     if rev != '':
-        for line in execute('cvs -Qn log -r%s "%s"' % (rev, file)):
+        for line in execute('cvs -Qnf log -r%s "%s"' % (rev, file)):
             if q.search(line):
                 line = line.strip()
                 line = re.sub(re.compile(r"^.*;"), '', line)
@@ -60,11 +60,11 @@ def cvs_diff(file, rev):
     diff, lines = '', []
 
     if rev == '1.1':
-        lines = execute('cvs -Qn update -p -r1.1 "%s"' % file.name)
+        lines = execute('cvs -Qnf update -p -r1.1 "%s"' % file.name)
         diff = 'Index: %s\n===================================================================\n' % file.name
         added, removed = 0, 0
     else:
-        lines = execute('cvs -Qn diff -u -r%s -r %s "%s"' % (cvs_previous_rev(rev), rev, file.name))
+        lines = execute('cvs -Qnf diff -u -r%s -r %s "%s"' % (cvs_previous_rev(rev), rev, file.name))
         added, removed = -1, -1
 
     for line in lines:

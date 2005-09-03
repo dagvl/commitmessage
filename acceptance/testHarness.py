@@ -298,7 +298,7 @@ class CvsFacade(ControllerFacade):
 
     def _execCvs(self, cmd):
         """Executes C{cmd} in the current directory with C{cvs -d :local:repoDir} as a prefix."""
-        _exec('cvs -d :local:%s %s' % (self.repoDir, cmd))
+        _exec('cvs -f -d :local:%s %s' % (self.repoDir, cmd))
 
     def _execInWorkingDir(self, cmd):
         """Executes C{cmd} in the working directory."""
@@ -335,8 +335,8 @@ class CvsFacade(ControllerFacade):
         newConfig.close()
 
         os.chdir('CVSROOT')
-        _exec('cvs add commitmessage.conf')
-        _exec('cvs commit -m "Installing commitmessage."')
+        _exec('cvs -f add commitmessage.conf')
+        _exec('cvs -f commit -m "Installing commitmessage."')
         os.chdir('..')
 
         _exec('mkdir temp-cvs-wd')
@@ -352,28 +352,28 @@ class CvsFacade(ControllerFacade):
 
     def commit(self):
         self._writeFile('temp-message.txt', self.message)
-        self._execInWorkingDir('cvs commit -F temp-message.txt')
+        self._execInWorkingDir('cvs -f commit -F temp-message.txt')
 
     def addDirectory(self, name=''):
         os.mkdir('%s/%s' % (self.workingDir, name))
-        self._execInWorkingDir('cvs add "%s"' % name)
+        self._execInWorkingDir('cvs -f add "%s"' % name)
 
     def addFile(self, name='', content=''):
         self._writeFile(name, content)
-        self._execInWorkingDir('cvs add "%s"' % name)
+        self._execInWorkingDir('cvs -f add "%s"' % name)
 
     def addBinaryFile(self, name='', location=''):
         self._writeFile(name, self._readFile(location))
-        self._execInWorkingDir('cvs add -kb "%s"' % name)
+        self._execInWorkingDir('cvs -f add -kb "%s"' % name)
 
     def moveFile(self, fromPath='', toPath=''):
         self._execInWorkingDir('mv "%s" "%s"' % (fromPath, toPath))
-        self._execInWorkingDir('cvs remove "%s"' % fromPath)
-        self._execInWorkingDir('cvs add "%s"' % toPath)
+        self._execInWorkingDir('cvs -f remove "%s"' % fromPath)
+        self._execInWorkingDir('cvs -f add "%s"' % toPath)
 
     def removeFile(self, name=''):
         self._execInWorkingDir('rm "%s"' % name)
-        self._execInWorkingDir('cvs remove "%s"' % name)
+        self._execInWorkingDir('cvs -f remove "%s"' % name)
 
     def changeFile(self, name='', fromLine='', toLine='', content=''):
         fromLine = int(fromLine)
