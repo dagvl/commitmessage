@@ -49,7 +49,7 @@ class Expected:
         restring.append(re.escape(s))
         restring.append(r'$')
         restring = ''.join(restring)
-        self.regexp = re.compile(self.restring)
+        self.regexp = re.compile(restring)
 
     def matches(self, s):
         return bool(self.regexp.match(s))
