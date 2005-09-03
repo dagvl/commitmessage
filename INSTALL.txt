@@ -41,17 +41,32 @@ Once you have all of these requirements, you can start installing commitmessage.
 
     cvs -D :local:/path/to/repo checkout CVSROOT
 
- 4. In the CVSROOT directory that was just checked out, edit the commitinfo file
-    and add:
+ 4. In the CVSROOT directory that was just checked out, edit
+    CVSROOT/commitinfo file and add:
+
+    DEFAULT /path/to/commitmessage-2.0/main.py %r/%p %s
+
+    Note: If you are using a version of CVS prior to 1.12, then the line
+    should be:
 
     DEFAULT /path/to/commitmessage-2.0/main.py
 
- 5. Also in the CVSROOT directory that was just checked out, edit the loginfo
-    file and add:
+ 5. Also in the CVSROOT directory that was just checked out, edit the
+    CVSROOT/loginfo file and add:
+
+    DEFAULT /path/to/commitmessage-2.0/main.py "%p %{s}"
+
+    Note: If you are using a version of CVS prior to 1.12, then the line
+    should be:
 
     DEFAULT /path/to/commitmessage-2.0/main.py %{s}
 
- 6. Commit the changes to commitinfo and loginfo to CVS
+ 6. If you are using CVS 1.12 or later, then edit the CVSROOT/config
+    file and add:
+
+    UseNewInfoFmtStrings=yes
+
+ 7. Commit the changes to commitinfo and loginfo to CVS
 
     $ cvs commit -m "Updated commitinfo and loginfo to execute commitmessage."
 

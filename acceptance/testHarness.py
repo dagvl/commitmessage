@@ -322,6 +322,42 @@ class CvsFacade(ControllerFacade):
         self.workingDir = '%s/temp-cvs-wd' % os.getcwd().replace('\\', '/')
         self.message = ''
         self.name = 'cvs'
+        self._initCvsVersion()
+
+    def _initCvsVersion(self):
+        """Determine CVS's version and store it in self._cvs_version.
+
+        Parse the version and store it as a tuple in
+        self._cvs_version.  Convert any dot-separated numeric prefix
+        to a sequence of integers, and leave anything else as a single
+        string.  For example, version '1.11.1p1' is stored as (1, 11,
+        1, 'p1').  This scheme should make it easy to compare version
+        numbers by comparing the tuples.
+
+        The version is determined by running cvs -v and parsing
+        stdout.  It is not known what range of CVS versions produce
+        output compatible with the regular expression.  If the regular
+        expression does not match, then _cvs_version is set to (0,),
+        which looks older than any actual version.
+
+        """
+
+        output = _exec('cvs -vf')
+        m = re.match(
+            r'Concurrent Versions System \(CVS\) '
+            r'(?P<numericpart>(\d+\.)+\d+)(?P<rest>\S*)'
+            r' \(client\/server\)',
+            output[1]
+            )
+        if m:
+            v = [int(x) for x in m.group('numericpart').split('.')]
+            if m.group('rest'):
+                v.append(m.group('rest'))
+            self._cvs_version = tuple(v)
+        else:
+            # If we can't parse the version output, we just assume it
+            # was a very "old" version:
+            self._cvs_version = (0,)
 
     def _execCvs(self, cmd):
         """Executes C{cmd} in the current directory with C{cvs -d :local:repoDir} as a prefix."""
@@ -342,17 +378,44 @@ class CvsFacade(ControllerFacade):
         self._execCvs('init')
         self._execCvs('checkout CVSROOT')
 
+        # CVS's config file format strings changed, apparently at
+        # version 1.12.x.  Therefore some of the configuration
+        # settings are dependent on self._cvs_version.
+
         commitinfo = file('CVSROOT/commitinfo', 'w')
-        commitinfo.write('DEFAULT %s -c %s/CVSROOT/commitmessage.conf' % (self.mainPath, self.repoDir))
+        if self._cvs_version >= (1, 12):
+            commitinfo.write(
+                'DEFAULT %s -c %s/CVSROOT/commitmessage.conf %%r/%%p %%s\n'
+                % (self.mainPath, self.repoDir)
+                )
+        else:
+            commitinfo.write(
+                'DEFAULT %s -c %s/CVSROOT/commitmessage.conf\n'
+                % (self.mainPath, self.repoDir)
+                )
         commitinfo.close()
 
         loginfo = file('CVSROOT/loginfo', 'w')
-        loginfo.write('DEFAULT %s -c %s/CVSROOT/commitmessage.conf %%{s} > commitmessage.out 2>&1' % (self.mainPath, self.repoDir))
+        if self._cvs_version >= (1, 12):
+            loginfo.write(
+                'DEFAULT %s -c %s/CVSROOT/commitmessage.conf "%%p %%{s}" > commitmessage.out 2>&1\n'
+                % (self.mainPath, self.repoDir)
+                )
+        else:
+            loginfo.write(
+                'DEFAULT %s -c %s/CVSROOT/commitmessage.conf %%{s} > commitmessage.out 2>&1\n'
+                % (self.mainPath, self.repoDir)
+                )
         loginfo.close()
 
         checkoutlist = file('CVSROOT/checkoutlist', 'w')
-        checkoutlist.write('commitmessage.conf')
+        checkoutlist.write('commitmessage.conf\n')
         checkoutlist.close()
+
+        if self._cvs_version >= (1, 12):
+            configfile = file('CVSROOT/config', 'a')
+            configfile.write('UseNewInfoFmtStrings=yes\n')
+            configfile.close()
 
         cvsConfig = config.replace('CONTROLLER', 'commitmessage.controllers.cvs.CvsController')
         cvsConfig = cvsConfig.replace('ACCEPTANCE_DIRECTORY', self.workingDir)
