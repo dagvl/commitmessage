@@ -40,7 +40,7 @@ Subject: commit: /
 Date: #####
 Content-Type: text/plain; charset="iso-8859-1"
 
-User: stephen
+User: #####
 Date: #####
 
 Added:
@@ -92,7 +92,7 @@ Subject: commit: /
 Date: #####
 Content-Type: text/plain; charset="iso-8859-1"
 
-User: stephen
+User: #####
 Date: #####
 
 Added:
@@ -118,7 +118,7 @@ File [modified]: foo.txt
 Delta lines: +3 -1
 !cvs Index: foo.txt
 ===================================================================
-!cvs RCS file: /home/stephen/cvs/commitmessage/acceptance/temp-cvs-repo/temp-cvs-wd/foo.txt,v
+!cvs RCS file: #####/acceptance/temp-cvs-repo/temp-cvs-wd/foo.txt,v
 !cvs retrieving revision 1.1
 !cvs retrieving revision 1.2
 !cvs diff -u -r1.1 -r1.2
@@ -182,7 +182,7 @@ Subject: commit: /
 Date: #####
 Content-Type: text/plain; charset="iso-8859-1"
 
-User: stephen
+User: #####
 Date: #####
 
 Added:
@@ -221,7 +221,7 @@ File [modified]: foo3.txt
 Delta lines: +2 -0
 !cvs Index: foo3.txt
 ===================================================================
-!cvs RCS file: /home/stephen/cvs/commitmessage/acceptance/temp-cvs-repo/temp-cvs-wd/foo3.txt,v
+!cvs RCS file: #####/acceptance/temp-cvs-repo/temp-cvs-wd/foo3.txt,v
 !cvs retrieving revision 1.1
 !cvs retrieving revision 1.2
 !cvs diff -u -r1.1 -r1.2
@@ -300,7 +300,7 @@ Subject: commit: /sub1/
 Date: #####
 Content-Type: text/plain; charset="iso-8859-1"
 
-User: stephen
+User: #####
 Date: #####
 
 Added:

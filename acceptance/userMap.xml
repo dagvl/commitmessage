@@ -17,7 +17,7 @@ email = commitmessage.views.email.TigrisStyleEmailView
 [email]
 to = stephen@beachead.com
 server = mail.beachead.com
-from = $userMap.get(model.user)
+from = $userMap.get('stephen')
 subject = commit: $model.greatestCommonDirectory()
 acceptance = ACCEPTANCE_DIRECTORY
 
@@ -36,7 +36,7 @@ Subject: commit: /
 Date: #####
 Content-Type: text/plain; charset="iso-8859-1"
 
-User: stephen
+User: #####
 Date: #####
 
 Added:

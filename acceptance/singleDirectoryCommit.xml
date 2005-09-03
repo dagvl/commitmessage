@@ -31,7 +31,7 @@ Subject: commit: /sub1/
 Date: #####
 Content-Type: text/plain; charset="iso-8859-1"
 
-User: stephen
+User: #####
 Date: #####
 
 Added:
@@ -39,7 +39,7 @@ Added:
 
 Log:
 !svn  a subdirectory
-!cvs  Directory /home/stephen/cvs/commitmessage/acceptance/temp-cvs-repo/temp-cvs-wd/sub1 added to the repository
+!cvs  Directory #####/acceptance/temp-cvs-repo/temp-cvs-wd/sub1 added to the repository
     </view>
   </commit>
 </test>
