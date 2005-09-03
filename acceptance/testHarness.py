@@ -204,6 +204,12 @@ class Commit:
         """Initializes the object from the XML element."""
         self.commitElement = commitElement
 
+        # Store the message for the commit to self.message
+        for e in self.commitElement.getElementsByTagName("message"):
+            for node in e.childNodes:
+                if node.nodeType == node.TEXT_NODE:
+                    self.message = node.data.strip()
+
     def doChanges(self, facade):
         """Loops through all of the changes for this commit."""
         for e in self.commitElement.childNodes:
@@ -219,20 +225,24 @@ class Commit:
                 # The text is an argument too
                 for node in e.childNodes:
                     if node.nodeType == node.TEXT_NODE:
-                        args['content'] = node.data.strip()
+                        text = node.data.strip()
+                        # Ensure that non-empty files always end with a newline:
+                        if text:
+                            text += '\n'
+                        args['content'] = text
 
                 # Call the function
                 getattr(facade, e.tagName)(**args)
 
         # Set the message for the commit
-        for e in self.commitElement.getElementsByTagName("message"):
-            for node in e.childNodes:
-                if node.nodeType == node.TEXT_NODE:
-                    facade.message = node.data.strip()
+        facade.message = self.message
 
     def views(self):
         """Returns the views that are expected by this commit, viewName: results."""
         return [View(x) for x in self.commitElement.getElementsByTagName('view')]
+
+    def __str__(self):
+        return '%s(%r)' % (self.__class__.__name__, self.message,)
 
 class View:
     """A class that wraps the results of a view."""

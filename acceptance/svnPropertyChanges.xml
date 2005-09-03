@@ -86,7 +86,6 @@ Delta lines: +1 -0
 +++ foo.txt	#####
 @@ -0,0 +1 @@
 +This text for foo...
-\ No newline at end of file
 
 
 

@@ -76,7 +76,6 @@ Delta lines: +1 -0
 !svn +++ sub1 withspace/foo1 withspace.txt	#####
 !svn @@ -0,0 +1 @@
 !svn +This text for foo...
-!svn \ No newline at end of file
 !cvs This text for foo...
     </view>
   </commit>

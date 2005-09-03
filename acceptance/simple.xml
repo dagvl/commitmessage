@@ -63,7 +63,6 @@ Delta lines: +1 -0
 !svn +++ foo.txt	#####
 !svn @@ -0,0 +1 @@
 !svn +This text for foo...
-!svn \ No newline at end of file
 !cvs This text for foo...
     </view>
   </commit>
@@ -126,11 +125,9 @@ Delta lines: +3 -1
 +++ foo.txt	#####
 @@ -1 +1,3 @@
 -This text for foo...
-\ No newline at end of file
 +changed-one
 +changed-two
 +changed-three
-\ No newline at end of file
 
 File [added]: foo2.txt
 Delta lines: +1 -0
@@ -140,8 +137,8 @@ Delta lines: +1 -0
 !svn +++ foo2.txt	#####
 !svn @@ -0,0 +1 @@
 !svn +one-liner
-!svn \ No newline at end of file
 !cvs one-liner
+!cvs 
 
 File [added]: foo3.txt
 Delta lines: +2 -0
@@ -152,7 +149,6 @@ Delta lines: +2 -0
 !svn @@ -0,0 +1,2 @@
 !svn +two-liner
 !svn +see
-!svn \ No newline at end of file
 !cvs two-liner
 !cvs see
     </view>
@@ -215,10 +211,9 @@ File [removed]: foo2.txt
 !svn +++ foo2.txt	#####
 !svn @@ -1 +0,0 @@
 !svn -one-liner
-!svn \ No newline at end of file
 
 File [modified]: foo3.txt
-Delta lines: +2 -0
+Delta lines: +3 -0
 !cvs Index: foo3.txt
 ===================================================================
 !cvs RCS file: #####/acceptance/temp-cvs-repo/temp-cvs-wd/foo3.txt,v
@@ -227,12 +222,12 @@ Delta lines: +2 -0
 !cvs diff -u -r1.1 -r1.2
 --- foo3.txt	#####
 +++ foo3.txt	#####
-@@ -1,2 +1,4 @@
+@@ -1,2 +1,5 @@
  two-liner
 +
 +see-more
++
  see
-!svn \ No newline at end of file
 
 File [added]: foo4.txt
 Delta lines: +1 -0
@@ -242,8 +237,8 @@ Delta lines: +1 -0
 !svn +++ foo4.txt	#####
 !svn @@ -0,0 +1 @@
 !svn +this is not a sub directory
-!svn \ No newline at end of file
 !cvs this is not a sub directory
+!cvs 
 
 Directory: /sub1/
 =================
@@ -270,8 +265,8 @@ Delta lines: +1 -0
 !svn +++ sub1/foo1.txt	#####
 !svn @@ -0,0 +1 @@
 !svn +this is a sub directory
-!svn \ No newline at end of file
 !cvs this is a sub directory
+!cvs 
 
 File [added]: foo2.txt
 Delta lines: +1 -0
@@ -281,7 +276,6 @@ Delta lines: +1 -0
 !svn +++ sub1/foo2.txt	#####
 !svn @@ -0,0 +1 @@
 !svn +this is also a sub directory
-!svn \ No newline at end of file
 !cvs this is also a sub directory
     </view>
   </commit>
@@ -327,7 +321,6 @@ File [removed]: foo1.txt
 !svn +++ sub1/foo1.txt	#####
 !svn @@ -1 +0,0 @@
 !svn -this is a sub directory
-!svn \ No newline at end of file
 
 File [added]: foo1a.txt
 !svn Delta lines: +0 -0
@@ -336,6 +329,7 @@ File [added]: foo1a.txt
 !cvs Index: foo1a.txt
 !cvs ===================================================================
 !cvs this is a sub directory
+!cvs 
 
 File [removed]: foo2.txt
 !svn Delta lines: +0 -1
@@ -345,19 +339,19 @@ File [removed]: foo2.txt
 !svn +++ sub1/foo2.txt	#####
 !svn @@ -1 +0,0 @@
 !svn -this is also a sub directory
-!svn \ No newline at end of file
 
 File [added]: foo2a.txt
-Delta lines: +2 -0
+Delta lines: +3 -0
 !cvs Index: foo2a.txt
 ===================================================================
 !svn --- sub1/foo2.txt	#####
 !svn +++ sub1/foo2a.txt	#####
-!svn @@ -0,0 +1,2 @@
+!svn @@ -0,0 +1,3 @@
 !svn +this is in a sub directory
+!svn +
 !svn +this is also a sub directory
-!svn \ No newline at end of file
 !cvs this is in a sub directory
+!cvs 
 !cvs this is also a sub directory
     </view>
   </commit>
