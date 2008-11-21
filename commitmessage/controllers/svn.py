@@ -1,4 +1,5 @@
 #!/usr/bin/python
+
 #
 # commitmessage
 # Copyright 2002-2004 Stephen Haberman
@@ -53,9 +54,18 @@ class SvnController(Controller):
         # Recontruct each diff by parsing through the output of svnlook line by line
         diffs = []
         partialDiff = None
+
+        #A marker word after a "____" line is a change in a property and shouldn't be added as a change
+        #in a file. InProperty keeps track of this. If it's 0 this is a normal line, any larger 
+        #and it's a property line.
+        inProperty = 1
         for line in self.getDiffLines():
+            inProperty = max(0, inProperty-1)
+            if line == "___________________________________________________________________\n":
+                inProperty = 2
+
             # Look for Modified:, Added:, etc.
-            if line[0:line.find(':')] in markers:
+            if line[0:line.find(':')] in markers and not inProperty > 0:
                 # Handle starting a new diff
                 partialDiff = [line]
                 diffs.append(partialDiff)
