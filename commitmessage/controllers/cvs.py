@@ -9,7 +9,7 @@ The controller and utils for the CVS SCM (U{http://www.cvshome.org})
 """
 
 import os
-import cPickle
+import pickle
 import re
 import sys
 
@@ -243,7 +243,7 @@ class CvsController(Controller):
             CvsController.FILE_PREFIX,
             self.currentDirectory.path.replace('/', '-'))
         f = file(path, 'w')
-        cPickle.dump(self.currentDirectory, f)
+        pickle.dump(self.currentDirectory, f)
         f.close()
 
     def _fillInValues(self):
@@ -271,7 +271,7 @@ class CvsController(Controller):
         r = re.compile(r"^Removed Files")
         l = re.compile(r"^Log Message")
         b = re.compile(r"Revision\/Branch:")
-        for line in self.stdin.xreadlines():
+        for line in self.stdin:
             line = line.strip()
             if b.search(line):
                 line = re.sub(b, '', line)
@@ -313,7 +313,7 @@ class CvsController(Controller):
                 fullPath = '%s/%s' % (Controller.TMPDIR, name)
                 if not name.endswith('lastdir'):
                     f = file(fullPath)
-                    directory = cPickle.load(f)
+                    directory = pickle.load(f)
                     f.close()
                     self.model.addDirectory(directory)
                 os.remove(fullPath)

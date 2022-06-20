@@ -8,7 +8,7 @@
 
 import time
 
-from StringIO import StringIO
+from io import StringIO
 
 from commitmessage.model import View
 
@@ -107,7 +107,7 @@ class AIMView(IMView):
 
         names = [name.strip() for name in self.to.split(',')]
         for name in names:
-            print name
+            print(name)
             bot.do_SEND_IM(name, message)
 
 

@@ -48,7 +48,7 @@ if sys.argv[1] == 'clean':
         for file in files:
             if file.endswith('.pyc'):
                 remove = '%s%s%s' % (root, os.sep, file)
-                print 'Removing %s ' % remove
+                print('Removing %s ' % remove)
                 os.unlink(remove)
 
 if sys.argv[1] == 'doctest':

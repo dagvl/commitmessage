@@ -93,11 +93,11 @@ class Harness:
     def run(self):
         """Runs a suite of L{Case}s."""
         for case in self.cases:
-            print 'Found case', case
+            print('Found case', case)
             self._runCase(case)
-        print ''
-        print 'Passes: %s' % self.passes
-        print 'Failures: %s' % self.failures
+        print('')
+        print('Passes: %s' % self.passes)
+        print('Failures: %s' % self.failures)
 
     def _runCase(self, case):
         """Runs L{Case}."""
@@ -106,16 +106,16 @@ class Harness:
 
             # We have some svn and cvs-only cases
             if facade.shouldSkipCase(case):
-                print 'Skipping facade', facade
+                print('Skipping facade', facade)
                 continue
 
-            print 'Running facade', facade
+            print('Running facade', facade)
 
             # Each execution of the test case gets its own repository.
             facade.createRepository(case.config())
 
             for commit in case.commits()[:self.commits]:
-                print 'Running commit', commit
+                print('Running commit', commit)
 
                 # Let the case do its stuff (e.g. modifying files)
                 commit.doChanges(facade)
@@ -129,7 +129,7 @@ class Harness:
                     if not view.shouldBeExecuted(facade.name):
                         if facade.doesViewActualExist(view.name):
                             self.failures = self.failures + 1
-                            print 'Error, view %s was not supposed to execute' % view.name
+                            print('Error, view %s was not supposed to execute' % view.name)
                         else:
                             self.passes = self.passes + 1
                         continue
@@ -147,12 +147,12 @@ class Harness:
 
                         delim = '=================================================='
 
-                        print 'Error, expected did not match actual:'
-                        print '\n'.join(difflib.unified_diff(expected, actual))
-                        print delim
+                        print('Error, expected did not match actual:')
+                        print('\n'.join(difflib.unified_diff(expected, actual)))
+                        print(delim)
 
                         if self.wait == 1:
-                            raw_input('Waiting...')
+                            input('Waiting...')
 
                     facade.deleteActual(view.name)
 
@@ -218,7 +218,7 @@ class Commit:
                 args = {}
 
                 # Each attribute is an argument, in order
-                for key in e.attributes.keys():
+                for key in list(e.attributes.keys()):
                     # Use str to that key is not unicode
                     args[str(key)] = e.attributes[key].value
 
@@ -384,8 +384,8 @@ class CvsFacade(ControllerFacade):
     def _execInWorkingDir(self, cmd):
         """Executes C{cmd} in the working directory."""
         if hasattr(self, 'tracecvs'):
-            print cmd
-            raw_input('')
+            print(cmd)
+            input('')
 
         os.chdir(self.workingDir)
         _exec(cmd)
@@ -510,8 +510,8 @@ class SvnFacade(ControllerFacade):
         """Executes C{cmd} in the working directory."""
         # See if we should briefly pause.
         if hasattr(self, 'tracesvn'):
-            print cmd
-            raw_input('')
+            print(cmd)
+            input('')
 
         os.chdir(self.workingDir)
         _exec(cmd)
@@ -590,9 +590,9 @@ def _exec(cmd):
     if len(errlines) > 0:
         for line in errlines:
             if not line.startswith('cvs'):
-                print 'Error executing: %s' % cmd
-                print ''.join(errlines)
-                print ''
+                print('Error executing: %s' % cmd)
+                print(''.join(errlines))
+                print('')
                 break
 
     return outlines
@@ -608,8 +608,8 @@ class Tracer:
     def __getattr__(self, name):
         """Prints out name of the attribute being asked, waits for user
         feedback, and then returns the attribute from the wrapped object."""
-        print '::%s' % name
-        raw_input('')
+        print('::%s' % name)
+        input('')
         return getattr(self.wrapped, name)
 
     def __setattr__(self, name, value):
@@ -619,7 +619,7 @@ def cleanup():
     """Removes lingering temp files from old tests."""
     if os.path.exists('commitmessage.out'):
         os.remove('commitmessage.out')
-    for old in filter(lambda x: x.startswith('temp-') or x == 'CVSROOT', os.listdir('.')):
+    for old in [x for x in os.listdir('.') if x.startswith('temp-') or x == 'CVSROOT']:
         shutil.rmtree(old)
 
 if __name__ == '__main__':

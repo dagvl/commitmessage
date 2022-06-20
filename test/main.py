@@ -36,7 +36,7 @@ class TestCvsController(unittest.TestCase):
     def testFile(self):
         tests = self.parseTestFile()
         for test in tests:
-            print('==== Running %s ====' % test['name'])
+            print(('==== Running %s ====' % test['name']))
             conf = CmConfigParser('%s/commitmessage/commitmessage.conf' % self.olddir)
 
             if len(test['commitInfoArgv']) > 0:

@@ -6,9 +6,9 @@
 
 """Basic utility functions and classes (L{CmConfigParser}, L{getNewInstance}, and L{execute})"""
 
-from ConfigParser import ConfigParser
-from types import ModuleType
-import new
+from configparser import ConfigParser
+from subprocess import Popen, PIPE
+import types
 import os
 import re
 import sys
@@ -35,7 +35,7 @@ class CmConfigParser(ConfigParser):
 
         if self.has_option('scm', 'summaryThreshold'):
             #Convert the conf value from KB to bytes
-            threshold = long(self.getint('scm', 'summaryThreshold') * 1024)
+            threshold = int(self.getint('scm', 'summaryThreshold') * 1024)
 
         return threshold
 
@@ -84,7 +84,7 @@ class CmConfigParser(ConfigParser):
             # Setup default values
             if ConfigParser.has_section(self, viewName):
                 for name in ConfigParser.options(self, viewName):
-                    value = ConfigParser.get(self, viewName, name, 1)
+                    value = ConfigParser.get(self, viewName, name, raw=1)
                     view.__dict__[name] = str(Itpl(value))
 
             # Setup module-specific values
@@ -93,7 +93,7 @@ class CmConfigParser(ConfigParser):
                 if forViewPrefix.search(option):
                     # Take off the 'viewName.'
                     name = option[len(viewName)+1:]
-                    value = ConfigParser.get(self, module, option, 1)
+                    value = ConfigParser.get(self, module, option, raw=1)
                     view.__dict__[name] = str(Itpl(value))
 
             views.append(view)
@@ -134,13 +134,16 @@ def getNewInstance(fullClassName, searchPath=['./']):
     if not callable(function):
         raise ImportError(fullFuncError)
 
-    return new.instance(function)
+    return function.__new__(function)
 
 def execute(command):
     """@return: the contents of C{stdout} as a list of lines after executing C{command}"""
-    pipeIn, pipeOut, pipeErr = os.popen3(command)
-    lines = pipeOut.readlines()
-    err = '\n'.join(pipeErr.readlines())
+    p = Popen(command, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE,
+              close_fds=True)
+    (pipeIn, pipeOut, pipeErr) = (p.stdin, p.stdout, p.stderr)
+    lines = [x.decode('utf-8') for x in pipeOut.readlines()]
+    errors = [x.decode('utf-8') for x in pipeErr.readlines()]
+    err = '\n'.join(errors)
     pipeIn.close(), pipeOut.close(), pipeErr.close()
 
     # If no lines are there, an error might have occurred
@@ -151,14 +154,17 @@ def execute(command):
             os.chdir('/tmp')
 
             # Retry
-            pipeIn, pipeOut, pipeErr = os.popen3(command)
-            lines = pipeOut.readlines()
-            err = '\n'.join(pipeErr.readlines())
+            p = Popen(command, shell=True, stdin=PIPE, stdout=PIPE,
+                      stderr=PIPE, close_fds=True)
+            (pipeIn, pipeOut, pipeErr) = (p.stdin, p.stdout, p.stderr)
+            lines = [x.decode('utf-8') for x in pipeOut.readlines()]
+            errors = [x.decode('utf-8') for x in pipeErr.readlines()]
+            err = '\n'.join(errors)
             pipeIn.close(), pipeOut.close(), pipeErr.close()
 
         # If there is still an error, print it
         if len(err) > 0:
-            print err
+            print(err)
 
     return lines
 

@@ -22,7 +22,7 @@ class TestNewInstance(unittest.TestCase):
 
     def testCvsController(self):
         c = getNewInstance('commitmessage.controllers.cvs.CvsController')
-        self.assertEquals('CvsController', c.__class__.__name__)
+        self.assertEqual('CvsController', c.__class__.__name__)
         c.__init__(None, None, None)
 
     def testBadController(self):
@@ -42,9 +42,9 @@ class BaseConfigTest(unittest.TestCase):
             'stephen': '^/stephen',
             'stephen-misc': '^/stephen/misc',
             'module1': '^/'}
-        for name, value in expected.items():
-            self.assertEquals(value, self.config.get('modules', name))
-        self.assertEquals(len(expected), len(self.config.options('modules')))
+        for name, value in list(expected.items()):
+            self.assertEqual(value, self.config.get('modules', name))
+        self.assertEqual(len(expected), len(self.config.options('modules')))
 
     def testViews(self):
         """Makes sure the views are being read in correctly."""
@@ -52,15 +52,15 @@ class BaseConfigTest(unittest.TestCase):
             'bombsight': 'commitmessage.views.bugtracking.FogBugzView',
             'email': 'commitmessage.views.email.TigrisStyleEmailView',
             'dump': 'commitmessage.views.misc.DumpView'}
-        for name, value in expected.items():
-            self.assertEquals(value, self.config.get('views', name))
-        self.assertEquals(len(expected), len(self.config.options('views')))
+        for name, value in list(expected.items()):
+            self.assertEqual(value, self.config.get('views', name))
+        self.assertEqual(len(expected), len(self.config.options('views')))
 
     def testGetModulesForPath(self):
         """Test getting the modules for a given path."""
-        self.assertEquals(['cvsroot', 'module1'], self.config.getModulesForPath('/CVSROOT/blah/bar.txt'))
-        self.assertEquals(['module1', 'stephen'], self.config.getModulesForPath('/stephen/etc/etc/bar.txt'))
-        self.assertEquals(['module1', 'stephen', 'stephen-misc'], self.config.getModulesForPath('/stephen/misc/bar.txt'))
+        self.assertEqual(['cvsroot', 'module1'], self.config.getModulesForPath('/CVSROOT/blah/bar.txt'))
+        self.assertEqual(['module1', 'stephen'], self.config.getModulesForPath('/stephen/etc/etc/bar.txt'))
+        self.assertEqual(['module1', 'stephen', 'stephen-misc'], self.config.getModulesForPath('/stephen/misc/bar.txt'))
 
     def testGetViewsForModule(self):
         """Test getting the views for a given module."""
@@ -70,13 +70,13 @@ class BaseConfigTest(unittest.TestCase):
             'ibm2': ['bombsight'],
             'module1': ['dump', 'email']}
         model = Model()
-        for key, value in expected.items():
+        for key, value in list(expected.items()):
             views = self.config.getViewsForModule(key, model)
             for view in views:
-                self.assertEquals(1, expected[key].index(view.name) > -1)
+                self.assertEqual(1, expected[key].index(view.name) > -1)
                 if view.name == 'email':
-                    self.assertEquals('@beachead.com', view.keyword_from())
-            self.assertEquals(len(expected[key]), len(views))
+                    self.assertEqual('@beachead.com', view.keyword_from())
+            self.assertEqual(len(expected[key]), len(views))
 
 if __name__ == '__main__':
     unittest.main()
