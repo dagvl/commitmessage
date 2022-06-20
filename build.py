@@ -72,7 +72,7 @@ if sys.argv[1] == 'tags':
     os.popen('exctags -R commitmessage')
 
 if sys.argv[1] == 'dist':
-    version = '2.0'
+    version = '3.0'
     subdir = 'commitmessage-%s/' % version
 
     if not os.path.exists('dist'):
