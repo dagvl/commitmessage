@@ -122,7 +122,7 @@ class File:
 
     name = attribute('_name', permit='r', doc="""The file name (C{foo.txt})""")
     directory = attribute('_directory', permit='r', doc="""The L{Directory} the file is in""")
-    action = attribute('_action', permit='r', doc="""The action on thie file that required a commit, SCM-dependent""")
+    action = attribute('_action', doc="""The action on thie file that required a commit, SCM-dependent""")
     rev = attribute('_rev', doc="""The revision number (SCM-dependent, could be per-file or per-commit) for this file""")
     delta = attribute('_delta', doc="""The number of lines added/removed/changed in this commit""")
     diff = attribute('_diff', doc="""The diff of what changed in the file""")
@@ -160,9 +160,9 @@ class Directory:
         self._diff = None
 
     path = attribute('_path', permit='r', doc="""The full path of the directory (C{/dir/dir/})""")
-    action = attribute('_action', permit='r', doc="""The action performed on this directory that caused the commit""")
-    files = attribute('_files', permit='r', doc="""The L{File}s within this directory affected by the commit""")
-    subdirectories = attribute('_subdirectories', permit='r', doc="""The L{Directory}s within this directory affected by the commit""")
+    action = attribute('_action', doc="""The action performed on this directory that caused the commit""")
+    files = attribute('_files', doc="""The L{File}s within this directory affected by the commit""")
+    subdirectories = attribute('_subdirectories', doc="""The L{Directory}s within this directory affected by the commit""")
     diff = attribute('_diff', doc="""The diff of what changed in the file""")
 
     def name():
