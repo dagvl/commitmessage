@@ -102,7 +102,7 @@ class BaseEmailView(View):
             text.write('\n\n%s' % self.footer)
 
         text.seek(0)
-        body = text.read()
+        body = text.read().encode("ascii", "replace")
 
         if self.isTesting():
             self.dumpToTestFile(body)
