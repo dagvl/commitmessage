@@ -1,3 +1,8 @@
+2021-06-19 3.0
+
+* Hacked up to work on python 3.9, includes mods available on Github
+  - Michael Stroucken
+
 2005-07-01 2.0
 
  * commitmessage/views/email.py

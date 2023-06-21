@@ -43,8 +43,8 @@ if __name__ == "__main__":
             self._a = "A"
 
     c = C()
-    print c.a  # uses a.fget, user supplied
+    print(c.a)  # uses a.fget, user supplied
     c.a = "AA" # uses a.fset, provided by default
-    print c.a
+    print(c.a)
 
 

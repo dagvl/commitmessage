@@ -48,7 +48,7 @@ if sys.argv[1] == 'clean':
         for file in files:
             if file.endswith('.pyc'):
                 remove = '%s%s%s' % (root, os.sep, file)
-                print 'Removing %s ' % remove
+                print('Removing %s ' % remove)
                 os.unlink(remove)
 
 if sys.argv[1] == 'doctest':
@@ -72,7 +72,7 @@ if sys.argv[1] == 'tags':
     os.popen('exctags -R commitmessage')
 
 if sys.argv[1] == 'dist':
-    version = '2.0'
+    version = '3.0'
     subdir = 'commitmessage-%s/' % version
 
     if not os.path.exists('dist'):

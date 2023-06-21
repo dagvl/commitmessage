@@ -9,11 +9,30 @@
 import os
 import sys
 import time
-import rfc822
 
-from StringIO import StringIO
+from io import StringIO
 from smtplib import SMTP
 from commitmessage.model import View
+
+def formatdate(timeval=None):
+    """Returns time format preferred for Internet standards.
+
+    Sun, 06 Nov 1994 08:49:37 GMT  ; RFC 822, updated by RFC 1123
+
+    According to RFC 1123, day and month names must always be in
+    English.  If not for that, this code could use strftime().  It
+    can't because strftime() honors the locale and could generate
+    non-English names.
+    """
+    if timeval is None:
+        timeval = time.time()
+    timeval = time.gmtime(timeval)
+    return "%s, %02d %s %04d %02d:%02d:%02d GMT" % (
+            ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")[timeval[6]],
+            timeval[2],
+            ("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")[timeval[1]-1],
+             timeval[0], timeval[3], timeval[4], timeval[5])
 
 class BaseEmailView(View):
     """A basic email implementation for other style-specific email views to extend
@@ -23,6 +42,7 @@ class BaseEmailView(View):
      - server (required) - the mail server to relay through
      - subject (required) - the subject line (e.g. "commit: $model.greatestCommonDirectory()")
      - from (required) - the from email address (e.g. "$model.user@yourdomain.com")
+     - envfrom (optional) - the envelope from, required for SPF and bounces
      - to (required) - a comma-separated list of email addresses to send to
      - cc (optional) - a comma-separated list of email addresses to cc to
      - header (optional) - text to put at the beginning of the email
@@ -62,10 +82,10 @@ class BaseEmailView(View):
 
         text.write('From: %s\n' % self['from'])
         self.generateSubject(text)
-        text.write('Date: %s\n' % rfc822.formatdate())
+        text.write('Date: %s\n' % formatdate())
         text.write('Content-Type: %s\n' % self.contenttype)
 
-        for name, value in self.otherHeaders.items():
+        for name, value in list(self.otherHeaders.items()):
             text.write('%s: %s\n' % (name, value))
 
         # Done with header, final extra \n
@@ -82,8 +102,12 @@ class BaseEmailView(View):
         if len(self.footer) > 0:
             text.write('\n\n%s' % self.footer)
 
+        # envelope from
+        if len(self.envfrom) == 0:
+            self.envfrom = self['from']
+
         text.seek(0)
-        body = text.read()
+        body = text.read().encode("ascii", "replace")
 
         if self.isTesting():
             self.dumpToTestFile(body)
@@ -92,12 +116,12 @@ class BaseEmailView(View):
             if self.username is not None:
                 smtp.login(self.username, self.password)
             smtp.sendmail(
-                self['from'],
-                filter(lambda x: x != '', [addr.strip() for addr in self.to.split(',')] + [addr.strip() for addr in self.cc.split(',')]),
+                self.envfrom,
+                [x for x in [addr.strip() for addr in self.to.split(',')] + [addr.strip() for addr in self.cc.split(',')] if x != ''],
                 body)
             smtp.quit()
         else:
-            print 'No server provided, not sending an email.'
+            print('No server provided, not sending an email.')
 
 class ApacheStyleEmailView(BaseEmailView):
     """Sends out an email in a style mimicking the U{Apache<http://www.apache.org>} commit email format (not implemented)"""

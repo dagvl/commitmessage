@@ -140,9 +140,8 @@ class SvnController(Controller):
         # getSummaryThreshold returns -1 if the option is undefined (ergo, no summary)
         diff_lines = []
         if self.config.getSummaryThreshold() == -1 or os.stat(tempFile).st_size <= self.config.getSummaryThreshold():
-            diff_file = open(tempFile, 'r')
-            diff_lines = diff_file.readlines()
-            diff_file.close()
+            with open(tempFile, 'r', errors='replace') as diff_file:
+                diff_lines = diff_file.readlines()
 
         os.remove(tempFile)
 

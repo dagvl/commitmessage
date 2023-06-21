@@ -109,7 +109,7 @@ class File:
         @param action: the action performed on this file that required a commit, SCM-dependent
         """
         if name.find('/') != -1:
-            raise CmException, "File names may not have foward slashes in them."
+            raise CmException("File names may not have foward slashes in them.")
 
         self._name = name
         self._directory = directory
@@ -122,7 +122,7 @@ class File:
 
     name = attribute('_name', permit='r', doc="""The file name (C{foo.txt})""")
     directory = attribute('_directory', permit='r', doc="""The L{Directory} the file is in""")
-    action = attribute('_action', permit='r', doc="""The action on thie file that required a commit, SCM-dependent""")
+    action = attribute('_action', doc="""The action on thie file that required a commit, SCM-dependent""")
     rev = attribute('_rev', doc="""The revision number (SCM-dependent, could be per-file or per-commit) for this file""")
     delta = attribute('_delta', doc="""The number of lines added/removed/changed in this commit""")
     diff = attribute('_diff', doc="""The diff of what changed in the file""")
@@ -149,9 +149,9 @@ class Directory:
 
     def __init__(self, path, action='none'):
         if path == '' or not path.startswith('/') or not path.endswith('/'):
-            raise CmException, 'Directory path (%s) must start with a forward slash and end with a forward slash.' % path
+            raise CmException('Directory path (%s) must start with a forward slash and end with a forward slash.' % path)
         elif not _re_path.match(path):
-            raise CmException, 'Directory path (%s) must start with a forward slash and end with a forward slash.' % path
+            raise CmException('Directory path (%s) must start with a forward slash and end with a forward slash.' % path)
 
         self._path = path
         self._action = action
@@ -160,9 +160,9 @@ class Directory:
         self._diff = None
 
     path = attribute('_path', permit='r', doc="""The full path of the directory (C{/dir/dir/})""")
-    action = attribute('_action', permit='r', doc="""The action performed on this directory that caused the commit""")
-    files = attribute('_files', permit='r', doc="""The L{File}s within this directory affected by the commit""")
-    subdirectories = attribute('_subdirectories', permit='r', doc="""The L{Directory}s within this directory affected by the commit""")
+    action = attribute('_action', doc="""The action performed on this directory that caused the commit""")
+    files = attribute('_files', doc="""The L{File}s within this directory affected by the commit""")
+    subdirectories = attribute('_subdirectories', doc="""The L{Directory}s within this directory affected by the commit""")
     diff = attribute('_diff', doc="""The diff of what changed in the file""")
 
     def name():
@@ -180,16 +180,16 @@ class Directory:
         """@return: the path of the directory"""
         return """<Directory '%s'>""" % self.path
 
-    def __cmp__(self, other):
+    def __lt__(self, other):
         """@return: the cmp'ing self.path and other.path"""
-        return cmp(self.path, other.path)
+        return self.path < other.path
 
     def filesByAction(self, action):
         """@return: all of the files in this directory affected by the commit"""
         if action == None:
             return self.files
         else:
-            return filter(lambda file: file.action == action, self.files)
+            return [file for file in self.files if file.action == action]
 
     def file(self, name):
         """@return: the file in the current directory with C{name} or C{None}"""
@@ -215,7 +215,7 @@ class Directory:
     def addFile(self, file):
         """Saves a file object into this directory"""
         self.files.append(file)
-        self.files.sort(lambda x,y: cmp(x.name, y.name))
+        self.files.sort(key=lambda x: x.name)
 
     def addSubdirectory(self, subdir):
         """Saves a directory object into this directory"""
@@ -237,7 +237,7 @@ class Model:
         """@return: the model's L{Directory} for C{path}; creates new directories and sub directories if needed
         """
         if path[0] != '/' or path[-1] != '/':
-            raise CmException, 'Directory paths must start with a forward slash and end with a forward slash.'
+            raise CmException('Directory paths must start with a forward slash and end with a forward slash.')
         if path == '/':
             return self.rootDirectory
 
@@ -278,9 +278,9 @@ class Model:
     def file(self, path):
         """@return: the L{File} for the C{path}"""
         if path == '':
-            raise CmException, "File paths may not be empty."
+            raise CmException("File paths may not be empty.")
         if path[0] != '/' or path[-1] == '/':
-            raise CmException, "File paths must begin with a forward slash and not end with a forward slash."
+            raise CmException("File paths must begin with a forward slash and not end with a forward slash.")
         parts = path.split('/')
 
         # Leave off the file name to get the parent directory
@@ -308,7 +308,7 @@ class Model:
     def directories(self, action=None):
         """@return: a flat list of L{Directory}s, optionally those that match C{action}."""
         dirs = self._directories(self.rootDirectory, action)
-        dirs.sort(lambda x, y: cmp(x.name, y.name))
+        dirs.sort(key=lambda x: x.name)
         return dirs
 
     def _directories(self, directory, action):
@@ -327,7 +327,7 @@ class Model:
     def directoriesWithFiles(self, action=None):
         """@return: a flat list of L{Directory}s that have changes to files"""
         dirs = self._directoriesWithFiles(self.rootDirectory, action)
-        dirs.sort(lambda x, y: cmp(x.name, y.name))
+        dirs.sort(key=lambda x: x.name)
         return dirs
 
     def _directoriesWithFiles(self, directory, action):
