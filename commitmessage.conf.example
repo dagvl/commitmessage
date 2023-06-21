@@ -110,6 +110,7 @@ jabber = commitmessage.views.im.JabberView
 [email]
 server = mail.example.com
 from = $model.user@example.com
+envfrom = commits@example.com
 subject = commit $model.rev: $model.greatestCommonDirectory()
 
 # Advanced - if you use the [userMap] section, see towards the end,

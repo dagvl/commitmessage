@@ -42,6 +42,7 @@ class BaseEmailView(View):
      - server (required) - the mail server to relay through
      - subject (required) - the subject line (e.g. "commit: $model.greatestCommonDirectory()")
      - from (required) - the from email address (e.g. "$model.user@yourdomain.com")
+     - envfrom (optional) - the envelope from, required for SPF and bounces
      - to (required) - a comma-separated list of email addresses to send to
      - cc (optional) - a comma-separated list of email addresses to cc to
      - header (optional) - text to put at the beginning of the email
@@ -101,6 +102,10 @@ class BaseEmailView(View):
         if len(self.footer) > 0:
             text.write('\n\n%s' % self.footer)
 
+        # envelope from
+        if len(self.envfrom) == 0:
+            self.envfrom = self['from']
+
         text.seek(0)
         body = text.read().encode("ascii", "replace")
 
@@ -111,7 +116,7 @@ class BaseEmailView(View):
             if self.username is not None:
                 smtp.login(self.username, self.password)
             smtp.sendmail(
-                self['from'],
+                self.envfrom,
                 [x for x in [addr.strip() for addr in self.to.split(',')] + [addr.strip() for addr in self.cc.split(',')] if x != ''],
                 body)
             smtp.quit()
