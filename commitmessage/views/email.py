@@ -62,6 +62,7 @@ class BaseEmailView(View):
         self.footer = ''
         self.cc = ''
         self.contenttype = 'text/plain; charset="iso-8859-1"'
+        self.envfrom = ''
         self.otherHeaders = {}
 
     def __getitem__(self, name):

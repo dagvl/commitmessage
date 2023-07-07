@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 #
 # commitmessage
 # Copyright 2002-2004 Stephen Haberman
@@ -28,28 +28,36 @@ from commitmessage.exceptions import CmException
 from commitmessage.util import CmConfigParser, getNewInstance
 
 def main():
-    profiling, configFile = 0, 'commitmessage.conf'
+    profiling = 0
+    # Handle loading the default conf from within the commitmessage module
+    defaultConfigFile = rootCmPath + os.sep + 'commitmessage.conf'
+    configFile = defaultConfigFile
 
-    options, args = getopt.getopt(sys.argv[1:], "c:p")
+    options, args = getopt.getopt(sys.argv[1:], "hc:p")
     for option, value in options:
         if option == '-c':
             configFile = value
         if option == '-p':
             profiling = 1
+        if option == '-h':
+            print(
+f'''Commit message sender
+Args:
+-c <configfile>: read from config file, default: {defaultConfigFile}
+-p: enable profiling
+'''
+)
+            sys.exit(1)
 
     if profiling:
-        import hotshot
+        import cProfile
         i = 0
         while 1:
             f = currentDir + os.sep + 'commitmessage%s.profile' % i
             if not os.path.exists(f): break
             i += 1
-        profile = hotshot.Profile(f)
-        profile.start()
-
-    # Handle loading the default conf from within the commitmessage module
-    if configFile[0] != '/' and configFile[0] != '.' and configFile[1] != ':':
-       configFile = rootCmPath + os.sep + configFile
+        profile = cProfile.Profile()
+        profile.enable()
 
     config = CmConfigParser(configFile)
 
@@ -66,8 +74,9 @@ def main():
     controller.process()
 
     if profiling:
-        profile.stop()
-        profile.close()
+        profile.disable()
+        profile.create_stats()
+        profile.dump_stats(f)
 
 if __name__ == '__main__':
     main()
