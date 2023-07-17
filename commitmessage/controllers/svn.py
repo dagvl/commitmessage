@@ -135,7 +135,8 @@ class SvnController(Controller):
         if os.path.exists(tempFile):
             os.remove(tempFile)
 
-        self._svnlook('diff', ' > ' + tempFile)
+        self._svnlook('diff', ' --diff-cmd /usr/bin/diff > ' + tempFile)
+        #self._svnlook('diff', ' > ' + tempFile)
 
         # getSummaryThreshold returns -1 if the option is undefined (ergo, no summary)
         diff_lines = []
